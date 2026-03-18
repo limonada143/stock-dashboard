@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Stock Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-10">
+            <h1 class="text-3xl font-bold border-b border-gray-700 pb-4">📈 My Investment Dashboard</h1>
+            <p id="update-date" class="text-gray-400 mt-2">Last Updated: -</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                <p class="text-sm text-gray-400">총 자산</p>
+                <h2 id="total-value" class="text-2xl font-bold text-blue-400">₩0</h2>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                <p class="text-sm text-gray-400">평가 손익</p>
+                <h2 id="total-pnl" class="text-2xl font-bold text-green-400">₩0</h2>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                <p class="text-sm text-gray-400">수익률</p>
+                <h2 id="total-pnl-pct" class="text-2xl font-bold text-yellow-400">0%</h2>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700 mb-10">
+            <h3 class="text-xl font-semibold mb-6">자산 비중 (Sector)</h3>
+            <div class="w-full h-64 flex justify-center">
+                <canvas id="assetChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // portfolio.json 데이터를 읽어오는 함수
+        fetch('portfolio.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('update-date').innerText = "Last Updated: " + data.account.last_updated;
+                document.getElementById('total-value').innerText = "₩" + data.summary.total_value.toLocaleString();
+                document.getElementById('total-pnl').innerText = "₩" + data.summary.unrealized_pnl.toLocaleString();
+                document.getElementById('total-pnl-pct').innerText = data.summary.unrealized_pnl_pct + "%";
+
+                // 차트 그리기
+                const ctx = document.getElementById('assetChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.holdings.map(h => h.name),
+                        datasets: [{
+                            data: data.holdings.map(h => h.current_value),
+                            backgroundColor: ['#60A5FA', '#34D399', '#FBBF24', '#F87171']
+                        }]
+                    },
+                    options: { 
+                        responsive: true,
+                        plugins: { legend: { labels: { color: 'white' } } }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
+
