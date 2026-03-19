@@ -1,0 +1,16 @@
+[
+  {
+    "date": "2026-03-18",
+    "total_value": 174988680,
+    "total_cost": 137076164,
+    "unrealized_pnl": 37912516,
+    "unrealized_pnl_pct": 27.66
+  },
+  {
+    "date": "2026-03-19",
+    "total_value": 171727985,
+    "total_cost": 137076164,
+    "unrealized_pnl": 34651821,
+    "unrealized_pnl_pct": 25.28
+  }
+]
