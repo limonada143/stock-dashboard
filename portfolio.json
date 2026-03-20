@@ -2,11 +2,11 @@
   "owner": "user",
   "last_updated": "2026-03-20",
   "summary": {
-    "total_value": 430116452,
-    "total_cost": 356367643,
-    "total_cash": 770520,
-    "unrealized_pnl": 73742184,
-    "unrealized_pnl_pct": 20.69
+    "total_value": 451030617,
+    "total_cost": 371008538,
+    "total_cash": 789670,
+    "unrealized_pnl": 80015454,
+    "unrealized_pnl_pct": 21.57
   },
   "accounts": [
     {
@@ -789,6 +789,109 @@
           "unrealized_pnl_pct": 22.50,
           "type": "주식",
           "category": "전기차/기술(해외)"
+        }
+      ]
+    },
+    {
+      "id": "362-1120-3992-0",
+      "name": "박은혜 ISA 중개형",
+      "type": "ISA",
+      "currency": "KRW",
+      "summary": {
+        "total_value": 20914165,
+        "total_cost": 14640895,
+        "unrealized_pnl": 6273270,
+        "unrealized_pnl_pct": 42.85,
+        "cash": 19150
+      },
+      "holdings": [
+        {
+          "name": "두산에너빌리티",
+          "ticker": "두산에너빌리티",
+          "shares": 0,
+          "avg_price": 0,
+          "current_price": 0,
+          "current_value": 3288000,
+          "unrealized_pnl": 865850,
+          "unrealized_pnl_pct": 35.75,
+          "type": "주식",
+          "category": "원자력/에너지",
+          "note": "수량/단가 미표시 (화면에서 확인 불가)"
+        },
+        {
+          "name": "KODEX 증권",
+          "ticker": "KODEX증권",
+          "shares": 30,
+          "avg_price": 27868,
+          "current_price": 27900,
+          "current_value": 837000,
+          "unrealized_pnl": 960,
+          "unrealized_pnl_pct": 0.11,
+          "type": "ETF",
+          "category": "금융"
+        },
+        {
+          "name": "KODEX 레버리지",
+          "ticker": "KODEX레버리지",
+          "shares": 25,
+          "avg_price": 64201,
+          "current_price": 89320,
+          "current_value": 2233000,
+          "unrealized_pnl": 627980,
+          "unrealized_pnl_pct": 39.13,
+          "type": "ETF",
+          "category": "레버리지/지수"
+        },
+        {
+          "name": "KODEX 코스닥150레버리지",
+          "ticker": "KODEX코스닥150레버리지",
+          "shares": 80,
+          "avg_price": 17950,
+          "current_price": 17430,
+          "current_value": 1394400,
+          "unrealized_pnl": -41600,
+          "unrealized_pnl_pct": -2.90,
+          "type": "ETF",
+          "category": "레버리지/지수"
+        },
+        {
+          "name": "SOL AI반도체소부장",
+          "ticker": "SOLAI반도체소부장",
+          "shares": 0,
+          "avg_price": 0,
+          "current_price": 0,
+          "current_value": 823650,
+          "unrealized_pnl": 8850,
+          "unrealized_pnl_pct": 1.09,
+          "type": "ETF",
+          "category": "반도체",
+          "note": "수량/단가 미표시 (화면에서 확인 불가)"
+        },
+        {
+          "name": "TIGER 반도체TOP10레버리지",
+          "ticker": "TIGER반도체TOP10레버리지",
+          "shares": 0,
+          "avg_price": 0,
+          "current_price": 0,
+          "current_value": 3174000,
+          "unrealized_pnl": 1013265,
+          "unrealized_pnl_pct": 46.89,
+          "type": "ETF",
+          "category": "반도체/레버리지",
+          "note": "수량/단가 미표시 (화면에서 확인 불가)"
+        },
+        {
+          "name": "KODEX 반도체레버리지",
+          "ticker": "KODEX반도체레버리지",
+          "shares": 0,
+          "avg_price": 0,
+          "current_price": 0,
+          "current_value": 9164115,
+          "unrealized_pnl": 3797965,
+          "unrealized_pnl_pct": 70.78,
+          "type": "ETF",
+          "category": "반도체/레버리지",
+          "note": "수량/단가 미표시 (화면에서 확인 불가)"
         }
       ]
     }
