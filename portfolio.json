@@ -2,11 +2,11 @@
   "owner": "user",
   "last_updated": "2026-03-20",
   "summary": {
-    "total_value": 296375595,
-    "total_cost": 248310873,
-    "total_cash": 760777,
-    "unrealized_pnl": 48060113,
-    "unrealized_pnl_pct": 19.35
+    "total_value": 320670630,
+    "total_cost": 267710456,
+    "total_cash": 770520,
+    "unrealized_pnl": 52953549,
+    "unrealized_pnl_pct": 19.78
   },
   "accounts": [
     {
@@ -531,6 +531,93 @@
           "unrealized_pnl_pct": 28.29,
           "type": "ETF",
           "category": "AI/기술"
+        }
+      ]
+    },
+    {
+      "id": "870-146-813-01",
+      "name": "User IRP 퇴직운용",
+      "type": "개인형IRP",
+      "currency": "KRW",
+      "summary": {
+        "total_value": 24295035,
+        "total_cost": 19399583,
+        "unrealized_pnl": 4893436,
+        "unrealized_pnl_pct": 25.23,
+        "cash": 9743
+      },
+      "holdings": [
+        {
+          "name": "RISE 글로벌원자력",
+          "ticker": "RISE글로벌원자력",
+          "shares": 91,
+          "avg_price": 18112,
+          "current_price": 45735,
+          "current_value": 4161885,
+          "unrealized_pnl": 2513766,
+          "unrealized_pnl_pct": 152.55,
+          "type": "ETF",
+          "category": "원자력"
+        },
+        {
+          "name": "TIGER 미국테크TOP10레버리지",
+          "ticker": "TIGER미국테크TOP10레버리지",
+          "shares": 150,
+          "avg_price": 17945,
+          "current_price": 28965,
+          "current_value": 4344750,
+          "unrealized_pnl": 1652957,
+          "unrealized_pnl_pct": 61.41,
+          "type": "ETF",
+          "category": "해외기술/레버리지"
+        },
+        {
+          "name": "ACE 테슬라밸류체인액티브",
+          "ticker": "ACE테슬라밸류체인액티브",
+          "shares": 150,
+          "avg_price": 13780,
+          "current_price": 20860,
+          "current_value": 3129000,
+          "unrealized_pnl": 1062026,
+          "unrealized_pnl_pct": 51.39,
+          "type": "ETF",
+          "category": "해외기술"
+        },
+        {
+          "name": "RISE 삼성전자SK하이닉스",
+          "ticker": "RISE삼성전자SK하이닉스",
+          "shares": 308,
+          "avg_price": 10013,
+          "current_price": 10350,
+          "current_value": 3187800,
+          "unrealized_pnl": 103725,
+          "unrealized_pnl_pct": 3.36,
+          "type": "ETF",
+          "category": "반도체"
+        },
+        {
+          "name": "PLUS 고배당주채권혼합",
+          "ticker": "PLUS고배당주채권혼합",
+          "shares": 300,
+          "avg_price": 16233,
+          "current_price": 15920,
+          "current_value": 4776000,
+          "unrealized_pnl": -93810,
+          "unrealized_pnl_pct": -1.93,
+          "type": "ETF",
+          "category": "혼합/채권"
+        },
+        {
+          "name": "TIGER 현대차그룹플러스",
+          "ticker": "TIGER현대차그룹플러스",
+          "shares": 78,
+          "avg_price": 64626,
+          "current_price": 60200,
+          "current_value": 4695600,
+          "unrealized_pnl": -345228,
+          "unrealized_pnl_pct": -6.85,
+          "type": "ETF",
+          "category": "그룹주"
         }
       ]
     }
