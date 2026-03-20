@@ -2,11 +2,11 @@
   "owner": "user",
   "last_updated": "2026-03-20",
   "summary": {
-    "total_value": 451030617,
-    "total_cost": 371008538,
+    "total_value": 468543262,
+    "total_cost": 381392888,
     "total_cash": 789670,
-    "unrealized_pnl": 80015454,
-    "unrealized_pnl_pct": 21.57
+    "unrealized_pnl": 87139629,
+    "unrealized_pnl_pct": 22.85
   },
   "accounts": [
     {
@@ -892,6 +892,117 @@
           "type": "ETF",
           "category": "반도체/레버리지",
           "note": "수량/단가 미표시 (화면에서 확인 불가)"
+        }
+      ]
+    },
+    {
+      "id": "6270-1704",
+      "name": "박은혜 키움 연금저축",
+      "type": "연금저축",
+      "currency": "KRW",
+      "summary": {
+        "total_value": 17512645,
+        "total_cost": 10384350,
+        "unrealized_pnl": 7124175,
+        "unrealized_pnl_pct": 68.60,
+        "cash": 0
+      },
+      "holdings": [
+        {
+          "name": "SOL 조선TOP3플러스",
+          "ticker": "SOL조선TOP3플러스",
+          "shares": 111,
+          "avg_price": 34217,
+          "current_price": 36175,
+          "current_value": 4015417,
+          "unrealized_pnl": 217330,
+          "unrealized_pnl_pct": 5.72,
+          "type": "ETF",
+          "category": "조선"
+        },
+        {
+          "name": "KODEX 미국반도체",
+          "ticker": "KODEX미국반도체",
+          "shares": 50,
+          "avg_price": 25006,
+          "current_price": 40380,
+          "current_value": 2019010,
+          "unrealized_pnl": 768710,
+          "unrealized_pnl_pct": 61.48,
+          "type": "ETF",
+          "category": "반도체(해외)"
+        },
+        {
+          "name": "ACE AI반도체TOP3플러스",
+          "ticker": "ACEAI반도체TOP3플러스",
+          "shares": 62,
+          "avg_price": 22679,
+          "current_price": 48854,
+          "current_value": 3028973,
+          "unrealized_pnl": 1622875,
+          "unrealized_pnl_pct": 115.42,
+          "type": "ETF",
+          "category": "반도체"
+        },
+        {
+          "name": "KODEX 한국대만IT프리미엄",
+          "ticker": "KODEX한국대만IT프리미엄",
+          "shares": 15,
+          "avg_price": 22593,
+          "current_price": 57363,
+          "current_value": 860450,
+          "unrealized_pnl": 521555,
+          "unrealized_pnl_pct": 153.90,
+          "type": "ETF",
+          "category": "IT/기술"
+        },
+        {
+          "name": "HANARO CAPEX설비투자",
+          "ticker": "HANAROCAPEX설비투자",
+          "shares": 29,
+          "avg_price": 19779,
+          "current_price": 46891,
+          "current_value": 1359826,
+          "unrealized_pnl": 786235,
+          "unrealized_pnl_pct": 137.07,
+          "type": "ETF",
+          "category": "설비투자"
+        },
+        {
+          "name": "SOL 미국AI반도체칩메이커",
+          "ticker": "SOL미국AI반도체칩메이커",
+          "shares": 71,
+          "avg_price": 9585,
+          "current_price": 16100,
+          "current_value": 1143205,
+          "unrealized_pnl": 462670,
+          "unrealized_pnl_pct": 67.99,
+          "type": "ETF",
+          "category": "AI/반도체(해외)"
+        },
+        {
+          "name": "TIGER 코리아원자력",
+          "ticker": "TIGER코리아원자력",
+          "shares": 164,
+          "avg_price": 9477,
+          "current_price": 23645,
+          "current_value": 3877868,
+          "unrealized_pnl": 2323640,
+          "unrealized_pnl_pct": 149.51,
+          "type": "ETF",
+          "category": "원자력"
+        },
+        {
+          "name": "HANARO 반도체핵심공정",
+          "ticker": "HANARO반도체핵심공정",
+          "shares": 90,
+          "avg_price": 8697,
+          "current_price": 13377,
+          "current_value": 1203890,
+          "unrealized_pnl": 421160,
+          "unrealized_pnl_pct": 53.81,
+          "type": "ETF",
+          "category": "반도체"
         }
       ]
     }
