@@ -46,29 +46,38 @@
     </div>
 
     <script>
-        // portfolio.json 데이터를 읽어오는 함수
+        // portfolio.json 데이터를 읽어오는 함수 (다계좌 구조 대응)
         fetch('portfolio.json')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('update-date').innerText = "Last Updated: " + data.account.last_updated;
+                document.getElementById('update-date').innerText = "Last Updated: " + data.last_updated;
                 document.getElementById('total-value').innerText = "₩" + data.summary.total_value.toLocaleString();
                 document.getElementById('total-pnl').innerText = "₩" + data.summary.unrealized_pnl.toLocaleString();
                 document.getElementById('total-pnl-pct').innerText = data.summary.unrealized_pnl_pct + "%";
 
+                // 전 계좌 종목 합산
+                const allHoldings = data.accounts.flatMap(acc => acc.holdings);
+
                 // 도넛 차트 그리기
                 const ctx = document.getElementById('assetChart').getContext('2d');
+                const colors = [
+                    '#60A5FA','#34D399','#FBBF24','#F87171','#A78BFA',
+                    '#FB923C','#38BDF8','#4ADE80','#F472B6','#FACC15',
+                    '#818CF8','#2DD4BF','#FCA5A5','#86EFAC','#C4B5FD',
+                    '#FCD34D','#67E8F9','#FDA4AF','#6EE7B7','#93C5FD'
+                ];
                 new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: data.holdings.map(h => h.name),
+                        labels: allHoldings.map(h => h.name),
                         datasets: [{
-                            data: data.holdings.map(h => h.current_value),
-                            backgroundColor: ['#60A5FA', '#34D399', '#FBBF24', '#F87171']
+                            data: allHoldings.map(h => h.current_value),
+                            backgroundColor: colors.slice(0, allHoldings.length)
                         }]
                     },
                     options: {
                         responsive: true,
-                        plugins: { legend: { labels: { color: 'white' } } }
+                        plugins: { legend: { labels: { color: 'white', font: { size: 11 } } } }
                     }
                 });
             });

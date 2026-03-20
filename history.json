@@ -4,20 +4,23 @@
     "total_value": 174988680,
     "total_cost": 137076164,
     "unrealized_pnl": 37912516,
-    "unrealized_pnl_pct": 27.66
+    "unrealized_pnl_pct": 27.66,
+    "note": "한국투자 연금저축 단독"
   },
   {
     "date": "2026-03-19",
     "total_value": 171727985,
     "total_cost": 137076164,
     "unrealized_pnl": 34651821,
-    "unrealized_pnl_pct": 25.28
+    "unrealized_pnl_pct": 25.28,
+    "note": "한국투자 연금저축 단독"
   },
   {
     "date": "2026-03-20",
-    "total_value": 171829185,
-    "total_cost": 137076164,
-    "unrealized_pnl": 34753021,
-    "unrealized_pnl_pct": 25.35
+    "total_value": 238713395,
+    "total_cost": 203889116,
+    "unrealized_pnl": 34824279,
+    "unrealized_pnl_pct": 17.08,
+    "note": "한국투자 연금저축 + 박은혜 종합위탁 합산 (2계좌 첫 통합)"
   }
 ]
