@@ -17,10 +17,10 @@
   },
   {
     "date": "2026-03-20",
-    "total_value": 320670630,
-    "total_cost": 267710456,
-    "unrealized_pnl": 52953549,
-    "unrealized_pnl_pct": 19.78,
-    "note": "4계좌 합산 완성 (한국투자 연금저축 + 박은혜 종합위탁 + 박은혜 신연금저축 + User IRP 퇴직운용)"
+    "total_value": 430116452,
+    "total_cost": 356367643,
+    "unrealized_pnl": 73742184,
+    "unrealized_pnl_pct": 20.69,
+    "note": "5계좌 합산 완성 (한국투자 연금저축 + 박은혜 종합위탁 + 박은혜 신연금저축 + User IRP + User 해외주식)"
   }
 ]

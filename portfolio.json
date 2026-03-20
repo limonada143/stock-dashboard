@@ -2,11 +2,11 @@
   "owner": "user",
   "last_updated": "2026-03-20",
   "summary": {
-    "total_value": 320670630,
-    "total_cost": 267710456,
+    "total_value": 430116452,
+    "total_cost": 356367643,
     "total_cash": 770520,
-    "unrealized_pnl": 52953549,
-    "unrealized_pnl_pct": 19.78
+    "unrealized_pnl": 73742184,
+    "unrealized_pnl_pct": 20.69
   },
   "accounts": [
     {
@@ -618,6 +618,177 @@
           "unrealized_pnl_pct": -6.85,
           "type": "ETF",
           "category": "그룹주"
+        }
+      ]
+    },
+    {
+      "id": "3028-6910-01",
+      "name": "User 해외주식 Super365",
+      "type": "해외주식",
+      "currency": "KRW",
+      "summary": {
+        "total_value": 109445822,
+        "total_cost": 88657187,
+        "unrealized_pnl": 20788635,
+        "unrealized_pnl_pct": 23.45,
+        "cash": 0
+      },
+      "holdings": [
+        {
+          "name": "브로드컴",
+          "ticker": "AVGO",
+          "shares": 11,
+          "avg_price": 504298,
+          "current_price": 475405,
+          "current_value": 5229453,
+          "unrealized_pnl": -317829,
+          "unrealized_pnl_pct": -5.73,
+          "type": "주식",
+          "category": "반도체(해외)"
+        },
+        {
+          "name": "브로드컴(소수점)",
+          "ticker": "AVGO",
+          "shares": 0.741777,
+          "avg_price": 508491,
+          "current_price": 475428,
+          "current_value": 352639,
+          "unrealized_pnl": -24549,
+          "unrealized_pnl_pct": -6.51,
+          "type": "주식",
+          "category": "반도체(해외)"
+        },
+        {
+          "name": "달라웨이 A",
+          "ticker": "달라웨이A",
+          "shares": 17,
+          "avg_price": 322592,
+          "current_price": 456748,
+          "current_value": 7764726,
+          "unrealized_pnl": 2280667,
+          "unrealized_pnl_pct": 41.49,
+          "type": "주식",
+          "category": "기술(해외)"
+        },
+        {
+          "name": "달라웨이 A(소수점)",
+          "ticker": "달라웨이A",
+          "shares": 0.796179,
+          "avg_price": 437274,
+          "current_price": 456683,
+          "current_value": 363647,
+          "unrealized_pnl": 15471,
+          "unrealized_pnl_pct": 2.66,
+          "type": "주식",
+          "category": "기술(해외)"
+        },
+        {
+          "name": "아이온큐",
+          "ticker": "IONQ",
+          "shares": 20,
+          "avg_price": 47403,
+          "current_price": 47675,
+          "current_value": 953509,
+          "unrealized_pnl": 5441,
+          "unrealized_pnl_pct": 0.37,
+          "type": "주식",
+          "category": "양자컴퓨팅(해외)"
+        },
+        {
+          "name": "엔비디아",
+          "ticker": "NVDA",
+          "shares": 30,
+          "avg_price": 186149,
+          "current_price": 266542,
+          "current_value": 7996250,
+          "unrealized_pnl": 2411785,
+          "unrealized_pnl_pct": 43.19,
+          "type": "주식",
+          "category": "반도체(해외)"
+        },
+        {
+          "name": "옥시덴탈 페트롤리엄",
+          "ticker": "OXY",
+          "shares": 55,
+          "avg_price": 82300,
+          "current_price": 90597,
+          "current_value": 4982828,
+          "unrealized_pnl": 456301,
+          "unrealized_pnl_pct": 10.08,
+          "type": "주식",
+          "category": "에너지(해외)"
+        },
+        {
+          "name": "팔란티어 테크",
+          "ticker": "PLTR",
+          "shares": 40,
+          "avg_price": 199045,
+          "current_price": 230954,
+          "current_value": 9238152,
+          "unrealized_pnl": 1276338,
+          "unrealized_pnl_pct": 16.03,
+          "type": "주식",
+          "category": "AI/기술(해외)"
+        },
+        {
+          "name": "리게티 컴퓨팅",
+          "ticker": "RGTI",
+          "shares": 300,
+          "avg_price": 31230,
+          "current_price": 22811,
+          "current_value": 6843131,
+          "unrealized_pnl": -2525897,
+          "unrealized_pnl_pct": -26.96,
+          "type": "주식",
+          "category": "양자컴퓨팅(해외)"
+        },
+        {
+          "name": "로켓 랩",
+          "ticker": "RKLB",
+          "shares": 143,
+          "avg_price": 47937,
+          "current_price": 106478,
+          "current_value": 15226454,
+          "unrealized_pnl": 8371545,
+          "unrealized_pnl_pct": 122.12,
+          "type": "주식",
+          "category": "우주/방산(해외)"
+        },
+        {
+          "name": "로켓 랩(소수점)",
+          "ticker": "RKLB",
+          "shares": 0.416100,
+          "avg_price": 101457,
+          "current_price": 106466,
+          "current_value": 44301,
+          "unrealized_pnl": 2085,
+          "unrealized_pnl_pct": 4.94,
+          "type": "주식",
+          "category": "우주/방산(해외)"
+        },
+        {
+          "name": "SOXL",
+          "ticker": "SOXL",
+          "shares": 240,
+          "avg_price": 66689,
+          "current_price": 79499,
+          "current_value": 19079783,
+          "unrealized_pnl": 3074448,
+          "unrealized_pnl_pct": 19.21,
+          "type": "ETF",
+          "category": "반도체ETF/레버리지(해외)"
+        },
+        {
+          "name": "테슬라",
+          "ticker": "TSLA",
+          "shares": 55,
+          "avg_price": 465602,
+          "current_price": 570381,
+          "current_value": 31370949,
+          "unrealized_pnl": 5762829,
+          "unrealized_pnl_pct": 22.50,
+          "type": "주식",
+          "category": "전기차/기술(해외)"
         }
       ]
     }
