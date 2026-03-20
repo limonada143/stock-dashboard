@@ -2,11 +2,11 @@
   "owner": "user",
   "last_updated": "2026-03-20",
   "summary": {
-    "total_value": 238713395,
-    "total_cost": 203889116,
-    "total_cash": 188077,
-    "unrealized_pnl": 34824279,
-    "unrealized_pnl_pct": 17.08
+    "total_value": 296375595,
+    "total_cost": 248310873,
+    "total_cash": 760777,
+    "unrealized_pnl": 48060113,
+    "unrealized_pnl_pct": 19.35
   },
   "accounts": [
     {
@@ -348,6 +348,189 @@
           "unrealized_pnl_pct": -61.70,
           "type": "주식",
           "category": "바이오"
+        }
+      ]
+    },
+    {
+      "id": "338-265-276-01",
+      "name": "박은혜 신연금저축",
+      "type": "신연금저축",
+      "currency": "KRW",
+      "summary": {
+        "total_value": 57662200,
+        "total_cost": 44421757,
+        "unrealized_pnl": 13235834,
+        "unrealized_pnl_pct": 29.80,
+        "cash": 572700
+      },
+      "holdings": [
+        {
+          "name": "SOL 미국원자력",
+          "ticker": "SOL미국원자력",
+          "shares": 120,
+          "avg_price": 14956,
+          "current_price": 16315,
+          "current_value": 1957800,
+          "unrealized_pnl": 162833,
+          "unrealized_pnl_pct": 9.08,
+          "type": "ETF",
+          "category": "원자력"
+        },
+        {
+          "name": "KODEX 증권",
+          "ticker": "KODEX증권",
+          "shares": 60,
+          "avg_price": 27461,
+          "current_price": 27900,
+          "current_value": 1674000,
+          "unrealized_pnl": 26164,
+          "unrealized_pnl_pct": 1.60,
+          "type": "ETF",
+          "category": "금융"
+        },
+        {
+          "name": "KODEX 에너지화학",
+          "ticker": "KODEX에너지화학",
+          "shares": 50,
+          "avg_price": 16716,
+          "current_price": 15710,
+          "current_value": 785500,
+          "unrealized_pnl": -50395,
+          "unrealized_pnl_pct": -6.02,
+          "type": "ETF",
+          "category": "에너지/화학"
+        },
+        {
+          "name": "KODEX 철강",
+          "ticker": "KODEX철강",
+          "shares": 150,
+          "avg_price": 16118,
+          "current_price": 15050,
+          "current_value": 2257500,
+          "unrealized_pnl": -160522,
+          "unrealized_pnl_pct": -6.63,
+          "type": "ETF",
+          "category": "철강"
+        },
+        {
+          "name": "KODEX 미국S&P500",
+          "ticker": "KODEX미국S&P500",
+          "shares": 230,
+          "avg_price": 18736,
+          "current_price": 22505,
+          "current_value": 5176150,
+          "unrealized_pnl": 866528,
+          "unrealized_pnl_pct": 20.12,
+          "type": "ETF",
+          "category": "해외지수"
+        },
+        {
+          "name": "TIGER 반도체TOP10",
+          "ticker": "TIGER반도체TOP10",
+          "shares": 100,
+          "avg_price": 31818,
+          "current_price": 34205,
+          "current_value": 3420500,
+          "unrealized_pnl": 238373,
+          "unrealized_pnl_pct": 7.50,
+          "type": "ETF",
+          "category": "반도체"
+        },
+        {
+          "name": "TIME 미국나스닥100액티브",
+          "ticker": "TIME미국나스닥100액티브",
+          "shares": 75,
+          "avg_price": 36179,
+          "current_price": 40530,
+          "current_value": 3039750,
+          "unrealized_pnl": 326044,
+          "unrealized_pnl_pct": 12.03,
+          "type": "ETF",
+          "category": "해외지수"
+        },
+        {
+          "name": "SOL 미국S&P500",
+          "ticker": "SOL미국S&P500",
+          "shares": 1000,
+          "avg_price": 11430,
+          "current_price": 20580,
+          "current_value": 20580000,
+          "unrealized_pnl": 9147812,
+          "unrealized_pnl_pct": 80.04,
+          "type": "ETF",
+          "category": "해외지수"
+        },
+        {
+          "name": "HANARO 원자력iSelect",
+          "ticker": "HANARO원자력iSelect",
+          "shares": 50,
+          "avg_price": 51699,
+          "current_price": 72435,
+          "current_value": 3621750,
+          "unrealized_pnl": 1036483,
+          "unrealized_pnl_pct": 40.11,
+          "type": "ETF",
+          "category": "원자력"
+        },
+        {
+          "name": "RISE 글로벌원자력",
+          "ticker": "RISE글로벌원자력",
+          "shares": 20,
+          "avg_price": 45152,
+          "current_price": 45735,
+          "current_value": 914700,
+          "unrealized_pnl": 11574,
+          "unrealized_pnl_pct": 1.29,
+          "type": "ETF",
+          "category": "원자력"
+        },
+        {
+          "name": "1Q 200액티브",
+          "ticker": "1Q200액티브",
+          "shares": 243,
+          "avg_price": 26002,
+          "current_price": 27950,
+          "current_value": 6791850,
+          "unrealized_pnl": 472649,
+          "unrealized_pnl_pct": 7.49,
+          "type": "ETF",
+          "category": "시장지수"
+        },
+        {
+          "name": "PLUS 일본반도체",
+          "ticker": "PLUS일본반도체",
+          "shares": 10,
+          "avg_price": 22467,
+          "current_price": 22510,
+          "current_value": 225100,
+          "unrealized_pnl": 410,
+          "unrealized_pnl_pct": 0.19,
+          "type": "ETF",
+          "category": "반도체"
+        },
+        {
+          "name": "SOL 조선TOP3플러스",
+          "ticker": "SOL조선TOP3플러스",
+          "shares": 110,
+          "avg_price": 32143,
+          "current_price": 36185,
+          "current_value": 3980350,
+          "unrealized_pnl": 444198,
+          "unrealized_pnl_pct": 12.57,
+          "type": "ETF",
+          "category": "조선"
+        },
+        {
+          "name": "KODEX 미국AI테크",
+          "ticker": "KODEX미국AI테크",
+          "shares": 230,
+          "avg_price": 10971,
+          "current_price": 14075,
+          "current_value": 3237250,
+          "unrealized_pnl": 713683,
+          "unrealized_pnl_pct": 28.29,
+          "type": "ETF",
+          "category": "AI/기술"
         }
       ]
     }
