@@ -300,19 +300,38 @@
             document.getElementById('u-pnl-pct').textContent     = s.unrealized_pnl_pct + '%';
             document.getElementById('u-updated').textContent     = '기준일: ' + portfolio.last_updated;
 
-            const allHoldings = portfolio.accounts.flatMap(a => a.holdings || []);
+            // 전 계좌 종목 합산 → 같은 종목명끼리 병합
+            const rawHoldings = portfolio.accounts.flatMap(a => a.holdings || []);
+            const holdingMap = {};
+            rawHoldings.forEach(h => {
+                if (!holdingMap[h.name]) {
+                    holdingMap[h.name] = { ...h, current_value: 0, shares: 0, unrealized_pnl: 0, _cost: 0 };
+                }
+                const m = holdingMap[h.name];
+                m.shares        += h.shares;
+                m.current_value += h.current_value || 0;
+                m._cost         += (h.avg_price || 0) * h.shares;
+                m.unrealized_pnl += h.unrealized_pnl || 0;
+                m.current_price  = h.current_price; // 현재가는 동일 종목이므로 마지막 값 사용
+            });
+            // 합산 평단가·수익률 재계산
+            Object.values(holdingMap).forEach(m => {
+                m.avg_price          = m.shares > 0 ? m._cost / m.shares : 0;
+                m.unrealized_pnl_pct = m._cost > 0 ? (m.unrealized_pnl / m._cost) * 100 : 0;
+            });
+            const allHoldings = Object.values(holdingMap);
 
             const SECTOR_MAP = {
                 '반도체':        ['반도체','반도체(해외)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
                 'AI/기술':       ['AI/기술','AI/기술(해외)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
-                '원자력/에너지': ['원자력','원자력/에너지','에너지/화학','에너지(해외)'],
+                '원자력/에너지': ['원자력','원자력/에너지','에너지/화학','에너지(해외)','설비투자'],
                 '방산/우주':     ['방산/우주','방위/전략','우주/방산(해외)'],
                 '조선':          ['조선'],
                 '시장지수':      ['시장지수','레버리지/지수','해외지수'],
                 '그룹주/자동차': ['그룹주','자동차'],
                 '바이오':        ['바이오'],
                 '금융':          ['금융'],
-                '기타':          ['설비투자','양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','기타']
+                '기타':          ['양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','기타']
             };
             const SECTOR_COLORS = {
                 '반도체':        '#60A5FA', 'AI/기술':       '#A78BFA',
