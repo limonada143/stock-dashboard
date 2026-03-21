@@ -149,32 +149,59 @@
         <div id="page-husband" class="hidden">
             <h2 class="text-2xl font-bold mb-6 text-pink-400">남편 포트폴리오</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 col-span-3">
-                    <p class="text-sm text-gray-400">최근 기록: 2025-12-31 기준 (2026년 데이터 업데이트 예정)</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">총 평가금액</p>
+                    <p id="h-total-value" class="text-xl font-bold text-pink-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">총 매입금액</p>
+                    <p id="h-total-cost" class="text-xl font-bold text-gray-300">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">평가손익</p>
+                    <p id="h-pnl" class="text-xl font-bold text-pink-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">수익률</p>
+                    <p id="h-pnl-pct" class="text-xl font-bold text-yellow-400">-</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex items-center justify-center" style="height:320px">
-                    <div class="text-center text-gray-500">
-                        <p class="text-4xl mb-3">📂</p>
-                        <p class="font-semibold">현재 보유 종목 데이터 없음</p>
-                        <p class="text-xs mt-1">스크린샷을 업로드하면 자동 반영됩니다</p>
-                    </div>
-                </div>
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
                     <h3 class="text-lg font-semibold mb-4">투입금 vs 평가금</h3>
                     <div style="height:280px">
                         <canvas id="husbandPnlChart"></canvas>
                     </div>
                 </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">월별 자산 추이</h3>
+                    <div style="height:280px">
+                        <canvas id="husbandTrendChart"></canvas>
+                    </div>
+                </div>
             </div>
 
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                <h3 class="text-lg font-semibold mb-4">월별 자산 추이</h3>
-                <div style="height:280px">
-                    <canvas id="husbandTrendChart"></canvas>
+            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-700">
+                    <h3 class="text-lg font-semibold">보유 종목</h3>
+                    <p id="h-updated" class="text-xs text-gray-400 mt-1">-</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-gray-400 text-xs border-b border-gray-700">
+                                <th class="text-left px-6 py-3">종목명</th>
+                                <th class="text-right px-4 py-3">보유</th>
+                                <th class="text-right px-4 py-3">평단가</th>
+                                <th class="text-right px-4 py-3">현재가</th>
+                                <th class="text-right px-4 py-3">평가금액</th>
+                                <th class="text-right px-4 py-3">수익률</th>
+                            </tr>
+                        </thead>
+                        <tbody id="h-holdings-table"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -221,11 +248,12 @@
         // ── 데이터 로드 ───────────────────────────────────────────
         Promise.all([
             fetch('portfolio.json').then(r => r.json()),
-            fetch('history.json').then(r => r.json())
-        ]).then(([portfolio, history]) => {
+            fetch('history.json').then(r => r.json()),
+            fetch('portfolio_husband.json').then(r => r.json()).catch(() => null)
+        ]).then(([portfolio, history, husbandPortfolio]) => {
             buildTotal(history, portfolio);
             buildUser(portfolio, history);
-            buildHusband(history);
+            buildHusband(history, husbandPortfolio);
         });
 
         // ══════════════════════════════════════════════════════════
@@ -500,18 +528,39 @@
         }
 
         // ══════════════════════════════════════════════════════════
-        //  TAB 3: HUSBAND (cca6c5f 복원)
+        //  TAB 3: HUSBAND
         // ══════════════════════════════════════════════════════════
-        function buildHusband(history) {
+        function buildHusband(history, husbandPortfolio) {
             const hHistory = history.filter(h => h.note === 'Husband').sort((a,b) => a.date.localeCompare(b.date));
+
+            // 요약 카드
+            if (husbandPortfolio) {
+                const hs = husbandPortfolio.summary;
+                document.getElementById('h-total-value').textContent = fmt(hs.total_value);
+                document.getElementById('h-total-cost').textContent  = hs.total_cost > 0 ? fmt(hs.total_cost) : '-';
+                document.getElementById('h-pnl').textContent         = hs.unrealized_pnl > 0 ? fmt(hs.unrealized_pnl) : '-';
+                document.getElementById('h-pnl-pct').textContent     = hs.unrealized_pnl_pct > 0 ? hs.unrealized_pnl_pct + '%' : '-';
+                document.getElementById('h-updated').textContent     = '기준일: ' + husbandPortfolio.last_updated;
+            }
+
+            // 투입금 vs 평가금 차트 (history 기반)
+            const hLabels = hHistory.map(h => h.date);
+            const hValues = hHistory.map(h => h.total_value);
+            const hCosts  = hHistory.map(h => h.total_cost);
+            // portfolio_husband.json 최신값 추가
+            if (husbandPortfolio && husbandPortfolio.summary.total_cost > 0) {
+                hLabels.push(husbandPortfolio.last_updated);
+                hValues.push(husbandPortfolio.summary.total_value);
+                hCosts.push(husbandPortfolio.summary.total_cost);
+            }
 
             new Chart(document.getElementById('husbandPnlChart'), {
                 type: 'line',
-                data: { labels: hHistory.map(h => h.date), datasets: [
-                    { label: '현재 평가금', data: hHistory.map(h => h.total_value),
+                data: { labels: hLabels, datasets: [
+                    { label: '현재 평가금', data: hValues,
                       borderColor: '#F472B6', backgroundColor: 'rgba(244,114,182,0.08)',
                       pointBackgroundColor: '#F472B6', pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3 },
-                    { label: '투입금 (매입금액)', data: hHistory.map(h => h.total_cost),
+                    { label: '투입금 (매입금액)', data: hCosts,
                       borderColor: '#94A3B8', backgroundColor: 'transparent',
                       pointBackgroundColor: '#94A3B8', pointRadius: 4, borderWidth: 2, borderDash: [5,4], tension: 0.3 }
                 ]},
@@ -524,6 +573,7 @@
                 }
             });
 
+            // 월별 자산 추이
             new Chart(document.getElementById('husbandTrendChart'), {
                 type: 'line',
                 data: { labels: hHistory.map(h => h.date), datasets: [{
@@ -539,6 +589,30 @@
                     plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => fmt(c.parsed.y) } } }
                 }
             });
+
+            // 보유 종목 테이블
+            if (husbandPortfolio) {
+                const rawHoldings = husbandPortfolio.accounts.flatMap(a => a.holdings || []);
+                const tbody = document.getElementById('h-holdings-table');
+                const holdings = rawHoldings.filter(h => h.shares > 0 || h.current_value > 0)
+                    .sort((a,b) => (b.current_value || 0) - (a.current_value || 0));
+                if (holdings.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">종목별 상세 데이터가 없습니다.<br>스크린샷을 다시 공유해 주시면 입력하겠습니다.</td></tr>`;
+                } else {
+                    holdings.forEach(h => {
+                        const color = (h.unrealized_pnl_pct || 0) >= 0 ? 'text-green-400' : 'text-red-400';
+                        tbody.innerHTML += `
+                            <tr class="border-b border-gray-700 hover:bg-gray-750">
+                                <td class="px-6 py-3 font-medium">${h.name}</td>
+                                <td class="px-4 py-3 text-right text-gray-300">${h.shares > 0 ? h.shares.toLocaleString() : '-'}</td>
+                                <td class="px-4 py-3 text-right text-gray-300">${h.avg_price > 0 ? Math.round(h.avg_price).toLocaleString() : '-'}</td>
+                                <td class="px-4 py-3 text-right text-gray-300">${h.current_price > 0 ? Math.round(h.current_price).toLocaleString() : '-'}</td>
+                                <td class="px-4 py-3 text-right">${h.current_value > 0 ? fmt(h.current_value) : '-'}</td>
+                                <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct ? h.unrealized_pnl_pct.toFixed(2) + '%' : '-'}</td>
+                            </tr>`;
+                    });
+                }
+            }
         }
     </script>
 </body>
