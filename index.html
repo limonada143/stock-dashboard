@@ -170,15 +170,28 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                    <h3 class="text-lg font-semibold mb-4">투입금 vs 평가금</h3>
-                    <div style="height:280px">
-                        <canvas id="husbandPnlChart"></canvas>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-lg font-semibold">자산 비중</h3>
+                            <button id="h-btn-back-donut" onclick="husbandDrillBack()"
+                                class="hidden text-xs px-2 py-1 rounded bg-gray-700 text-gray-300 hover:text-white transition-colors">← 뒤로</button>
+                            <span id="h-donut-sector-label" class="hidden text-xs text-pink-300 font-semibold"></span>
+                        </div>
+                        <div id="h-donut-toggle" class="flex rounded-lg overflow-hidden border border-gray-600 text-xs font-semibold">
+                            <button id="h-btn-sector" onclick="switchHusbandDonut('sector')"
+                                class="px-3 py-1 bg-pink-600 text-white transition-colors">섹터</button>
+                            <button id="h-btn-country" onclick="switchHusbandDonut('country')"
+                                class="px-3 py-1 bg-gray-700 text-gray-300 transition-colors">국가</button>
+                        </div>
+                    </div>
+                    <div style="height:280px" class="flex justify-center">
+                        <canvas id="husbandDonutChart"></canvas>
                     </div>
                 </div>
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                    <h3 class="text-lg font-semibold mb-4">월별 자산 추이</h3>
+                    <h3 class="text-lg font-semibold mb-4">투입금 vs 평가금</h3>
                     <div style="height:280px">
-                        <canvas id="husbandTrendChart"></canvas>
+                        <canvas id="husbandPnlChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -350,16 +363,16 @@
             const allHoldings = Object.values(holdingMap);
 
             const SECTOR_MAP = {
-                '반도체':        ['반도체','반도체(해외)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
-                'AI/기술':       ['AI/기술','AI/기술(해외)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
-                '원자력/에너지': ['원자력','원자력/에너지','에너지/화학','에너지(해외)','설비투자'],
-                '방산/우주':     ['방산/우주','방위/전략','우주/방산(해외)'],
+                '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
+                'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
+                '원자력/에너지': ['원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학','에너지(해외)','설비투자'],
+                '방산/우주':     ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
                 '조선':          ['조선'],
-                '시장지수':      ['시장지수','레버리지/지수','해외지수'],
-                '그룹주/자동차': ['그룹주','자동차'],
+                '시장지수':      ['시장지수','시장지수(미국)','시장지수(일본)','레버리지/지수','해외지수'],
+                '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
                 '바이오':        ['바이오'],
-                '금융':          ['금융'],
-                '기타':          ['양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','기타']
+                '금융':          ['금융','금융(미국)'],
+                '기타':          ['양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','화학','기타','기타(미국)','기타(국내)']
             };
             const SECTOR_COLORS = {
                 '반도체':        '#60A5FA', 'AI/기술':       '#A78BFA',
@@ -533,34 +546,156 @@
         function buildHusband(history, husbandPortfolio) {
             const hHistory = history.filter(h => h.note === 'Husband').sort((a,b) => a.date.localeCompare(b.date));
 
-            // 요약 카드
+            // ── 요약 카드 ──────────────────────────────────────────
             if (husbandPortfolio) {
                 const hs = husbandPortfolio.summary;
+                const pnlColor = hs.unrealized_pnl >= 0 ? 'text-pink-400' : 'text-red-400';
                 document.getElementById('h-total-value').textContent = fmt(hs.total_value);
-                document.getElementById('h-total-cost').textContent  = hs.total_cost > 0 ? fmt(hs.total_cost) : '-';
-                document.getElementById('h-pnl').textContent         = hs.unrealized_pnl > 0 ? fmt(hs.unrealized_pnl) : '-';
-                document.getElementById('h-pnl-pct').textContent     = hs.unrealized_pnl_pct > 0 ? hs.unrealized_pnl_pct + '%' : '-';
+                document.getElementById('h-total-cost').textContent  = fmt(hs.total_cost);
+                document.getElementById('h-pnl').textContent         = fmt(hs.unrealized_pnl);
+                document.getElementById('h-pnl').className           = `text-xl font-bold ${pnlColor}`;
+                document.getElementById('h-pnl-pct').textContent     = hs.unrealized_pnl_pct.toFixed(2) + '%';
                 document.getElementById('h-updated').textContent     = '기준일: ' + husbandPortfolio.last_updated;
             }
 
-            // 투입금 vs 평가금 차트 (history 기반)
-            const hLabels = hHistory.map(h => h.date);
-            const hValues = hHistory.map(h => h.total_value);
-            const hCosts  = hHistory.map(h => h.total_cost);
-            // portfolio_husband.json 최신값 추가
-            if (husbandPortfolio && husbandPortfolio.summary.total_cost > 0) {
-                hLabels.push(husbandPortfolio.last_updated);
-                hValues.push(husbandPortfolio.summary.total_value);
-                hCosts.push(husbandPortfolio.summary.total_cost);
+            // ── 보유 종목 통합 ─────────────────────────────────────
+            const allHusbandHoldings = husbandPortfolio
+                ? husbandPortfolio.accounts.flatMap(a => a.holdings || [])
+                : [];
+
+            // ── 섹터/색상 맵 (남편 카테고리 포함) ─────────────────
+            const H_SECTOR_MAP = {
+                '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지'],
+                'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','IT/기술','기술(해외)'],
+                '원자력/에너지': ['원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학'],
+                '방산/우주':     ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
+                '조선':          ['조선'],
+                '시장지수':      ['시장지수','시장지수(미국)','시장지수(일본)','레버리지/지수','해외지수'],
+                '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
+                '바이오':        ['바이오'],
+                '금융':          ['금융','금융(미국)'],
+                '기타':          ['기타','기타(미국)','기타(국내)','철강','화학','혼합/채권']
+            };
+            const H_SECTOR_COLORS = {
+                '반도체':        '#60A5FA', 'AI/기술':       '#A78BFA',
+                '원자력/에너지': '#FBBF24', '방산/우주':     '#F87171',
+                '조선':          '#34D399', '시장지수':      '#38BDF8',
+                '그룹주/자동차': '#FB923C', '바이오':        '#F472B6',
+                '금융':          '#4ADE80', '기타':          '#6B7280'
+            };
+
+            function hCatToSector(cat) {
+                return Object.keys(H_SECTOR_MAP).find(s => H_SECTOR_MAP[s].includes(cat)) || '기타';
             }
 
+            function buildHSectorData() {
+                const totals = {};
+                allHusbandHoldings.forEach(h => {
+                    const sector = hCatToSector(h.category || '기타');
+                    totals[sector] = (totals[sector] || 0) + (h.current_value || 0);
+                });
+                const labels = Object.keys(totals).sort((a,b) => totals[b] - totals[a]);
+                return { labels, values: labels.map(l => totals[l]), colors: labels.map(l => H_SECTOR_COLORS[l] || '#6B7280') };
+            }
+
+            function buildHCountryData() {
+                let kr = 0, us = 0, jp = 0;
+                allHusbandHoldings.forEach(h => {
+                    const cat = h.category || '';
+                    if (cat.includes('미국') || h.currency === 'USD') us += h.current_value || 0;
+                    else if (cat.includes('일본'))                    jp += h.current_value || 0;
+                    else                                              kr += h.current_value || 0;
+                });
+                const labels = [], values = [], colors = [];
+                if (kr > 0) { labels.push('한국'); values.push(kr); colors.push('#34D399'); }
+                if (us > 0) { labels.push('미국'); values.push(us); colors.push('#60A5FA'); }
+                if (jp > 0) { labels.push('일본'); values.push(jp); colors.push('#FBBF24'); }
+                return { labels, values, colors };
+            }
+
+            let hDonutChart;
+            let hCurrentMode = 'sector';
+
+            function makeHDonutOpts(labels, values, colors, onClickFn) {
+                return {
+                    responsive: true, maintainAspectRatio: false,
+                    onClick: onClickFn || null,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#FFFFFF', font: { size: 11 }, boxWidth: 14, padding: 12,
+                                generateLabels: chart => chart.data.labels.map((label, i) => {
+                                    const total = chart.data.datasets[0].data.reduce((a,b) => a+b, 0);
+                                    const val   = chart.data.datasets[0].data[i];
+                                    const pct   = total > 0 ? ((val/total)*100).toFixed(1) : 0;
+                                    return { text: `${label}  ${pct}%`, fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                             hidden: false, index: i, strokeStyle: 'transparent', fontColor: '#FFFFFF' };
+                                })
+                            }
+                        },
+                        tooltip: { callbacks: { label: c => `  ${fmt(c.parsed)}` } }
+                    }
+                };
+            }
+
+            function renderHDonut(mode) {
+                hCurrentMode = mode;
+                const d = mode === 'sector' ? buildHSectorData() : buildHCountryData();
+                const onClickFn = mode === 'sector' ? (evt, els) => {
+                    if (!els.length) return;
+                    hDrillInto(d.labels[els[0].index], d.colors[els[0].index]);
+                } : null;
+                if (hDonutChart) hDonutChart.destroy();
+                hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels: d.labels, datasets: [{ data: d.values, backgroundColor: d.colors }] },
+                    options: makeHDonutOpts(d.labels, d.values, d.colors, onClickFn)
+                });
+                document.getElementById('h-btn-sector').className  = `px-3 py-1 transition-colors ${mode==='sector'  ? 'bg-pink-600 text-white' : 'bg-gray-700 text-gray-300'}`;
+                document.getElementById('h-btn-country').className = `px-3 py-1 transition-colors ${mode==='country' ? 'bg-pink-600 text-white' : 'bg-gray-700 text-gray-300'}`;
+                document.getElementById('h-btn-back-donut').classList.add('hidden');
+                document.getElementById('h-donut-sector-label').classList.add('hidden');
+                document.getElementById('h-donut-toggle').classList.remove('hidden');
+            }
+
+            function hDrillInto(sectorName) {
+                const cats = H_SECTOR_MAP[sectorName] || [];
+                const etfs = allHusbandHoldings.filter(h => {
+                    const cat = h.category || '기타';
+                    return cats.includes(cat) || (!Object.values(H_SECTOR_MAP).flat().includes(cat) && sectorName === '기타');
+                });
+                if (!etfs.length) return;
+                const palette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
+                                 '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
+                                 '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
+                const labels = etfs.map(h => h.name);
+                const values = etfs.map(h => h.current_value);
+                const colors = palette.slice(0, etfs.length);
+                if (hDonutChart) hDonutChart.destroy();
+                hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors }] },
+                    options: makeHDonutOpts(labels, values, colors, null)
+                });
+                document.getElementById('h-btn-back-donut').classList.remove('hidden');
+                const lbl = document.getElementById('h-donut-sector-label');
+                lbl.textContent = sectorName; lbl.classList.remove('hidden');
+                document.getElementById('h-donut-toggle').classList.add('hidden');
+            }
+
+            window.switchHusbandDonut = mode => renderHDonut(mode);
+            window.husbandDrillBack   = () => renderHDonut(hCurrentMode);
+            if (allHusbandHoldings.length > 0) renderHDonut('sector');
+
+            // ── 투입금 vs 평가금 차트 ──────────────────────────────
             new Chart(document.getElementById('husbandPnlChart'), {
                 type: 'line',
-                data: { labels: hLabels, datasets: [
-                    { label: '현재 평가금', data: hValues,
+                data: { labels: hHistory.map(h => h.date), datasets: [
+                    { label: '현재 평가금', data: hHistory.map(h => h.total_value),
                       borderColor: '#F472B6', backgroundColor: 'rgba(244,114,182,0.08)',
                       pointBackgroundColor: '#F472B6', pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3 },
-                    { label: '투입금 (매입금액)', data: hCosts,
+                    { label: '투입금 (매입금액)', data: hHistory.map(h => h.total_cost),
                       borderColor: '#94A3B8', backgroundColor: 'transparent',
                       pointBackgroundColor: '#94A3B8', pointRadius: 4, borderWidth: 2, borderDash: [5,4], tension: 0.3 }
                 ]},
@@ -573,45 +708,26 @@
                 }
             });
 
-            // 월별 자산 추이
-            new Chart(document.getElementById('husbandTrendChart'), {
-                type: 'line',
-                data: { labels: hHistory.map(h => h.date), datasets: [{
-                    label: '평가금액', data: hHistory.map(h => h.total_value),
-                    borderColor: '#F472B6', backgroundColor: 'rgba(244,114,182,0.08)',
-                    pointBackgroundColor: '#F472B6', pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
-                }]},
-                options: { ...CHART_DEFAULTS,
-                    scales: {
-                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
-                    },
-                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => fmt(c.parsed.y) } } }
-                }
-            });
-
-            // 보유 종목 테이블
-            if (husbandPortfolio) {
-                const rawHoldings = husbandPortfolio.accounts.flatMap(a => a.holdings || []);
-                const tbody = document.getElementById('h-holdings-table');
-                const holdings = rawHoldings.filter(h => h.shares > 0 || h.current_value > 0)
-                    .sort((a,b) => (b.current_value || 0) - (a.current_value || 0));
-                if (holdings.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">종목별 상세 데이터가 없습니다.<br>스크린샷을 다시 공유해 주시면 입력하겠습니다.</td></tr>`;
-                } else {
-                    holdings.forEach(h => {
-                        const color = (h.unrealized_pnl_pct || 0) >= 0 ? 'text-green-400' : 'text-red-400';
-                        tbody.innerHTML += `
-                            <tr class="border-b border-gray-700 hover:bg-gray-750">
-                                <td class="px-6 py-3 font-medium">${h.name}</td>
-                                <td class="px-4 py-3 text-right text-gray-300">${h.shares > 0 ? h.shares.toLocaleString() : '-'}</td>
-                                <td class="px-4 py-3 text-right text-gray-300">${h.avg_price > 0 ? Math.round(h.avg_price).toLocaleString() : '-'}</td>
-                                <td class="px-4 py-3 text-right text-gray-300">${h.current_price > 0 ? Math.round(h.current_price).toLocaleString() : '-'}</td>
-                                <td class="px-4 py-3 text-right">${h.current_value > 0 ? fmt(h.current_value) : '-'}</td>
-                                <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct ? h.unrealized_pnl_pct.toFixed(2) + '%' : '-'}</td>
-                            </tr>`;
-                    });
-                }
+            // ── 보유 종목 테이블 ───────────────────────────────────
+            const tbody = document.getElementById('h-holdings-table');
+            const holdings = allHusbandHoldings
+                .filter(h => h.current_value > 0)
+                .sort((a,b) => (b.unrealized_pnl_pct || 0) - (a.unrealized_pnl_pct || 0));
+            if (holdings.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">종목 데이터가 없습니다.</td></tr>`;
+            } else {
+                holdings.forEach(h => {
+                    const color = (h.unrealized_pnl_pct || 0) >= 0 ? 'text-green-400' : 'text-red-400';
+                    tbody.innerHTML += `
+                        <tr class="border-b border-gray-700 hover:bg-gray-750">
+                            <td class="px-6 py-3 font-medium">${h.name}</td>
+                            <td class="px-4 py-3 text-right text-gray-300">${h.shares > 0 ? h.shares.toLocaleString() : '-'}</td>
+                            <td class="px-4 py-3 text-right text-gray-300">${h.avg_price > 0 ? Math.round(h.avg_price).toLocaleString() : '-'}</td>
+                            <td class="px-4 py-3 text-right text-gray-300">${h.current_price > 0 ? Math.round(h.current_price).toLocaleString() : '-'}</td>
+                            <td class="px-4 py-3 text-right">${fmt(h.current_value)}</td>
+                            <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct != null ? h.unrealized_pnl_pct.toFixed(2) + '%' : '-'}</td>
+                        </tr>`;
+                });
             }
         }
     </script>
