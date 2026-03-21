@@ -82,15 +82,26 @@
                 });
             });
 
-        // history.json으로 자산 추이 라인 차트 그리기
+        // history.json으로 자산 추이 라인 차트 그리기 (Users + Husband 합산)
         fetch('history.json')
             .then(response => response.json())
             .then(history => {
-                const labels = history.map(h => h.date);
-                const values = history.map(h => h.total_value);
+                // Users / Husband 분리 후 날짜별 합산
+                const byDate = {};
+                history.forEach(h => {
+                    if (!byDate[h.date]) byDate[h.date] = { user: 0, husband: 0 };
+                    if (h.note === 'Users') byDate[h.date].user = h.total_value;
+                    else if (h.note === 'Husband') byDate[h.date].husband = h.total_value;
+                });
 
-                const minVal = Math.min(...values);
-                const maxVal = Math.max(...values);
+                const labels = Object.keys(byDate).sort();
+                const userVals    = labels.map(d => byDate[d].user    || null);
+                const husbandVals = labels.map(d => byDate[d].husband || null);
+                const totalVals   = labels.map(d => (byDate[d].user || 0) + (byDate[d].husband || 0));
+
+                const allVals = totalVals.filter(Boolean);
+                const minVal  = Math.min(...allVals);
+                const maxVal  = Math.max(...allVals);
                 const padding = (maxVal - minVal) * 0.2 || 5000000;
 
                 const trendCtx = document.getElementById('trendChart').getContext('2d');
@@ -98,18 +109,46 @@
                     type: 'line',
                     data: {
                         labels: labels,
-                        datasets: [{
-                            label: '총 평가금액 (₩)',
-                            data: values,
-                            borderColor: '#60A5FA',
-                            backgroundColor: 'rgba(96, 165, 250, 0.1)',
-                            pointBackgroundColor: '#60A5FA',
-                            pointRadius: 5,
-                            pointHoverRadius: 8,
-                            borderWidth: 2.5,
-                            fill: true,
-                            tension: 0.3
-                        }]
+                        datasets: [
+                            {
+                                label: '합산 총 자산',
+                                data: totalVals,
+                                borderColor: '#60A5FA',
+                                backgroundColor: 'rgba(96, 165, 250, 0.08)',
+                                pointBackgroundColor: '#60A5FA',
+                                pointRadius: 5,
+                                pointHoverRadius: 8,
+                                borderWidth: 2.5,
+                                fill: true,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'User',
+                                data: userVals,
+                                borderColor: '#34D399',
+                                backgroundColor: 'transparent',
+                                pointBackgroundColor: '#34D399',
+                                pointRadius: 4,
+                                pointHoverRadius: 7,
+                                borderWidth: 1.8,
+                                borderDash: [4, 3],
+                                tension: 0.3,
+                                spanGaps: true
+                            },
+                            {
+                                label: 'Husband',
+                                data: husbandVals,
+                                borderColor: '#F472B6',
+                                backgroundColor: 'transparent',
+                                pointBackgroundColor: '#F472B6',
+                                pointRadius: 4,
+                                pointHoverRadius: 7,
+                                borderWidth: 1.8,
+                                borderDash: [4, 3],
+                                tension: 0.3,
+                                spanGaps: true
+                            }
+                        ]
                     },
                     options: {
                         responsive: true,
@@ -124,7 +163,7 @@
                                 max: maxVal + padding,
                                 ticks: {
                                     color: '#9CA3AF',
-                                    callback: val => '₩' + Math.round(val / 10000).toLocaleString() + '만'
+                                    callback: val => Math.round(val / 10000).toLocaleString() + '만'
                                 },
                                 grid: { color: 'rgba(255,255,255,0.05)' }
                             }
@@ -133,7 +172,7 @@
                             legend: { labels: { color: 'white' } },
                             tooltip: {
                                 callbacks: {
-                                    label: ctx => '₩' + ctx.parsed.y.toLocaleString()
+                                    label: ctx => ctx.dataset.label + ': ₩' + (ctx.parsed.y || 0).toLocaleString()
                                 }
                             }
                         }
