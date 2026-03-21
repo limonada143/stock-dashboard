@@ -226,10 +226,9 @@
         });
 
         // ══════════════════════════════════════════════════════════
-        //  TAB 1: TOTAL (개선 버전)
+        //  TAB 1: TOTAL (누적 영역 차트 버전)
         // ══════════════════════════════════════════════════════════
         function buildTotal(history, portfolio) {
-            // ... (데이터 가공 로직: byDate, dates, uVals 등은 기존과 동일) ...
             const byDate = {};
             history.forEach(h => {
                 if (!byDate[h.date]) byDate[h.date] = {};
@@ -237,14 +236,11 @@
                 byDate[h.date][key] = h;
             });
 
-            const dates   = Object.keys(byDate).sort();
-            const uVals   = dates.map(d => byDate[d].user?.total_value    || null);
-            const hVals   = dates.map(d => byDate[d].husband?.total_value || null);
-            const totVals = dates.map(d => (byDate[d].user?.total_value || 0) + (byDate[d].husband?.total_value || 0));
+            const dates = Object.keys(byDate).sort();
+            const uVals = dates.map(d => byDate[d].user?.total_value || 0);    // null 대신 0 처리 (누적용)
+            const hVals = dates.map(d => byDate[d].husband?.total_value || 0);
 
-            const uPnl  = dates.map(d => byDate[d].user?.unrealized_pnl_pct    || null);
-            const hPnl  = dates.map(d => byDate[d].husband?.unrealized_pnl_pct || null);
-
+            // 요약 카드 업데이트 (기존과 동일)
             const ps = portfolio.summary;
             const lastHusbandDate = dates.filter(d => byDate[d].husband).at(-1);
             const lastHusband = lastHusbandDate ? byDate[lastHusbandDate].husband : null;
@@ -252,58 +248,91 @@
             const combinedPnl   = ps.unrealized_pnl + (lastHusband?.unrealized_pnl || 0);
             document.getElementById('t-total-value').textContent = fmt(combinedTotal);
             document.getElementById('t-total-pnl').textContent   = fmt(combinedPnl);
-            document.getElementById('t-updated').textContent      = portfolio.last_updated;
+            document.getElementById('t-updated').textContent     = portfolio.last_updated;
 
-            // [수정 포인트 1] 추이 차트 설정 변경
+            // [변경 포인트] 자산 추이 차트: 누적(Stacked) 방식
             new Chart(document.getElementById('totalTrendChart'), {
                 type: 'line',
-                data: { labels: dates, datasets: [
-                    // 합산: 채우기(true)를 유지하되 선을 굵게(borderWidth 추가 가능하지만 헬퍼 함수를 쓰므로 그대로 둠)
-                    lineDataset('합산 총 자산', totVals, '#60A5FA', true),
-                    
-                    // User & Husband: 마지막 인자인 [4,3](점선)을 제거하여 '실선'으로 변경
-                    lineDataset('User',          uVals,   '#34D399', false), 
-                    lineDataset('Husband',       hVals,   '#F472B6', false)
-                ]},
+                data: { 
+                    labels: dates, 
+                    datasets: [
+                        // 아래쪽 레이어: User (먼저 정의)
+                        {
+                            label: 'User (내 자산)',
+                            data: uVals,
+                            borderColor: '#34D399',
+                            backgroundColor: 'rgba(52, 211, 153, 0.4)', // 면적 색상 (약간 진하게)
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3
+                        },
+                        // 위쪽 레이어: Husband (User 위에 쌓임)
+                        {
+                            label: 'Husband (남편 자산)',
+                            data: hVals,
+                            borderColor: '#F472B6',
+                            backgroundColor: 'rgba(244, 114, 182, 0.4)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3
+                        }
+                    ]
+                },
                 options: { 
                     ...CHART_DEFAULTS,
                     interaction: {
-                        mode: 'index',     // 마우스 올리면 같은 날짜의 모든 수치를 한꺼번에 표시
+                        mode: 'index',
                         intersect: false,
                     },
                     scales: {
-                        x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        y: { ticks: { color: '#9CA3AF', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                        x: { 
+                            stacked: true, // X축 누적 설정
+                            ticks: { color: '#9CA3AF' }, 
+                            grid: { color: 'rgba(255,255,255,0.05)' } 
+                        },
+                        y: { 
+                            stacked: true, // Y축 누적 설정 (이게 핵심!)
+                            ticks: { color: '#9CA3AF', callback: v => fmtM(v) }, 
+                            grid: { color: 'rgba(255,255,255,0.05)' } 
+                        }
                     },
                     plugins: { 
                         ...CHART_DEFAULTS.plugins, 
                         legend: {
-                            labels: { color: '#FFFFFF', usePointStyle: true } // 범례 글자를 흰색으로
+                            labels: { color: '#FFFFFF', usePointStyle: true }
                         },
-                        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } } 
+                        tooltip: {
+                            callbacks: {
+                                // 툴팁에 각자 자산과 합산 자산을 모두 표시하도록 개선
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) label += fmt(context.parsed.y);
+                                    return label;
+                                },
+                                footer: (items) => {
+                                    const total = items.reduce((sum, item) => sum + item.parsed.y, 0);
+                                    return `합계: ${fmt(total)}`;
+                                }
+                            }
+                        }
                     }
                 }
             });
 
-            // [수정 포인트 2] 수익률 차트 (점선 제거)
+            // 수익률 차트는 누적하지 않고 기존처럼 각자의 실선으로 표시 (그대로 유지)
             new Chart(document.getElementById('totalPnlChart'), {
                 type: 'line',
                 data: { labels: dates, datasets: [
                     lineDataset('User 수익률(%)',    uPnl, '#34D399'),
-                    lineDataset('Husband 수익률(%)', hPnl, '#F472B6', false) // [4,3] 제거
+                    lineDataset('Husband 수익률(%)', hPnl, '#F472B6', false)
                 ]},
-                options: { 
-                    ...CHART_DEFAULTS,
-                    interaction: { mode: 'index', intersect: false },
+                options: { ...CHART_DEFAULTS,
                     scales: {
                         x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } },
                         y: { ticks: { color: '#9CA3AF', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } }
                     },
-                    plugins: { 
-                        ...CHART_DEFAULTS.plugins, 
-                        legend: { labels: { color: '#FFFFFF' } },
-                        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '%' } } 
-                    }
+                    plugins: { ...CHART_DEFAULTS.plugins, legend: { labels: { color: '#FFFFFF' } } }
                 }
             });
         }
