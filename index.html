@@ -6,6 +6,13 @@
     <title>Family Investment Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Chart.js 전역 기본색 흰색으로 강제 설정
+        document.addEventListener('DOMContentLoaded', () => {
+            Chart.defaults.color = '#E5E7EB';
+            Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+        });
+    </script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
 
