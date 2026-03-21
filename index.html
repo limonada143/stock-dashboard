@@ -3,183 +3,393 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Stock Dashboard</title>
+    <title>Family Investment Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-900 text-white p-8">
-    <div class="max-w-4xl mx-auto">
-        <header class="mb-10">
-            <h1 class="text-3xl font-bold border-b border-gray-700 pb-4">📈 My Investment Dashboard</h1>
-            <p id="update-date" class="text-gray-400 mt-2">Last Updated: -</p>
-        </header>
+<body class="bg-gray-900 text-white min-h-screen">
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-                <p class="text-sm text-gray-400">총 자산</p>
-                <h2 id="total-value" class="text-2xl font-bold text-blue-400">₩0</h2>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-                <p class="text-sm text-gray-400">평가 손익</p>
-                <h2 id="total-pnl" class="text-2xl font-bold text-green-400">₩0</h2>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-                <p class="text-sm text-gray-400">수익률</p>
-                <h2 id="total-pnl-pct" class="text-2xl font-bold text-yellow-400">0%</h2>
-            </div>
-        </div>
-
-        <div class="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700 mb-10">
-            <h3 class="text-xl font-semibold mb-6">자산 비중 (Sector)</h3>
-            <div class="w-full h-64 flex justify-center">
-                <canvas id="assetChart"></canvas>
-            </div>
-        </div>
-
-        <div class="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700 mb-10">
-            <h3 class="text-xl font-semibold mb-2">📈 자산 추이</h3>
-            <p class="text-sm text-gray-400 mb-6">날짜별 총 평가금액 변화</p>
-            <div class="w-full" style="height: 320px;">
-                <canvas id="trendChart"></canvas>
-            </div>
+    <!-- 탭 네비게이션 -->
+    <div class="sticky top-0 z-10 bg-gray-950 border-b border-gray-700">
+        <div class="max-w-5xl mx-auto flex">
+            <button onclick="showTab('total')" id="tab-total"
+                class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-blue-500 text-blue-400">
+                합산 Total
+            </button>
+            <button onclick="showTab('user')" id="tab-user"
+                class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-transparent text-gray-400 hover:text-white">
+                내 포트폴리오
+            </button>
+            <button onclick="showTab('husband')" id="tab-husband"
+                class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-transparent text-gray-400 hover:text-white">
+                남편 포트폴리오
+            </button>
         </div>
     </div>
 
+    <div class="max-w-5xl mx-auto p-6">
+
+        <!-- ===== TAB 1: TOTAL ===== -->
+        <div id="page-total">
+            <h2 class="text-2xl font-bold mb-6 text-blue-400">가족 합산 자산</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">합산 총 자산</p>
+                    <p id="t-total-value" class="text-2xl font-bold text-blue-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">합산 평가손익</p>
+                    <p id="t-total-pnl" class="text-2xl font-bold text-green-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">기준일</p>
+                    <p id="t-updated" class="text-lg font-semibold text-gray-300">-</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-6">
+                <h3 class="text-lg font-semibold mb-1">자산 추이</h3>
+                <p class="text-xs text-gray-400 mb-4">User + Husband 합산 월별 평가금액</p>
+                <div style="height:320px">
+                    <canvas id="totalTrendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                <h3 class="text-lg font-semibold mb-1">월별 수익률 추이</h3>
+                <p class="text-xs text-gray-400 mb-4">각자 평가손익률 변화</p>
+                <div style="height:280px">
+                    <canvas id="totalPnlChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB 2: USER ===== -->
+        <div id="page-user" class="hidden">
+            <h2 class="text-2xl font-bold mb-6 text-green-400">내 포트폴리오</h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">총 평가금액</p>
+                    <p id="u-total-value" class="text-xl font-bold text-green-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">총 매입금액</p>
+                    <p id="u-total-cost" class="text-xl font-bold text-gray-300">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">평가손익</p>
+                    <p id="u-pnl" class="text-xl font-bold text-green-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">수익률</p>
+                    <p id="u-pnl-pct" class="text-xl font-bold text-yellow-400">-</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">자산 비중</h3>
+                    <div style="height:280px" class="flex justify-center">
+                        <canvas id="userDonutChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">수익률 추이</h3>
+                    <div style="height:280px">
+                        <canvas id="userPnlChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-700">
+                    <h3 class="text-lg font-semibold">보유 종목</h3>
+                    <p id="u-updated" class="text-xs text-gray-400 mt-1">-</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-gray-400 text-xs border-b border-gray-700">
+                                <th class="text-left px-6 py-3">종목명</th>
+                                <th class="text-right px-4 py-3">보유</th>
+                                <th class="text-right px-4 py-3">평단가</th>
+                                <th class="text-right px-4 py-3">현재가</th>
+                                <th class="text-right px-4 py-3">평가금액</th>
+                                <th class="text-right px-4 py-3">수익률</th>
+                            </tr>
+                        </thead>
+                        <tbody id="u-holdings-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB 3: HUSBAND ===== -->
+        <div id="page-husband" class="hidden">
+            <h2 class="text-2xl font-bold mb-6 text-pink-400">남편 포트폴리오</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 col-span-3">
+                    <p class="text-sm text-gray-400">최근 기록: 2025-12-31 기준 (2026년 데이터 업데이트 예정)</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex items-center justify-center" style="height:320px">
+                    <div class="text-center text-gray-500">
+                        <p class="text-4xl mb-3">📂</p>
+                        <p class="font-semibold">현재 보유 종목 데이터 없음</p>
+                        <p class="text-xs mt-1">스크린샷을 업로드하면 자동 반영됩니다</p>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">수익률 추이</h3>
+                    <div style="height:280px">
+                        <canvas id="husbandPnlChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                <h3 class="text-lg font-semibold mb-4">월별 자산 추이</h3>
+                <div style="height:280px">
+                    <canvas id="husbandTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <script>
-        // portfolio.json 데이터를 읽어오는 함수 (다계좌 구조 대응)
-        fetch('portfolio.json')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('update-date').innerText = "Last Updated: " + data.last_updated;
-                document.getElementById('total-value').innerText = "₩" + data.summary.total_value.toLocaleString();
-                document.getElementById('total-pnl').innerText = "₩" + data.summary.unrealized_pnl.toLocaleString();
-                document.getElementById('total-pnl-pct').innerText = data.summary.unrealized_pnl_pct + "%";
+        // ── 탭 전환 ──────────────────────────────────────────────
+        function showTab(name) {
+            ['total','user','husband'].forEach(t => {
+                document.getElementById('page-' + t).classList.add('hidden');
+                const btn = document.getElementById('tab-' + t);
+                btn.classList.remove('border-blue-500','border-green-500','border-pink-500','text-blue-400','text-green-400','text-pink-400');
+                btn.classList.add('border-transparent','text-gray-400');
+            });
+            document.getElementById('page-' + name).classList.remove('hidden');
+            const colors = { total: ['border-blue-500','text-blue-400'], user: ['border-green-500','text-green-400'], husband: ['border-pink-500','text-pink-400'] };
+            const btn = document.getElementById('tab-' + name);
+            btn.classList.remove('border-transparent','text-gray-400');
+            btn.classList.add(...colors[name]);
+        }
 
-                // 전 계좌 종목 합산
-                const allHoldings = data.accounts.flatMap(acc => acc.holdings);
+        // ── 공통 유틸 ─────────────────────────────────────────────
+        const fmt  = v => '₩' + Math.round(v).toLocaleString();
+        const fmtM = v => Math.round(v / 10000).toLocaleString() + '만';
+        const pnlColor = pct => pct >= 0 ? '#34D399' : '#F87171';
 
-                // 도넛 차트 그리기
-                const ctx = document.getElementById('assetChart').getContext('2d');
-                const colors = [
-                    '#60A5FA','#34D399','#FBBF24','#F87171','#A78BFA',
-                    '#FB923C','#38BDF8','#4ADE80','#F472B6','#FACC15',
-                    '#818CF8','#2DD4BF','#FCA5A5','#86EFAC','#C4B5FD',
-                    '#FCD34D','#67E8F9','#FDA4AF','#6EE7B7','#93C5FD'
-                ];
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: allHoldings.map(h => h.name),
-                        datasets: [{
-                            data: allHoldings.map(h => h.current_value),
-                            backgroundColor: colors.slice(0, allHoldings.length)
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { labels: { color: 'white', font: { size: 11 } } } }
-                    }
-                });
+        const CHART_DEFAULTS = {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#9CA3AF', font: { size: 11 } } } }
+        };
+
+        function lineDataset(label, data, color, fill=false, dash=[]) {
+            return {
+                label, data,
+                borderColor: color,
+                backgroundColor: fill ? color.replace(')',',0.1)').replace('rgb','rgba') : 'transparent',
+                pointBackgroundColor: color,
+                pointRadius: 4, pointHoverRadius: 7,
+                borderWidth: 2, borderDash: dash,
+                fill, tension: 0.3, spanGaps: true
+            };
+        }
+
+        // ── 데이터 로드 ───────────────────────────────────────────
+        Promise.all([
+            fetch('portfolio.json').then(r => r.json()),
+            fetch('history.json').then(r => r.json())
+        ]).then(([portfolio, history]) => {
+            buildTotal(history);
+            buildUser(portfolio, history);
+            buildHusband(history);
+        });
+
+        // ══════════════════════════════════════════════════════════
+        //  TAB 1: TOTAL
+        // ══════════════════════════════════════════════════════════
+        function buildTotal(history) {
+            const byDate = {};
+            history.forEach(h => {
+                if (!byDate[h.date]) byDate[h.date] = {};
+                const key = h.note === 'Users' ? 'user' : 'husband';
+                byDate[h.date][key] = h;
             });
 
-        // history.json으로 자산 추이 라인 차트 그리기 (Users + Husband 합산)
-        fetch('history.json')
-            .then(response => response.json())
-            .then(history => {
-                // Users / Husband 분리 후 날짜별 합산
-                const byDate = {};
-                history.forEach(h => {
-                    if (!byDate[h.date]) byDate[h.date] = { user: 0, husband: 0 };
-                    if (h.note === 'Users') byDate[h.date].user = h.total_value;
-                    else if (h.note === 'Husband') byDate[h.date].husband = h.total_value;
-                });
+            const dates   = Object.keys(byDate).sort();
+            const uVals   = dates.map(d => byDate[d].user?.total_value    || null);
+            const hVals   = dates.map(d => byDate[d].husband?.total_value || null);
+            const totVals = dates.map(d => (byDate[d].user?.total_value || 0) + (byDate[d].husband?.total_value || 0));
 
-                const labels = Object.keys(byDate).sort();
-                const userVals    = labels.map(d => byDate[d].user    || null);
-                const husbandVals = labels.map(d => byDate[d].husband || null);
-                const totalVals   = labels.map(d => (byDate[d].user || 0) + (byDate[d].husband || 0));
+            const uPnl  = dates.map(d => byDate[d].user?.unrealized_pnl_pct    || null);
+            const hPnl  = dates.map(d => byDate[d].husband?.unrealized_pnl_pct || null);
 
-                const allVals = totalVals.filter(Boolean);
-                const minVal  = Math.min(...allVals);
-                const maxVal  = Math.max(...allVals);
-                const padding = (maxVal - minVal) * 0.2 || 5000000;
+            // 요약 카드 (최신 날짜 기준)
+            const lastDate = dates[dates.length - 1];
+            const lastUser = byDate[lastDate].user;
+            const latestTotal = totVals[totVals.length - 1];
+            const latestPnlU  = lastUser ? lastUser.unrealized_pnl : 0;
+            document.getElementById('t-total-value').textContent = fmt(latestTotal);
+            document.getElementById('t-total-pnl').textContent   = fmt(latestPnlU);
+            document.getElementById('t-updated').textContent      = lastDate;
 
-                const trendCtx = document.getElementById('trendChart').getContext('2d');
-                new Chart(trendCtx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: '합산 총 자산',
-                                data: totalVals,
-                                borderColor: '#60A5FA',
-                                backgroundColor: 'rgba(96, 165, 250, 0.08)',
-                                pointBackgroundColor: '#60A5FA',
-                                pointRadius: 5,
-                                pointHoverRadius: 8,
-                                borderWidth: 2.5,
-                                fill: true,
-                                tension: 0.3
-                            },
-                            {
-                                label: 'User',
-                                data: userVals,
-                                borderColor: '#34D399',
-                                backgroundColor: 'transparent',
-                                pointBackgroundColor: '#34D399',
-                                pointRadius: 4,
-                                pointHoverRadius: 7,
-                                borderWidth: 1.8,
-                                borderDash: [4, 3],
-                                tension: 0.3,
-                                spanGaps: true
-                            },
-                            {
-                                label: 'Husband',
-                                data: husbandVals,
-                                borderColor: '#F472B6',
-                                backgroundColor: 'transparent',
-                                pointBackgroundColor: '#F472B6',
-                                pointRadius: 4,
-                                pointHoverRadius: 7,
-                                borderWidth: 1.8,
-                                borderDash: [4, 3],
-                                tension: 0.3,
-                                spanGaps: true
-                            }
-                        ]
+            // 추이 차트
+            new Chart(document.getElementById('totalTrendChart'), {
+                type: 'line',
+                data: { labels: dates, datasets: [
+                    lineDataset('합산 총 자산', totVals, '#60A5FA', true),
+                    lineDataset('User',          uVals,   '#34D399', false, [4,3]),
+                    lineDataset('Husband',       hVals,   '#F472B6', false, [4,3])
+                ]},
+                options: { ...CHART_DEFAULTS,
+                    scales: {
+                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                ticks: { color: '#9CA3AF' },
-                                grid: { color: 'rgba(255,255,255,0.05)' }
-                            },
-                            y: {
-                                min: Math.max(0, minVal - padding),
-                                max: maxVal + padding,
-                                ticks: {
-                                    color: '#9CA3AF',
-                                    callback: val => Math.round(val / 10000).toLocaleString() + '만'
-                                },
-                                grid: { color: 'rgba(255,255,255,0.05)' }
-                            }
-                        },
-                        plugins: {
-                            legend: { labels: { color: 'white' } },
-                            tooltip: {
-                                callbacks: {
-                                    label: ctx => ctx.dataset.label + ': ₩' + (ctx.parsed.y || 0).toLocaleString()
-                                }
-                            }
-                        }
-                    }
-                });
+                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } } }
+                }
             });
+
+            // 수익률 차트
+            new Chart(document.getElementById('totalPnlChart'), {
+                type: 'line',
+                data: { labels: dates, datasets: [
+                    lineDataset('User 수익률(%)',    uPnl, '#34D399'),
+                    lineDataset('Husband 수익률(%)', hPnl, '#F472B6', false, [4,3])
+                ]},
+                options: { ...CHART_DEFAULTS,
+                    scales: {
+                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                        y: { ticks: { color: '#6B7280', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                    },
+                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '%' } } }
+                }
+            });
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  TAB 2: USER
+        // ══════════════════════════════════════════════════════════
+        function buildUser(portfolio, history) {
+            const s = portfolio.summary;
+            document.getElementById('u-total-value').textContent = fmt(s.total_value);
+            document.getElementById('u-total-cost').textContent  = fmt(s.total_cost);
+            document.getElementById('u-pnl').textContent         = fmt(s.unrealized_pnl);
+            document.getElementById('u-pnl-pct').textContent     = s.unrealized_pnl_pct + '%';
+            document.getElementById('u-updated').textContent     = '기준일: ' + portfolio.last_updated;
+
+            // 전 계좌 종목 합산
+            const allHoldings = portfolio.accounts.flatMap(a => a.holdings || []);
+
+            // 도넛 차트
+            const COLORS = ['#60A5FA','#34D399','#FBBF24','#F87171','#A78BFA','#FB923C',
+                            '#38BDF8','#4ADE80','#F472B6','#FACC15','#818CF8','#2DD4BF',
+                            '#FCA5A5','#86EFAC','#C4B5FD','#FCD34D','#67E8F9','#FDA4AF'];
+            new Chart(document.getElementById('userDonutChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: allHoldings.map(h => h.name),
+                    datasets: [{ data: allHoldings.map(h => h.current_value), backgroundColor: COLORS }]
+                },
+                options: { responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: 'white', font: { size: 10 }, boxWidth: 12 } } }
+                }
+            });
+
+            // 수익률 추이 차트
+            const userHistory = history.filter(h => h.note === 'Users').sort((a,b) => a.date.localeCompare(b.date));
+            new Chart(document.getElementById('userPnlChart'), {
+                type: 'line',
+                data: { labels: userHistory.map(h => h.date),
+                    datasets: [{
+                        label: '수익률(%)',
+                        data: userHistory.map(h => h.unrealized_pnl_pct),
+                        borderColor: '#34D399',
+                        backgroundColor: 'rgba(52,211,153,0.08)',
+                        pointBackgroundColor: '#34D399',
+                        pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
+                    }]
+                },
+                options: { ...CHART_DEFAULTS,
+                    scales: {
+                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                        y: { ticks: { color: '#6B7280', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                    },
+                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.parsed.y + '%' } } }
+                }
+            });
+
+            // 종목 테이블
+            const tbody = document.getElementById('u-holdings-table');
+            allHoldings.sort((a,b) => b.unrealized_pnl_pct - a.unrealized_pnl_pct).forEach(h => {
+                const color = h.unrealized_pnl_pct >= 0 ? 'text-green-400' : 'text-red-400';
+                tbody.innerHTML += `
+                    <tr class="border-b border-gray-700 hover:bg-gray-750">
+                        <td class="px-6 py-3 font-medium">${h.name}</td>
+                        <td class="px-4 py-3 text-right text-gray-300">${h.shares.toLocaleString()}</td>
+                        <td class="px-4 py-3 text-right text-gray-300">${Math.round(h.avg_price).toLocaleString()}</td>
+                        <td class="px-4 py-3 text-right text-gray-300">${Math.round(h.current_price).toLocaleString()}</td>
+                        <td class="px-4 py-3 text-right">${fmt(h.current_value)}</td>
+                        <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct.toFixed(2)}%</td>
+                    </tr>`;
+            });
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  TAB 3: HUSBAND
+        // ══════════════════════════════════════════════════════════
+        function buildHusband(history) {
+            const hHistory = history.filter(h => h.note === 'Husband').sort((a,b) => a.date.localeCompare(b.date));
+
+            // 수익률 추이
+            new Chart(document.getElementById('husbandPnlChart'), {
+                type: 'line',
+                data: { labels: hHistory.map(h => h.date),
+                    datasets: [{
+                        label: '수익률(%)',
+                        data: hHistory.map(h => h.unrealized_pnl_pct),
+                        borderColor: '#F472B6',
+                        backgroundColor: 'rgba(244,114,182,0.08)',
+                        pointBackgroundColor: '#F472B6',
+                        pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
+                    }]
+                },
+                options: { ...CHART_DEFAULTS,
+                    scales: {
+                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                        y: { ticks: { color: '#6B7280', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                    },
+                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.parsed.y + '%' } } }
+                }
+            });
+
+            // 자산 추이
+            new Chart(document.getElementById('husbandTrendChart'), {
+                type: 'line',
+                data: { labels: hHistory.map(h => h.date),
+                    datasets: [{
+                        label: '평가금액',
+                        data: hHistory.map(h => h.total_value),
+                        borderColor: '#F472B6',
+                        backgroundColor: 'rgba(244,114,182,0.08)',
+                        pointBackgroundColor: '#F472B6',
+                        pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
+                    }]
+                },
+                options: { ...CHART_DEFAULTS,
+                    scales: {
+                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                    },
+                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => fmt(c.parsed.y) } } }
+                }
+            });
+        }
     </script>
 </body>
 </html>
-
