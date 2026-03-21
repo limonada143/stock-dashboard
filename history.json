@@ -1,19 +1,123 @@
 [
   {
-    "date": "2026-03-18",
-    "total_value": 174988680,
-    "total_cost": 137076164,
-    "unrealized_pnl": 37912516,
-    "unrealized_pnl_pct": 27.66,
-    "note": "한국투자 연금저축 단독"
+    "date": "2024-12-31",
+    "total_value": 21877,
+    "total_cost": 17297,
+    "unrealized_pnl": 4580,
+    "unrealized_pnl_pct": 26.48,
+    "note": "Users"
   },
   {
-    "date": "2026-03-19",
-    "total_value": 171727985,
-    "total_cost": 137076164,
-    "unrealized_pnl": 34651821,
-    "unrealized_pnl_pct": 25.28,
-    "note": "한국투자 연금저축 단독"
+    "date": "2025-01-31",
+    "total_value": 22597,
+    "total_cost": 17671,
+    "unrealized_pnl": 4926,
+    "unrealized_pnl_pct": 27.88,
+    "note": "Users"
+  },
+  {
+    "date": "2025-02-28",
+    "total_value": 22526,
+    "total_cost": 18551,
+    "unrealized_pnl": 3975,
+    "unrealized_pnl_pct": 21.43,
+    "note": "Users"
+  },
+  {
+    "date": "2025-03-31",
+    "total_value": 18298,
+    "total_cost": 18984,
+    "unrealized_pnl": -686,
+    "unrealized_pnl_pct": -3.61,
+    "note": "Users"
+  },
+  {
+    "date": "2025-04-30",
+    "total_value": 24540,
+    "total_cost": 20528,
+    "unrealized_pnl": 4012,
+    "unrealized_pnl_pct": 19.54,
+    "note": "Users"
+  },
+  {
+    "date": "2025-05-31",
+    "total_value": 31490,
+    "total_cost": 24858,
+    "unrealized_pnl": 6632,
+    "unrealized_pnl_pct": 26.68,
+    "note": "Users"
+  },
+  {
+    "date": "2025-06-30",
+    "total_value": 33975,
+    "total_cost": 25875,
+    "unrealized_pnl": 8100,
+    "unrealized_pnl_pct": 31.3,
+    "note": "Users"
+  },
+  {
+    "date": "2025-07-31",
+    "total_value": 33431,
+    "total_cost": 23449,
+    "unrealized_pnl": 9982,
+    "unrealized_pnl_pct": 42.57,
+    "note": "Users"
+  },
+  {
+    "date": "2025-08-31",
+    "total_value": 35125,
+    "total_cost": 23804,
+    "unrealized_pnl": 11321,
+    "unrealized_pnl_pct": 47.56,
+    "note": "Users"
+  },
+  {
+    "date": "2025-09-30",
+    "total_value": 39775,
+    "total_cost": 24121,
+    "unrealized_pnl": 15654,
+    "unrealized_pnl_pct": 64.9,
+    "note": "Users"
+  },
+  {
+    "date": "2025-10-31",
+    "total_value": 54754,
+    "total_cost": 30395,
+    "unrealized_pnl": 24359,
+    "unrealized_pnl_pct": 80.14,
+    "note": "Users"
+  },
+  {
+    "date": "2025-11-30",
+    "total_value": 45385,
+    "total_cost": 28755,
+    "unrealized_pnl": 16630,
+    "unrealized_pnl_pct": 57.83,
+    "note": "Users"
+  },
+  {
+    "date": "2025-12-31",
+    "total_value": 50092,
+    "total_cost": 30990,
+    "unrealized_pnl": 19102,
+    "unrealized_pnl_pct": 61.64,
+    "note": "Users"
+  },
+  {
+    "date": "2026-01-31",
+    "total_value": 51093,
+    "total_cost": 31333,
+    "unrealized_pnl": 19760,
+    "unrealized_pnl_pct": 63.06,
+    "note": "Users"
+  },
+  {
+    "date": "2026-02-28",
+    "total_value": 60204,
+    "total_cost": 34085,
+    "unrealized_pnl": 26119,
+    "unrealized_pnl_pct": 76.63,
+    "note": "Users"
   },
   {
     "date": "2026-03-20",
@@ -21,6 +125,110 @@
     "total_cost": 381392888,
     "unrealized_pnl": 87139629,
     "unrealized_pnl_pct": 22.85,
-    "note": "7계좌 합산 완성 (한국투자 연금저축 + 박은혜 종합위탁 + 박은혜 신연금저축 + User IRP + User 해외주식 + 박은혜 ISA + 박은혜 키움 연금저축)"
+    "note": "Users"
+  },
+  {
+    "date": "2024-12-31",
+    "total_value": 14601,
+    "total_cost": 7311,
+    "unrealized_pnl": 7290,
+    "unrealized_pnl_pct": 99.72,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-01-31",
+    "total_value": 14425,
+    "total_cost": 7864,
+    "unrealized_pnl": 6561,
+    "unrealized_pnl_pct": 83.44,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-02-28",
+    "total_value": 14688,
+    "total_cost": 8536,
+    "unrealized_pnl": 6151,
+    "unrealized_pnl_pct": 72.06,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-03-31",
+    "total_value": 14574,
+    "total_cost": 9091,
+    "unrealized_pnl": 5483,
+    "unrealized_pnl_pct": 0.60,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-04-30",
+    "total_value": 21622,
+    "total_cost": 15491,
+    "unrealized_pnl": 6132,
+    "unrealized_pnl_pct": 39.58,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-05-31",
+    "total_value": 23435,
+    "total_cost": 15545,
+    "unrealized_pnl": 7890,
+    "unrealized_pnl_pct": 50.75,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-06-30",
+    "total_value": 25289,
+    "total_cost": 15603,
+    "unrealized_pnl": 9685,
+    "unrealized_pnl_pct": 62.07,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-07-31",
+    "total_value": 24233,
+    "total_cost": 12013,
+    "unrealized_pnl": 12220,
+    "unrealized_pnl_pct": 101.72,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-08-31",
+    "total_value": 25130,
+    "total_cost": 12719,
+    "unrealized_pnl": 12411,
+    "unrealized_pnl_pct": 97.57,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-09-30",
+    "total_value": 26966,
+    "total_cost": 12853,
+    "unrealized_pnl": 14113,
+    "unrealized_pnl_pct": 109.81,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-10-31",
+    "total_value": 37002,
+    "total_cost": 19914,
+    "unrealized_pnl": 17108,
+    "unrealized_pnl_pct": 85.91,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-11-30",
+    "total_value": 34861,
+    "total_cost": 19813,
+    "unrealized_pnl": 15048,
+    "unrealized_pnl_pct": 75.95,
+    "note": "Husband"
+  },
+  {
+    "date": "2025-12-31",
+    "total_value": 36070,
+    "total_cost": 19528,
+    "unrealized_pnl": 16543,
+    "unrealized_pnl_pct": 84.71,
+    "note": "Husband"
   }
 ]
