@@ -37,7 +37,7 @@
 
         <!-- ===== TAB 1: TOTAL ===== -->
         <div id="page-total">
-            <h2 class="text-2xl font-bold mb-6 text-blue-400">가족 합산 자산</h2>
+            <h2 class="text-2xl font-bold mb-6 text-blue-400">부부 합산 자산</h2>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
@@ -45,7 +45,7 @@
                     <p id="t-total-value" class="text-2xl font-bold text-blue-400">-</p>
                 </div>
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                    <p class="text-xs text-gray-400 mb-1">합산 평가손익</p>
+                    <p class="text-xs text-gray-400 mb-1">합산 평가 손익</p>
                     <p id="t-total-pnl" class="text-2xl font-bold text-green-400">-</p>
                 </div>
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
@@ -97,8 +97,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold">자산 비중</h3>
-                        <div class="flex rounded-lg overflow-hidden border border-gray-600 text-xs font-semibold">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-lg font-semibold">자산 비중</h3>
+                            <button id="btn-back-donut" onclick="drillBack()"
+                                class="hidden text-xs px-2 py-1 rounded bg-gray-700 text-gray-300 hover:text-white transition-colors">← 뒤로</button>
+                            <span id="donut-sector-label" class="hidden text-xs text-blue-300 font-semibold"></span>
+                        </div>
+                        <div id="donut-toggle" class="flex rounded-lg overflow-hidden border border-gray-600 text-xs font-semibold">
                             <button id="btn-sector" onclick="switchDonut('sector')"
                                 class="px-3 py-1 bg-blue-600 text-white transition-colors">섹터</button>
                             <button id="btn-country" onclick="switchDonut('country')"
@@ -340,42 +345,101 @@
             }
 
             let donutChart;
+            let currentDonutMode = 'sector';
+
+            function makeDonutOptions(labels, values, colors, onClickFn) {
+                return {
+                    responsive: true, maintainAspectRatio: false,
+                    onClick: onClickFn || null,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#FFFFFF', font: { size: 11 }, boxWidth: 14, padding: 12,
+                                generateLabels: chart => chart.data.labels.map((label, i) => {
+                                    const total = chart.data.datasets[0].data.reduce((a,b) => a+b, 0);
+                                    const val   = chart.data.datasets[0].data[i];
+                                    const pct   = total > 0 ? ((val/total)*100).toFixed(1) : 0;
+                                    return {
+                                        text: `${label}  ${pct}%`,
+                                        fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                        hidden: false, index: i,
+                                        strokeStyle: 'transparent',
+                                        fontColor: '#FFFFFF'
+                                    };
+                                })
+                            }
+                        },
+                        tooltip: { callbacks: { label: c => `  ${fmt(c.parsed)}` } }
+                    }
+                };
+            }
+
             function renderDonut(mode) {
+                currentDonutMode = mode;
                 const d = mode === 'sector' ? buildSectorData() : buildCountryData();
                 if (donutChart) donutChart.destroy();
+
+                // 섹터 모드일 때만 클릭 드릴다운 활성화
+                const onClickFn = mode === 'sector' ? (evt, elements) => {
+                    if (!elements.length) return;
+                    const idx = elements[0].index;
+                    const sectorName = d.labels[idx];
+                    drillInto(sectorName, d.colors[idx]);
+                } : null;
+
                 donutChart = new Chart(document.getElementById('userDonutChart'), {
                     type: 'doughnut',
                     data: { labels: d.labels, datasets: [{ data: d.values, backgroundColor: d.colors }] },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'right',
-                                labels: {
-                                    color: '#FFFFFF', font: { size: 11 }, boxWidth: 14, padding: 12,
-                                    generateLabels: chart => chart.data.labels.map((label, i) => {
-                                        const total = chart.data.datasets[0].data.reduce((a,b) => a+b, 0);
-                                        const val   = chart.data.datasets[0].data[i];
-                                        const pct   = total > 0 ? ((val/total)*100).toFixed(1) : 0;
-                                        return {
-                                            text: `${label}  ${pct}%`,
-                                            fillStyle: chart.data.datasets[0].backgroundColor[i],
-                                            hidden: false, index: i,
-                                            strokeStyle: 'transparent',
-                                            fontColor: '#FFFFFF'
-                                        };
-                                    })
-                                }
-                            },
-                            tooltip: { callbacks: { label: c => `  ${fmt(c.parsed)}` } }
-                        }
-                    }
+                    options: makeDonutOptions(d.labels, d.values, d.colors, onClickFn)
                 });
+
+                // UI 상태
                 document.getElementById('btn-sector').className  = `px-3 py-1 transition-colors ${mode==='sector'  ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`;
                 document.getElementById('btn-country').className = `px-3 py-1 transition-colors ${mode==='country' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`;
+                document.getElementById('btn-back-donut').classList.add('hidden');
+                document.getElementById('donut-sector-label').classList.add('hidden');
+                document.getElementById('donut-toggle').classList.remove('hidden');
+            }
+
+            function drillInto(sectorName, sectorColor) {
+                // 해당 섹터의 ETF만 필터링
+                const cats = SECTOR_MAP[sectorName] || [];
+                const etfs = allHoldings.filter(h => {
+                    const cat = h.category || '기타';
+                    return cats.includes(cat) || (!Object.values(SECTOR_MAP).flat().includes(cat) && sectorName === '기타');
+                });
+                if (!etfs.length) return;
+
+                const palette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
+                                 '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
+                                 '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
+
+                const labels = etfs.map(h => h.name);
+                const values = etfs.map(h => h.current_value);
+                const colors = palette.slice(0, etfs.length);
+
+                if (donutChart) donutChart.destroy();
+                donutChart = new Chart(document.getElementById('userDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors }] },
+                    options: makeDonutOptions(labels, values, colors, null)
+                });
+
+                // UI: 뒤로가기 표시, 토글 숨김
+                document.getElementById('btn-back-donut').classList.remove('hidden');
+                const lbl = document.getElementById('donut-sector-label');
+                lbl.textContent = sectorName;
+                lbl.classList.remove('hidden');
+                document.getElementById('donut-toggle').classList.add('hidden');
+            }
+
+            function drillBack() {
+                renderDonut(currentDonutMode);
             }
 
             window.switchDonut = mode => renderDonut(mode);
+            window.drillBack   = drillBack;
             renderDonut('sector');
 
             const userHistory = history.filter(h => h.note === 'Users').sort((a,b) => a.date.localeCompare(b.date));
