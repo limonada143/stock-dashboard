@@ -210,10 +210,10 @@
       "type": "종합위탁",
       "currency": "KRW",
       "summary": {
-        "total_value": 66884210,
+        "total_value": 67055568,
         "total_cost": 66812952,
-        "unrealized_pnl": 71258,
-        "unrealized_pnl_pct": 0.11,
+        "unrealized_pnl": 123,
+        "unrealized_pnl_pct": 123,
         "cash": 171358
       },
       "holdings": [
@@ -622,6 +622,141 @@
       ]
     },
     {
+      "id": "2969211211",
+      "name": "im증권",
+      "type": "일반계좌",
+      "currency": "KRW",
+      "summary": {
+        "total_value": 90324379,
+        "total_cost": 65806828,
+        "unrealized_pnl": 24671825,
+        "unrealized_pnl_pct": 37.49,
+        "cash": 55672
+      },
+      "holdings": [
+        {
+          "name": "아마존닷컴",
+          "ticker": "AMZN",
+          "shares": 10,
+          "avg_price": 299301,
+          "current_price": 2993019,
+          "current_value": 3080961,
+          "unrealized_pnl": 87942,
+          "unrealized_pnl_pct": 2.94,
+          "type": "해외주식",
+          "category": "기술(해외)"
+        },
+        {
+          "name": "ARM",
+          "ticker": "ARM",
+          "shares": 28,
+          "avg_price": 188885,
+          "current_price": 5288775,
+          "current_value": 5559441,
+          "unrealized_pnl": 270666,
+          "unrealized_pnl_pct": 5.12,
+          "type": "해외주식",
+          "category": "기술(해외)"
+        },        
+        {
+          "name": "브로드컴",
+          "ticker": "AVGO",
+          "shares": 22,
+          "avg_price": 281397,
+          "current_price": 6190725,
+          "current_value": 10248196,
+          "unrealized_pnl": 4057471,
+          "unrealized_pnl_pct": 65.54,
+          "type": "해외주식",
+          "category": "기술(해외)"
+        }, 
+        {
+          "name": "알파벳 A",
+          "ticker": "GOOGL",
+          "shares": 17,
+          "avg_price": 256184,
+          "current_price": 4355126,
+          "current_value": 7676523,
+          "unrealized_pnl": 3321398,
+          "unrealized_pnl_pct": 76.26,
+          "type": "해외주식",
+          "category": "기술(해외)"
+        },
+        {
+          "name": "엔비디아",
+          "ticker": "NVDA",
+          "shares": 30,
+          "avg_price": 187338,
+          "current_price": 7772536,
+          "current_value": 5620154,
+          "unrealized_pnl": 2152382,
+          "unrealized_pnl_pct": 38.30,
+          "type": "해외주식",
+          "category": "기술(해외)"
+        },
+        {
+          "name": "팔란티어 테크",
+          "ticker": "PLTR",
+          "shares": 82,
+          "avg_price": 117881,
+          "current_price": 9666242,
+          "current_value": 18536100,
+          "unrealized_pnl": 8869858,
+          "unrealized_pnl_pct": 91.76,
+          "type": "해외주식",
+          "category": "기술(해외)"
+        }, 
+         {
+          "name": "브로드컴",
+          "ticker": "AVGO",
+          "shares": 22,
+          "avg_price": 281397,
+          "current_price": 6190725,
+          "current_value": 10248196,
+          "unrealized_pnl": 4057471,
+          "unrealized_pnl_pct": 65.54,
+          "type": "해외주식",
+          "category": "기술(해외)"
+        },
+        {
+          "name": "버티브 홀딩스",
+          "ticker": "VRT",
+          "shares": 8,
+          "avg_price": 310253,
+          "current_price": 2482021,
+          "current_value": 3070969,
+          "unrealized_pnl": 588949,
+          "unrealized_pnl_pct": 23.73,
+          "type": "해외주식",
+          "category": "기술(해외)"
+        }, 
+        {
+          "name": "아이온큐",
+          "ticker": "IONQ",
+          "shares": 32,
+          "avg_price": 70319,
+          "current_price": 2250225,
+          "current_value": 1497800,
+          "unrealized_pnl": -752425,
+          "unrealized_pnl_pct": -33.44,
+          "type": "해외주식",
+          "category": "양자컴퓨팅(해외)"
+        },
+        {
+          "name": "META",
+          "ticker": "META",
+          "shares": 5,
+          "avg_price": 901374,
+          "current_price": 4506871,
+          "current_value": 4453044,
+          "unrealized_pnl": -53827,
+          "unrealized_pnl_pct": -1.19,
+          "type": "해외주식",
+          "category": "기술(해외)"
+        }
+      ]
+    },
+    {
       "id": "3028-6910-01",
       "name": "User 해외주식 Super365",
       "type": "해외주식",
@@ -659,8 +794,8 @@
           "category": "반도체(해외)"
         },
         {
-          "name": "달라웨이 A",
-          "ticker": "달라웨이A",
+          "name": "알파벳 A",
+          "ticker": "GOOGL",
           "shares": 17,
           "avg_price": 322592,
           "current_price": 456748,
@@ -671,8 +806,8 @@
           "category": "기술(해외)"
         },
         {
-          "name": "달라웨이 A(소수점)",
-          "ticker": "달라웨이A",
+          "name": "알파벳 A(소수점)",
+          "ticker": "{GOOGL},",
           "shares": 0.796179,
           "avg_price": 437274,
           "current_price": 456683,
@@ -695,6 +830,19 @@
           "category": "양자컴퓨팅(해외)"
         },
         {
+          "name": "KORU",
+          "ticker": "KORU",
+          "shares": 5,
+          "avg_price": 518079.8,
+          "current_price": 481373.6,
+          "current_value": 2406868,
+          "unrealized_pnl": -183531,
+          "unrealized_pnl_pct": -7.09,
+          "type": "주식",
+          "category": "국내지수"
+        },
+
+        {
           "name": "엔비디아",
           "ticker": "NVDA",
           "shares": 30,
@@ -709,12 +857,12 @@
         {
           "name": "옥시덴탈 페트롤리엄",
           "ticker": "OXY",
-          "shares": 55,
-          "avg_price": 82300,
-          "current_price": 90597,
-          "current_value": 4982828,
-          "unrealized_pnl": 456301,
-          "unrealized_pnl_pct": 10.08,
+          "shares": 70,
+          "avg_price": 84185.31,
+          "current_price": 91046.78,
+          "current_value": 6373275,
+          "unrealized_pnl": 480303,
+          "unrealized_pnl_pct": 8.15,
           "type": "주식",
           "category": "에너지(해외)"
         },
@@ -769,12 +917,12 @@
         {
           "name": "SOXL",
           "ticker": "SOXL",
-          "shares": 240,
-          "avg_price": 66689,
-          "current_price": 79499,
-          "current_value": 19079783,
-          "unrealized_pnl": 3074448,
-          "unrealized_pnl_pct": 19.21,
+          "shares": 247,
+          "avg_price": 67024.78,
+          "current_price": 76694.65,
+          "current_value": 18943580,
+          "unrealized_pnl": 2388459,
+          "unrealized_pnl_pct": 14.43,
           "type": "ETF",
           "category": "반도체ETF/레버리지(해외)"
         },
@@ -784,9 +932,9 @@
           "shares": 55,
           "avg_price": 465602,
           "current_price": 570381,
-          "current_value": 31370949,
-          "unrealized_pnl": 5762829,
-          "unrealized_pnl_pct": 22.50,
+          "current_value": 30350628,
+          "unrealized_pnl": 4742308,
+          "unrealized_pnl_pct": 18.52,
           "type": "주식",
           "category": "전기차/기술(해외)"
         }
@@ -808,9 +956,9 @@
         {
           "name": "두산에너빌리티",
           "ticker": "두산에너빌리티",
-          "shares": 0,
-          "avg_price": 0,
-          "current_price": 0,
+          "shares": 30,
+          "avg_price": 80738,
+          "current_price": 109600,
           "current_value": 3288000,
           "unrealized_pnl": 865850,
           "unrealized_pnl_pct": 35.75,
@@ -857,9 +1005,9 @@
         {
           "name": "SOL AI반도체소부장",
           "ticker": "SOLAI반도체소부장",
-          "shares": 0,
-          "avg_price": 0,
-          "current_price": 0,
+          "shares": 30,
+          "avg_price": 27160,
+          "current_price": 27455,
           "current_value": 823650,
           "unrealized_pnl": 8850,
           "unrealized_pnl_pct": 1.09,
@@ -870,9 +1018,9 @@
         {
           "name": "TIGER 반도체TOP10레버리지",
           "ticker": "TIGER반도체TOP10레버리지",
-          "shares": 0,
-          "avg_price": 0,
-          "current_price": 0,
+          "shares": 69,
+          "avg_price": 31315,
+          "current_price": 46000,
           "current_value": 3174000,
           "unrealized_pnl": 1013265,
           "unrealized_pnl_pct": 46.89,
@@ -883,9 +1031,9 @@
         {
           "name": "KODEX 반도체레버리지",
           "ticker": "KODEX반도체레버리지",
-          "shares": 0,
-          "avg_price": 0,
-          "current_price": 0,
+          "shares": 123,
+          "avg_price": 43627,
+          "current_price": 74505,
           "current_value": 9164115,
           "unrealized_pnl": 3797965,
           "unrealized_pnl_pct": 70.78,
