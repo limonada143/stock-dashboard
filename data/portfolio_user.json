@@ -1,0 +1,198 @@
+{
+  "owner": "user",
+  "account": {
+    "id": "43707842-22",
+    "name": "연금저축 2025 ISA이전",
+    "currency": "KRW",
+    "last_updated": "2026-03-20"
+  },
+  "summary": {
+    "total_value": 171829185,
+    "total_cost": 137076164,
+    "unrealized_pnl": 34753021,
+    "unrealized_pnl_pct": 25.35,
+    "cash": 16719
+  },
+  "holdings": [
+    {
+      "name": "ACE 원자력TOP10",
+      "ticker": "ACE원자력TOP10",
+      "shares": 92,
+      "avg_price": 46218,
+      "current_price": 73930,
+      "current_value": 6801560,
+      "unrealized_pnl": 2549465,
+      "unrealized_pnl_pct": 59.96,
+      "type": "ETF",
+      "category": "원자력"
+    },
+    {
+      "name": "TIGER 반도체TOP10",
+      "ticker": "TIGER반도체TOP10",
+      "shares": 772,
+      "avg_price": 23249,
+      "current_price": 34205,
+      "current_value": 26406260,
+      "unrealized_pnl": 8457984,
+      "unrealized_pnl_pct": 47.12,
+      "type": "ETF",
+      "category": "반도체"
+    },
+    {
+      "name": "KODEX 반도체",
+      "ticker": "KODEX반도체",
+      "shares": 69,
+      "avg_price": 73013,
+      "current_price": 103865,
+      "current_value": 7166685,
+      "unrealized_pnl": 2128770,
+      "unrealized_pnl_pct": 42.25,
+      "type": "ETF",
+      "category": "반도체"
+    },
+    {
+      "name": "HANARO 원자력iSelect",
+      "ticker": "HANARO원자력iSelect",
+      "shares": 115,
+      "avg_price": 51978,
+      "current_price": 72435,
+      "current_value": 8330025,
+      "unrealized_pnl": 2352600,
+      "unrealized_pnl_pct": 39.36,
+      "type": "ETF",
+      "category": "원자력"
+    },
+    {
+      "name": "KODEX 200",
+      "ticker": "KODEX200",
+      "shares": 191,
+      "avg_price": 63694,
+      "current_price": 86660,
+      "current_value": 16552060,
+      "unrealized_pnl": 4386490,
+      "unrealized_pnl_pct": 36.06,
+      "type": "ETF",
+      "category": "시장지수"
+    },
+    {
+      "name": "TIGER 코리아시전략기기TOP3플러스",
+      "ticker": "TIGER코리아시전략기기TOP3플러스",
+      "shares": 486,
+      "avg_price": 13494,
+      "current_price": 18425,
+      "current_value": 8954550,
+      "unrealized_pnl": 2396600,
+      "unrealized_pnl_pct": 36.54,
+      "type": "ETF",
+      "category": "방위/전략"
+    },
+    {
+      "name": "TIGER K방산&우주",
+      "ticker": "TIGERK방산우주",
+      "shares": 279,
+      "avg_price": 37416,
+      "current_price": 45120,
+      "current_value": 12588480,
+      "unrealized_pnl": 2149404,
+      "unrealized_pnl_pct": 20.59,
+      "type": "ETF",
+      "category": "방산/우주"
+    },
+    {
+      "name": "TIGER 삼성그룹",
+      "ticker": "TIGER삼성그룹",
+      "shares": 150,
+      "avg_price": 20868,
+      "current_price": 26120,
+      "current_value": 3918000,
+      "unrealized_pnl": 787850,
+      "unrealized_pnl_pct": 25.17,
+      "type": "ETF",
+      "category": "그룹주"
+    },
+    {
+      "name": "KODEX 증권",
+      "ticker": "KODEX증권",
+      "shares": 257,
+      "avg_price": 23243,
+      "current_price": 27900,
+      "current_value": 7170300,
+      "unrealized_pnl": 1196735,
+      "unrealized_pnl_pct": 20.03,
+      "type": "ETF",
+      "category": "금융"
+    },
+    {
+      "name": "ACE 코스닥150",
+      "ticker": "ACE코스닥150",
+      "shares": 411,
+      "avg_price": 17262,
+      "current_price": 20240,
+      "current_value": 8318640,
+      "unrealized_pnl": 1223905,
+      "unrealized_pnl_pct": 17.25,
+      "type": "ETF",
+      "category": "시장지수"
+    },
+    {
+      "name": "TIME 미국나스닥100액티브",
+      "ticker": "TIME미국나스닥100액티브",
+      "shares": 130,
+      "avg_price": 34289,
+      "current_price": 40530,
+      "current_value": 5268900,
+      "unrealized_pnl": 811352,
+      "unrealized_pnl_pct": 18.20,
+      "type": "ETF",
+      "category": "해외지수"
+    },
+    {
+      "name": "TIGER 현대차그룹플러스",
+      "ticker": "TIGER현대차그룹플러스",
+      "shares": 513,
+      "avg_price": 53043,
+      "current_price": 60200,
+      "current_value": 30882600,
+      "unrealized_pnl": 3671575,
+      "unrealized_pnl_pct": 13.49,
+      "type": "ETF",
+      "category": "그룹주"
+    },
+    {
+      "name": "SOL 조선TOP3플러스",
+      "ticker": "SOL조선TOP3플러스",
+      "shares": 557,
+      "avg_price": 33245,
+      "current_price": 36185,
+      "current_value": 20155045,
+      "unrealized_pnl": 1637770,
+      "unrealized_pnl_pct": 8.84,
+      "type": "ETF",
+      "category": "조선"
+    },
+    {
+      "name": "SOL 조선기자재",
+      "ticker": "SOL조선기자재",
+      "shares": 626,
+      "avg_price": 10294,
+      "current_price": 11580,
+      "current_value": 7249080,
+      "unrealized_pnl": 804868,
+      "unrealized_pnl_pct": 12.49,
+      "type": "ETF",
+      "category": "조선"
+    },
+    {
+      "name": "TIME K바이오액티브",
+      "ticker": "TIMEK바이오액티브",
+      "shares": 100,
+      "avg_price": 18693,
+      "current_price": 20670,
+      "current_value": 2067000,
+      "unrealized_pnl": 197653,
+      "unrealized_pnl_pct": 10.57,
+      "type": "ETF",
+      "category": "바이오"
+    }
+  ]
+}

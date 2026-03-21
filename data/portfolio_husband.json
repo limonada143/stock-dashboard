@@ -1,0 +1,17 @@
+{
+  "owner": "husband",
+  "account": {
+    "id": "",
+    "name": "",
+    "currency": "USD",
+    "last_updated": ""
+  },
+  "summary": {
+    "total_value_usd": 0,
+    "total_cost_usd": 0,
+    "unrealized_pnl_usd": 0,
+    "unrealized_pnl_pct": 0,
+    "cash_usd": 0
+  },
+  "holdings": []
+}

@@ -1,0 +1,35 @@
+{
+  "last_updated": "2026-03-20",
+  "fx_rate_usd_krw": 1493.868581,
+  "summary": {
+    "family_total_krw": 171829185,
+    "family_cost_krw": 137076164,
+    "family_pnl_krw": 34753021,
+    "family_pnl_pct": 25.35,
+    "user_total_krw": 171829185,
+    "husband_total_krw": 0,
+    "mom_krw": 0,
+    "mom_pct": 0
+  },
+  "category_breakdown_krw": {
+    "그룹주": 34800600,
+    "반도체": 33572945,
+    "조선": 27404125,
+    "시장지수": 24870700,
+    "원자력": 15131585,
+    "방산/우주": 12588480,
+    "방위/전략": 8954550,
+    "금융": 7170300,
+    "해외지수": 5268900,
+    "바이오": 2067000
+  },
+  "monthly_history": [
+    {
+      "date": "2026-03-20",
+      "total_value_krw": 171829185,
+      "user_value_krw": 171829185,
+      "husband_value_krw": 0,
+      "fx_rate_usd_krw": 1493.868581
+    }
+  ]
+}
