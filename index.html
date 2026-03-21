@@ -226,9 +226,10 @@
         });
 
         // ══════════════════════════════════════════════════════════
-        //  TAB 1: TOTAL
+        //  TAB 1: TOTAL (개선 버전)
         // ══════════════════════════════════════════════════════════
         function buildTotal(history, portfolio) {
+            // ... (데이터 가공 로직: byDate, dates, uVals 등은 기존과 동일) ...
             const byDate = {};
             history.forEach(h => {
                 if (!byDate[h.date]) byDate[h.date] = {};
@@ -244,7 +245,6 @@
             const uPnl  = dates.map(d => byDate[d].user?.unrealized_pnl_pct    || null);
             const hPnl  = dates.map(d => byDate[d].husband?.unrealized_pnl_pct || null);
 
-            // 요약 카드 — User는 portfolio.json 최신값, Husband는 history.json 최신값
             const ps = portfolio.summary;
             const lastHusbandDate = dates.filter(d => byDate[d].husband).at(-1);
             const lastHusband = lastHusbandDate ? byDate[lastHusbandDate].husband : null;
@@ -254,36 +254,56 @@
             document.getElementById('t-total-pnl').textContent   = fmt(combinedPnl);
             document.getElementById('t-updated').textContent      = portfolio.last_updated;
 
-            // 추이 차트
+            // [수정 포인트 1] 추이 차트 설정 변경
             new Chart(document.getElementById('totalTrendChart'), {
                 type: 'line',
                 data: { labels: dates, datasets: [
+                    // 합산: 채우기(true)를 유지하되 선을 굵게(borderWidth 추가 가능하지만 헬퍼 함수를 쓰므로 그대로 둠)
                     lineDataset('합산 총 자산', totVals, '#60A5FA', true),
-                    lineDataset('User',          uVals,   '#34D399', false, [4,3]),
-                    lineDataset('Husband',       hVals,   '#F472B6', false, [4,3])
+                    
+                    // User & Husband: 마지막 인자인 [4,3](점선)을 제거하여 '실선'으로 변경
+                    lineDataset('User',          uVals,   '#34D399', false), 
+                    lineDataset('Husband',       hVals,   '#F472B6', false)
                 ]},
-                options: { ...CHART_DEFAULTS,
-                    scales: {
-                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                options: { 
+                    ...CHART_DEFAULTS,
+                    interaction: {
+                        mode: 'index',     // 마우스 올리면 같은 날짜의 모든 수치를 한꺼번에 표시
+                        intersect: false,
                     },
-                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } } }
+                    scales: {
+                        x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { ticks: { color: '#9CA3AF', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    },
+                    plugins: { 
+                        ...CHART_DEFAULTS.plugins, 
+                        legend: {
+                            labels: { color: '#FFFFFF', usePointStyle: true } // 범례 글자를 흰색으로
+                        },
+                        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } } 
+                    }
                 }
             });
 
-            // 수익률 차트
+            // [수정 포인트 2] 수익률 차트 (점선 제거)
             new Chart(document.getElementById('totalPnlChart'), {
                 type: 'line',
                 data: { labels: dates, datasets: [
                     lineDataset('User 수익률(%)',    uPnl, '#34D399'),
-                    lineDataset('Husband 수익률(%)', hPnl, '#F472B6', false, [4,3])
+                    lineDataset('Husband 수익률(%)', hPnl, '#F472B6', false) // [4,3] 제거
                 ]},
-                options: { ...CHART_DEFAULTS,
+                options: { 
+                    ...CHART_DEFAULTS,
+                    interaction: { mode: 'index', intersect: false },
                     scales: {
-                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                        y: { ticks: { color: '#6B7280', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                        x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { ticks: { color: '#9CA3AF', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } }
                     },
-                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '%' } } }
+                    plugins: { 
+                        ...CHART_DEFAULTS.plugins, 
+                        legend: { labels: { color: '#FFFFFF' } },
+                        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '%' } } 
+                    }
                 }
             });
         }
