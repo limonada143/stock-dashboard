@@ -96,7 +96,7 @@
                     </div>
                 </div>
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                    <h3 class="text-lg font-semibold mb-4">수익률 추이</h3>
+                    <h3 class="text-lg font-semibold mb-4">투입금 vs 평가금</h3>
                     <div style="height:280px">
                         <canvas id="userPnlChart"></canvas>
                     </div>
@@ -145,7 +145,7 @@
                     </div>
                 </div>
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                    <h3 class="text-lg font-semibold mb-4">수익률 추이</h3>
+                    <h3 class="text-lg font-semibold mb-4">투입금 vs 평가금</h3>
                     <div style="height:280px">
                         <canvas id="husbandPnlChart"></canvas>
                     </div>
@@ -301,26 +301,36 @@
                 }
             });
 
-            // 수익률 추이 차트
+            // 투입금 vs 평가금 차트
             const userHistory = history.filter(h => h.note === 'Users').sort((a,b) => a.date.localeCompare(b.date));
             new Chart(document.getElementById('userPnlChart'), {
                 type: 'line',
                 data: { labels: userHistory.map(h => h.date),
-                    datasets: [{
-                        label: '수익률(%)',
-                        data: userHistory.map(h => h.unrealized_pnl_pct),
-                        borderColor: '#34D399',
-                        backgroundColor: 'rgba(52,211,153,0.08)',
-                        pointBackgroundColor: '#34D399',
-                        pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
-                    }]
+                    datasets: [
+                        {
+                            label: '현재 평가금',
+                            data: userHistory.map(h => h.total_value),
+                            borderColor: '#34D399',
+                            backgroundColor: 'rgba(52,211,153,0.08)',
+                            pointBackgroundColor: '#34D399',
+                            pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
+                        },
+                        {
+                            label: '투입금 (매입금액)',
+                            data: userHistory.map(h => h.total_cost),
+                            borderColor: '#94A3B8',
+                            backgroundColor: 'transparent',
+                            pointBackgroundColor: '#94A3B8',
+                            pointRadius: 4, borderWidth: 2, borderDash: [5,4], tension: 0.3
+                        }
+                    ]
                 },
                 options: { ...CHART_DEFAULTS,
                     scales: {
                         x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                        y: { ticks: { color: '#6B7280', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
                     },
-                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.parsed.y + '%' } } }
+                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } } }
                 }
             });
 
@@ -346,25 +356,35 @@
         function buildHusband(history) {
             const hHistory = history.filter(h => h.note === 'Husband').sort((a,b) => a.date.localeCompare(b.date));
 
-            // 수익률 추이
+            // 투입금 vs 평가금
             new Chart(document.getElementById('husbandPnlChart'), {
                 type: 'line',
                 data: { labels: hHistory.map(h => h.date),
-                    datasets: [{
-                        label: '수익률(%)',
-                        data: hHistory.map(h => h.unrealized_pnl_pct),
-                        borderColor: '#F472B6',
-                        backgroundColor: 'rgba(244,114,182,0.08)',
-                        pointBackgroundColor: '#F472B6',
-                        pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
-                    }]
+                    datasets: [
+                        {
+                            label: '현재 평가금',
+                            data: hHistory.map(h => h.total_value),
+                            borderColor: '#F472B6',
+                            backgroundColor: 'rgba(244,114,182,0.08)',
+                            pointBackgroundColor: '#F472B6',
+                            pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
+                        },
+                        {
+                            label: '투입금 (매입금액)',
+                            data: hHistory.map(h => h.total_cost),
+                            borderColor: '#94A3B8',
+                            backgroundColor: 'transparent',
+                            pointBackgroundColor: '#94A3B8',
+                            pointRadius: 4, borderWidth: 2, borderDash: [5,4], tension: 0.3
+                        }
+                    ]
                 },
                 options: { ...CHART_DEFAULTS,
                     scales: {
                         x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                        y: { ticks: { color: '#6B7280', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
                     },
-                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.parsed.y + '%' } } }
+                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } } }
                 }
             });
 
