@@ -205,7 +205,7 @@
             fetch('portfolio.json').then(r => r.json()),
             fetch('history.json').then(r => r.json())
         ]).then(([portfolio, history]) => {
-            buildTotal(history);
+            buildTotal(history, portfolio);
             buildUser(portfolio, history);
             buildHusband(history);
         });
@@ -213,7 +213,7 @@
         // ══════════════════════════════════════════════════════════
         //  TAB 1: TOTAL
         // ══════════════════════════════════════════════════════════
-        function buildTotal(history) {
+        function buildTotal(history, portfolio) {
             const byDate = {};
             history.forEach(h => {
                 if (!byDate[h.date]) byDate[h.date] = {};
@@ -229,14 +229,15 @@
             const uPnl  = dates.map(d => byDate[d].user?.unrealized_pnl_pct    || null);
             const hPnl  = dates.map(d => byDate[d].husband?.unrealized_pnl_pct || null);
 
-            // 요약 카드 (최신 날짜 기준)
-            const lastDate = dates[dates.length - 1];
-            const lastUser = byDate[lastDate].user;
-            const latestTotal = totVals[totVals.length - 1];
-            const latestPnlU  = lastUser ? lastUser.unrealized_pnl : 0;
-            document.getElementById('t-total-value').textContent = fmt(latestTotal);
-            document.getElementById('t-total-pnl').textContent   = fmt(latestPnlU);
-            document.getElementById('t-updated').textContent      = lastDate;
+            // 요약 카드 — User는 portfolio.json 최신값, Husband는 history.json 최신값
+            const ps = portfolio.summary;
+            const lastHusbandDate = dates.filter(d => byDate[d].husband).at(-1);
+            const lastHusband = lastHusbandDate ? byDate[lastHusbandDate].husband : null;
+            const combinedTotal = ps.total_value + (lastHusband?.total_value || 0);
+            const combinedPnl   = ps.unrealized_pnl + (lastHusband?.unrealized_pnl || 0);
+            document.getElementById('t-total-value').textContent = fmt(combinedTotal);
+            document.getElementById('t-total-pnl').textContent   = fmt(combinedPnl);
+            document.getElementById('t-updated').textContent      = portfolio.last_updated;
 
             // 추이 차트
             new Chart(document.getElementById('totalTrendChart'), {
@@ -301,15 +302,18 @@
                 }
             });
 
-            // 투입금 vs 평가금 차트
+            // 투입금 vs 평가금 차트 (최신 데이터포인트는 portfolio.json 기준)
             const userHistory = history.filter(h => h.note === 'Users').sort((a,b) => a.date.localeCompare(b.date));
+            const uLabels   = [...userHistory.map(h => h.date), portfolio.last_updated];
+            const uValues   = [...userHistory.map(h => h.total_value),   s.total_value];
+            const uCosts    = [...userHistory.map(h => h.total_cost),    s.total_cost];
             new Chart(document.getElementById('userPnlChart'), {
                 type: 'line',
-                data: { labels: userHistory.map(h => h.date),
+                data: { labels: uLabels,
                     datasets: [
                         {
                             label: '현재 평가금',
-                            data: userHistory.map(h => h.total_value),
+                            data: uValues,
                             borderColor: '#34D399',
                             backgroundColor: 'rgba(52,211,153,0.08)',
                             pointBackgroundColor: '#34D399',
@@ -317,7 +321,7 @@
                         },
                         {
                             label: '투입금 (매입금액)',
-                            data: userHistory.map(h => h.total_cost),
+                            data: uCosts,
                             borderColor: '#94A3B8',
                             backgroundColor: 'transparent',
                             pointBackgroundColor: '#94A3B8',
