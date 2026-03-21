@@ -180,37 +180,39 @@
     <script>
         // ── 탭 전환 ──────────────────────────────────────────────
         function showTab(name) {
-            ['total','user','husband'].forEach(t => {
+            ['total', 'user', 'husband'].forEach(t => {
                 document.getElementById('page-' + t).classList.add('hidden');
                 const btn = document.getElementById('tab-' + t);
-                btn.classList.remove('border-blue-500','border-green-500','border-pink-500','text-blue-400','text-green-400','text-pink-400');
-                btn.classList.add('border-transparent','text-gray-400');
+                btn.classList.remove('border-blue-500', 'border-green-500', 'border-pink-500', 'text-blue-400', 'text-green-400', 'text-pink-400');
+                btn.classList.add('border-transparent', 'text-gray-400');
             });
             document.getElementById('page-' + name).classList.remove('hidden');
-            const colors = { total: ['border-blue-500','text-blue-400'], user: ['border-green-500','text-green-400'], husband: ['border-pink-500','text-pink-400'] };
+            const colors = { 
+                total: ['border-blue-500', 'text-blue-400'], 
+                user: ['border-green-500', 'text-green-400'], 
+                husband: ['border-pink-500', 'text-pink-400'] 
+            };
             const btn = document.getElementById('tab-' + name);
-            btn.classList.remove('border-transparent','text-gray-400');
+            btn.classList.remove('border-transparent', 'text-gray-400');
             btn.classList.add(...colors[name]);
         }
 
         // ── 공통 유틸 ─────────────────────────────────────────────
-        const fmt  = v => '₩' + Math.round(v).toLocaleString();
+        const fmt = v => '₩' + Math.round(v).toLocaleString();
         const fmtM = v => Math.round(v / 10000).toLocaleString() + '만';
-        const pnlColor = pct => pct >= 0 ? '#34D399' : '#F87171';
-
+        
         const CHART_DEFAULTS = {
             responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: '#9CA3AF', font: { size: 11 } } } }
+            plugins: { legend: { labels: { color: '#FFFFFF', font: { size: 11 } } } }
         };
 
-        function lineDataset(label, data, color, fill=false, dash=[]) {
+        function lineDataset(label, data, color, fill = false, dash = []) {
             return {
                 label, data,
                 borderColor: color,
-                backgroundColor: fill ? color.replace(')',',0.1)').replace('rgb','rgba') : 'transparent',
+                backgroundColor: fill ? color.replace(')', ',0.1)').replace('rgb', 'rgba') : 'transparent',
                 pointBackgroundColor: color,
-                pointRadius: 4, pointHoverRadius: 7,
-                borderWidth: 2, borderDash: dash,
+                pointRadius: 4, borderWidth: 2, borderDash: dash,
                 fill, tension: 0.3, spanGaps: true
             };
         }
@@ -220,125 +222,50 @@
             fetch('portfolio.json').then(r => r.json()),
             fetch('history.json').then(r => r.json())
         ]).then(([portfolio, history]) => {
-            buildTotal(history, portfolio);
-            buildUser(portfolio, history);
-            buildHusband(history);
+            try {
+                buildTotal(history, portfolio);
+                buildUser(portfolio, history);
+                buildHusband(history);
+            } catch (e) {
+                console.error("차트 렌더링 오류:", e);
+            }
         });
 
         // ══════════════════════════════════════════════════════════
-        //  TAB 1: TOTAL (누적 영역 차트 버전)
+        //  TAB 1: TOTAL (합산 누적 차트)
         // ══════════════════════════════════════════════════════════
         function buildTotal(history, portfolio) {
             const byDate = {};
             history.forEach(h => {
                 if (!byDate[h.date]) byDate[h.date] = {};
-                const key = h.note === 'Users' ? 'user' : 'husband';
-                byDate[h.date][key] = h;
+                byDate[h.date][h.note === 'Users' ? 'user' : 'husband'] = h;
             });
-
             const dates = Object.keys(byDate).sort();
-            const uVals = dates.map(d => byDate[d].user?.total_value || 0);    // null 대신 0 처리 (누적용)
+            const uVals = dates.map(d => byDate[d].user?.total_value || 0);
             const hVals = dates.map(d => byDate[d].husband?.total_value || 0);
 
-            // 요약 카드 업데이트 (기존과 동일)
             const ps = portfolio.summary;
-            const lastHusbandDate = dates.filter(d => byDate[d].husband).at(-1);
-            const lastHusband = lastHusbandDate ? byDate[lastHusbandDate].husband : null;
-            const combinedTotal = ps.total_value + (lastHusband?.total_value || 0);
-            const combinedPnl   = ps.unrealized_pnl + (lastHusband?.unrealized_pnl || 0);
-            document.getElementById('t-total-value').textContent = fmt(combinedTotal);
-            document.getElementById('t-total-pnl').textContent   = fmt(combinedPnl);
-            document.getElementById('t-updated').textContent     = portfolio.last_updated;
+            const lastHusband = history.filter(h => h.note === 'Husband').sort((a,b)=>a.date.localeCompare(b.date)).at(-1);
+            
+            document.getElementById('t-total-value').textContent = fmt(ps.total_value + (lastHusband?.total_value || 0));
+            document.getElementById('t-total-pnl').textContent = fmt(ps.unrealized_pnl + (lastHusband?.unrealized_pnl || 0));
+            document.getElementById('t-updated').textContent = portfolio.last_updated;
 
-            // [변경 포인트] 자산 추이 차트: 누적(Stacked) 방식
             new Chart(document.getElementById('totalTrendChart'), {
                 type: 'line',
-                data: { 
-                    labels: dates, 
-                    datasets: [
-                        // 아래쪽 레이어: User (먼저 정의)
-                        {
-                            label: 'User\'s',
-                            data: uVals,
-                            borderColor: '#34D399',
-                            backgroundColor: 'rgba(52, 211, 153, 0.4)', // 면적 색상 (약간 진하게)
-                            fill: true,
-                            tension: 0.3,
-                            pointRadius: 3
-                        },
-                        // 위쪽 레이어: Husband (User 위에 쌓임)
-                        {
-                            label: 'Husband\'s',
-                            data: hVals,
-                            borderColor: '#F472B6',
-                            backgroundColor: 'rgba(244, 114, 182, 0.4)',
-                            fill: true,
-                            tension: 0.3,
-                            pointRadius: 3
-                        }
-                    ]
-                },
-                options: { 
-                    ...CHART_DEFAULTS,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    scales: {
-                        x: { 
-                            stacked: true, // X축 누적 설정
-                            ticks: { color: '#9CA3AF' }, 
-                            grid: { color: 'rgba(255,255,255,0.05)' } 
-                        },
-                        y: { 
-                            stacked: true, // Y축 누적 설정 (이게 핵심!)
-                            ticks: { color: '#9CA3AF', callback: v => fmtM(v) }, 
-                            grid: { color: 'rgba(255,255,255,0.05)' } 
-                        }
-                    },
-                    plugins: { 
-                        ...CHART_DEFAULTS.plugins, 
-                        legend: {
-                            labels: { color: '#FFFFFF', usePointStyle: true }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                // 툴팁에 각자 자산과 합산 자산을 모두 표시하도록 개선
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) label += ': ';
-                                    if (context.parsed.y !== null) label += fmt(context.parsed.y);
-                                    return label;
-                                },
-                                footer: (items) => {
-                                    const total = items.reduce((sum, item) => sum + item.parsed.y, 0);
-                                    return `합계: ${fmt(total)}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // 수익률 차트는 누적하지 않고 기존처럼 각자의 실선으로 표시 (그대로 유지)
-            new Chart(document.getElementById('totalPnlChart'), {
-                type: 'line',
                 data: { labels: dates, datasets: [
-                    lineDataset('User 수익률(%)',    uPnl, '#34D399'),
-                    lineDataset('Husband 수익률(%)', hPnl, '#F472B6', false)
+                    { label: "User's", data: uVals, borderColor: '#34D399', backgroundColor: 'rgba(52, 211, 153, 0.4)', fill: true, tension: 0.3 },
+                    { label: "Husband's", data: hVals, borderColor: '#F472B6', backgroundColor: 'rgba(244, 114, 182, 0.4)', fill: true, tension: 0.3 }
                 ]},
-                options: { ...CHART_DEFAULTS,
-                    scales: {
-                        x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        y: { ticks: { color: '#9CA3AF', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } }
-                    },
-                    plugins: { ...CHART_DEFAULTS.plugins, legend: { labels: { color: '#FFFFFF' } } }
+                options: { ...CHART_DEFAULTS, interaction: { mode: 'index', intersect: false },
+                    scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: v => fmtM(v) } } },
+                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { footer: items => `합계: ${fmt(items.reduce((s, i) => s + i.parsed.y, 0))}` } } }
                 }
             });
         }
 
         // ══════════════════════════════════════════════════════════
-        //  TAB 2: USER
+        //  TAB 2: USER (내 포트폴리오)
         // ══════════════════════════════════════════════════════════
         function buildUser(portfolio, history) {
             const s = portfolio.summary;
@@ -348,231 +275,74 @@
             document.getElementById('u-pnl-pct').textContent     = s.unrealized_pnl_pct + '%';
             document.getElementById('u-updated').textContent     = '기준일: ' + portfolio.last_updated;
 
-            // 전 계좌 종목 합산
             const allHoldings = portfolio.accounts.flatMap(a => a.holdings || []);
 
-            // ── 도넛 차트 (섹터 / 국가 토글) ────────────────────────
-            const SECTOR_MAP = {
-                '반도체':        ['반도체','반도체(해외)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
-                'AI/기술':       ['AI/기술','AI/기술(해외)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
-                '원자력/에너지': ['원자력','원자력/에너지','에너지/화학','에너지(해외)'],
-                '방산/우주':     ['방산/우주','방위/전략','우주/방산(해외)'],
-                '조선':          ['조선'],
-                '시장지수':      ['시장지수','레버리지/지수','해외지수'],
-                '그룹주/자동차': ['그룹주','자동차'],
-                '바이오':        ['바이오'],
-                '금융':          ['금융'],
-                '기타':          ['설비투자','양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','기타']
-            };
-            const SECTOR_COLORS = {
-                '반도체':        '#60A5FA', 'AI/기술': '#A78BFA',
-                '원자력/에너지': '#FBBF24', '방산/우주': '#F87171',
-                '조선':          '#34D399', '시장지수': '#38BDF8',
-                '그룹주/자동차': '#FB923C', '바이오': '#F472B6',
-                '금융':          '#4ADE80', '기타': '#6B7280'
-            };
-
-            function buildSectorData() {
+            // 1. 도넛 차트 로직
+            const SECTOR_COLORS = { '반도체': '#60A5FA', 'AI/기술': '#A78BFA', '원자력/에너지': '#FBBF24', '기타': '#6B7280' };
+            function renderDonut(mode) {
                 const totals = {};
                 allHoldings.forEach(h => {
-                    const cat = h.category || '기타';
-                    const sector = Object.keys(SECTOR_MAP).find(s => SECTOR_MAP[s].includes(cat)) || '기타';
-                    totals[sector] = (totals[sector] || 0) + (h.current_value || 0);
+                    const key = mode === 'country' ? (h.name.includes('미국') ? '미국/해외' : '한국') : (h.category || '기타');
+                    totals[key] = (totals[key] || 0) + h.current_value;
                 });
-                const labels = Object.keys(totals).sort((a,b) => totals[b] - totals[a]);
-                return { labels, values: labels.map(l => totals[l]), colors: labels.map(l => SECTOR_COLORS[l] || '#6B7280') };
-            }
-
-            function buildCountryData() {
-                let kr = 0, us = 0;
-                allHoldings.forEach(h => {
-                    if (h.name.includes('미국') || (h.category || '').includes('해외') || (h.category || '').includes('(해외)'))
-                        us += h.current_value || 0;
-                    else
-                        kr += h.current_value || 0;
-                });
-                return { labels: ['한국', '미국/해외'], values: [kr, us], colors: ['#34D399', '#60A5FA'] };
-            }
-
-            const donutLegendOpts = (labelsArr, dataArr) => ({
-                position: 'right',
-                labels: {
-                    color: '#FFFFFF',
-                    font: { size: 11 },
-                    boxWidth: 14,
-                    generateLabels: () => labelsArr.map((label, i) => {
-                        const total = dataArr.reduce((a,b) => a+b, 0);
-                        const pct = ((dataArr[i]/total)*100).toFixed(1);
-                        return { text: `${label}  ${pct}%`, fillStyle: donutChart.data.datasets[0].backgroundColor[i], hidden: false, index: i };
-                    })
-                }
-            });
-
-            let donutChart;
-            function renderDonut(mode) {
-                const d = mode === 'sector' ? buildSectorData() : buildCountryData();
-                if (donutChart) donutChart.destroy();
-                donutChart = new Chart(document.getElementById('userDonutChart'), {
+                const labels = Object.keys(totals);
+                if (window.myDonut) window.myDonut.destroy();
+                window.myDonut = new Chart(document.getElementById('userDonutChart'), {
                     type: 'doughnut',
-                    data: { labels: d.labels, datasets: [{ data: d.values, backgroundColor: d.colors }] },
-                    options: {
-                        responsive: true, 
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'right', // 우측 범례 위치
-                                labels: {
-                                    // 1. 전체 범례 라벨의 기본 색상을 흰색으로 설정
-                                    color: '#FFFFFF', 
-                                    font: { 
-                                        size: 11,
-                                        // weight: 'bold' // 선명도를 위해 추가 고려 가능
-                                    }, 
-                                    boxWidth: 14,
-                                    padding: 12, // 범례 항목 간 간격 살짝 추가
-                                    generateLabels: chart => chart.data.labels.map((label, i) => {
-                                        const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                        const val = chart.data.datasets[0].data[i];
-                                        const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
-                                        
-                                        // 2. [가장 중요] 각 항목의 개별 스타일을 반환할 때 fontColor를 흰색으로 지정
-                                        return { 
-                                            text: `${label}  ${pct}%`, // '반도체 25.0%' 형태
-                                            fillStyle: chart.data.datasets[0].backgroundColor[i], // 해당 섹션 색상 상자
-                                            hidden: false, 
-                                            index: i, 
-                                            strokeStyle: 'transparent',
-                                            fontColor: '#FFFFFF' 
-                                        };
-                                    })
-                                }
-                            },
-                            tooltip: { 
-                                callbacks: { 
-                                    label: c => `  ${fmt(c.parsed)}` 
-                                } 
-                            }
-                        }
-                    }
+                    data: { labels, datasets: [{ data: labels.map(l => totals[l]), backgroundColor: labels.map(l => SECTOR_COLORS[l] || '#6B7280') }] },
+                    options: { ...CHART_DEFAULTS, plugins: { legend: { position: 'right' } } }
                 });
-                // 토글 버튼 스타일
-                document.getElementById('btn-sector').className  = `px-3 py-1 transition-colors ${mode==='sector'  ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`;
-                document.getElementById('btn-country').className = `px-3 py-1 transition-colors ${mode==='country' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`;
+                document.getElementById('btn-sector').className = `px-3 py-1 ${mode==='sector'?'bg-blue-600':'bg-gray-700'}`;
+                document.getElementById('btn-country').className = `px-3 py-1 ${mode==='country'?'bg-blue-600':'bg-gray-700'}`;
             }
+            window.switchDonut = renderDonut; renderDonut('sector');
 
-            window.switchDonut = mode => renderDonut(mode);
-            renderDonut('sector');
-
-            // 투입금 vs 평가금 차트 (최신 데이터포인트는 portfolio.json 기준)
-            const userHistory = history.filter(h => h.note === 'Users').sort((a,b) => a.date.localeCompare(b.date));
-            const uLabels   = [...userHistory.map(h => h.date), portfolio.last_updated];
-            const uValues   = [...userHistory.map(h => h.total_value),   s.total_value];
-            const uCosts    = [...userHistory.map(h => h.total_cost),    s.total_cost];
+            // 2. [복구] 투입금 vs 평가금 차트
+            const userHist = history.filter(h => h.note === 'Users').sort((a,b)=>a.date.localeCompare(b.date));
             new Chart(document.getElementById('userPnlChart'), {
                 type: 'line',
-                data: { labels: uLabels,
+                data: { 
+                    labels: [...userHist.map(h => h.date), portfolio.last_updated],
                     datasets: [
-                        {
-                            label: '현재 평가금',
-                            data: uValues,
-                            borderColor: '#34D399',
-                            backgroundColor: 'rgba(52,211,153,0.08)',
-                            pointBackgroundColor: '#34D399',
-                            pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
-                        },
-                        {
-                            label: '투입금 (매입금액)',
-                            data: uCosts,
-                            borderColor: '#94A3B8',
-                            backgroundColor: 'transparent',
-                            pointBackgroundColor: '#94A3B8',
-                            pointRadius: 4, borderWidth: 2, borderDash: [5,4], tension: 0.3
-                        }
+                        lineDataset('평가금액', [...userHist.map(h => h.total_value), s.total_value], '#34D399', true),
+                        lineDataset('투입금', [...userHist.map(h => h.total_cost), s.total_cost], '#94A3B8', false, [5,4])
                     ]
                 },
-                options: { ...CHART_DEFAULTS,
-                    scales: {
-                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
-                    },
-                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } } }
-                }
+                options: { ...CHART_DEFAULTS, scales: { y: { ticks: { callback: v => fmtM(v) } } } }
             });
 
-            // 종목 테이블
+            // 3. 종목 테이블
             const tbody = document.getElementById('u-holdings-table');
             allHoldings.sort((a,b) => b.unrealized_pnl_pct - a.unrealized_pnl_pct).forEach(h => {
                 const color = h.unrealized_pnl_pct >= 0 ? 'text-green-400' : 'text-red-400';
-                tbody.innerHTML += `
-                    <tr class="border-b border-gray-700 hover:bg-gray-750">
-                        <td class="px-6 py-3 font-medium">${h.name}</td>
-                        <td class="px-4 py-3 text-right text-gray-300">${h.shares.toLocaleString()}</td>
-                        <td class="px-4 py-3 text-right text-gray-300">${Math.round(h.avg_price).toLocaleString()}</td>
-                        <td class="px-4 py-3 text-right text-gray-300">${Math.round(h.current_price).toLocaleString()}</td>
-                        <td class="px-4 py-3 text-right">${fmt(h.current_value)}</td>
-                        <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct.toFixed(2)}%</td>
-                    </tr>`;
+                tbody.innerHTML += `<tr class="border-b border-gray-700"><td class="px-6 py-3">${h.name}</td><td class="text-right px-4">${h.shares.toLocaleString()}</td><td class="text-right px-4">${fmt(h.current_price)}</td><td class="text-right px-4 font-bold ${color}">${h.unrealized_pnl_pct.toFixed(2)}%</td></tr>`;
             });
         }
 
         // ══════════════════════════════════════════════════════════
-        //  TAB 3: HUSBAND
+        //  TAB 3: HUSBAND (남편 포트폴리오)
         // ══════════════════════════════════════════════════════════
         function buildHusband(history) {
-            const hHistory = history.filter(h => h.note === 'Husband').sort((a,b) => a.date.localeCompare(b.date));
-
-            // 투입금 vs 평가금
+            const hHist = history.filter(h => h.note === 'Husband').sort((a,b)=>a.date.localeCompare(b.date));
+            
+            // 1. [복구] 투입금 vs 평가금 차트
             new Chart(document.getElementById('husbandPnlChart'), {
                 type: 'line',
-                data: { labels: hHistory.map(h => h.date),
+                data: { 
+                    labels: hHist.map(h => h.date),
                     datasets: [
-                        {
-                            label: '현재 평가금',
-                            data: hHistory.map(h => h.total_value),
-                            borderColor: '#F472B6',
-                            backgroundColor: 'rgba(244,114,182,0.08)',
-                            pointBackgroundColor: '#F472B6',
-                            pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
-                        },
-                        {
-                            label: '투입금 (매입금액)',
-                            data: hHistory.map(h => h.total_cost),
-                            borderColor: '#94A3B8',
-                            backgroundColor: 'transparent',
-                            pointBackgroundColor: '#94A3B8',
-                            pointRadius: 4, borderWidth: 2, borderDash: [5,4], tension: 0.3
-                        }
+                        lineDataset('평가금액', hHist.map(h => h.total_value), '#F472B6', true),
+                        lineDataset('투입금', hHist.map(h => h.total_cost), '#94A3B8', false, [5,4])
                     ]
                 },
-                options: { ...CHART_DEFAULTS,
-                    scales: {
-                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
-                    },
-                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } } }
-                }
+                options: { ...CHART_DEFAULTS, scales: { y: { ticks: { callback: v => fmtM(v) } } } }
             });
 
-            // 자산 추이
+            // 2. 월별 자산 추이
             new Chart(document.getElementById('husbandTrendChart'), {
                 type: 'line',
-                data: { labels: hHistory.map(h => h.date),
-                    datasets: [{
-                        label: '평가금액',
-                        data: hHistory.map(h => h.total_value),
-                        borderColor: '#F472B6',
-                        backgroundColor: 'rgba(244,114,182,0.08)',
-                        pointBackgroundColor: '#F472B6',
-                        pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3
-                    }]
-                },
-                options: { ...CHART_DEFAULTS,
-                    scales: {
-                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
-                    },
-                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => fmt(c.parsed.y) } } }
-                }
+                data: { labels: hHist.map(h => h.date), datasets: [lineDataset('자산흐름', hHist.map(h => h.total_value), '#F472B6', true)] },
+                options: CHART_DEFAULTS
             });
         }
     </script>
