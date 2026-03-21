@@ -90,7 +90,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                    <h3 class="text-lg font-semibold mb-4">자산 비중</h3>
+                    <h3 class="text-lg font-semibold mb-4">섹터별 자산 비중</h3>
                     <div style="height:280px" class="flex justify-center">
                         <canvas id="userDonutChart"></canvas>
                     </div>
@@ -287,18 +287,55 @@
             // 전 계좌 종목 합산
             const allHoldings = portfolio.accounts.flatMap(a => a.holdings || []);
 
-            // 도넛 차트
-            const COLORS = ['#60A5FA','#34D399','#FBBF24','#F87171','#A78BFA','#FB923C',
-                            '#38BDF8','#4ADE80','#F472B6','#FACC15','#818CF8','#2DD4BF',
-                            '#FCA5A5','#86EFAC','#C4B5FD','#FCD34D','#67E8F9','#FDA4AF'];
+            // 섹터 도넛 차트
+            const SECTOR_MAP = {
+                '반도체':     ['반도체','반도체(해외)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
+                'AI/기술':    ['AI/기술','AI/기술(해외)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
+                '원자력/에너지': ['원자력','원자력/에너지','에너지/화학','에너지(해외)'],
+                '방산/우주':  ['방산/우주','방위/전략','우주/방산(해외)'],
+                '조선':       ['조선'],
+                '시장지수':   ['시장지수','레버리지/지수','해외지수'],
+                '그룹주/자동차': ['그룹주','자동차'],
+                '바이오':     ['바이오'],
+                '금융':       ['금융'],
+                '기타':       ['설비투자','양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','기타']
+            };
+            const SECTOR_COLORS = {
+                '반도체':        '#60A5FA',
+                'AI/기술':       '#A78BFA',
+                '원자력/에너지': '#FBBF24',
+                '방산/우주':     '#F87171',
+                '조선':          '#34D399',
+                '시장지수':      '#38BDF8',
+                '그룹주/자동차': '#FB923C',
+                '바이오':        '#F472B6',
+                '금융':          '#4ADE80',
+                '기타':          '#6B7280'
+            };
+            const sectorTotals = {};
+            allHoldings.forEach(h => {
+                const cat = h.category || '기타';
+                const sector = Object.keys(SECTOR_MAP).find(s => SECTOR_MAP[s].includes(cat)) || '기타';
+                sectorTotals[sector] = (sectorTotals[sector] || 0) + (h.current_value || 0);
+            });
+            const sectorLabels = Object.keys(sectorTotals).sort((a,b) => sectorTotals[b] - sectorTotals[a]);
             new Chart(document.getElementById('userDonutChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: allHoldings.map(h => h.name),
-                    datasets: [{ data: allHoldings.map(h => h.current_value), backgroundColor: COLORS }]
+                    labels: sectorLabels,
+                    datasets: [{ data: sectorLabels.map(s => sectorTotals[s]), backgroundColor: sectorLabels.map(s => SECTOR_COLORS[s] || '#6B7280') }]
                 },
                 options: { responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right', labels: { color: 'white', font: { size: 10 }, boxWidth: 12 } } }
+                    plugins: { legend: { position: 'right', labels: { color: 'white', font: { size: 11 }, boxWidth: 14,
+                        generateLabels: chart => chart.data.labels.map((label, i) => {
+                            const val = chart.data.datasets[0].data[i];
+                            const total = chart.data.datasets[0].data.reduce((a,b) => a+b, 0);
+                            const pct = ((val/total)*100).toFixed(1);
+                            return { text: `${label} ${pct}%`, fillStyle: chart.data.datasets[0].backgroundColor[i], hidden: false, index: i };
+                        })
+                    } },
+                    tooltip: { callbacks: { label: c => fmt(c.parsed) } }
+                    }
                 }
             });
 
