@@ -24,7 +24,7 @@
             </button>
             <button onclick="showTab('user')" id="tab-user"
                 class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-transparent text-gray-400 hover:text-white">
-                내 포트폴리오
+                아내 포트폴리오
             </button>
             <button onclick="showTab('husband')" id="tab-husband"
                 class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-transparent text-gray-400 hover:text-white">
@@ -56,7 +56,7 @@
 
             <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-6">
                 <h3 class="text-lg font-semibold mb-1">자산 추이</h3>
-                <p class="text-xs text-gray-400 mb-4">User + Husband 합산 월별 평가금액</p>
+                <p class="text-xs text-gray-400 mb-4">부부 합산 월별 평가금액 (Unit:10k)</p>
                 <div style="height:320px">
                     <canvas id="totalTrendChart"></canvas>
                 </div>
@@ -73,7 +73,7 @@
 
         <!-- ===== TAB 2: USER ===== -->
         <div id="page-user" class="hidden">
-            <h2 class="text-2xl font-bold mb-6 text-green-400">내 포트폴리오</h2>
+            <h2 class="text-2xl font-bold mb-6 text-green-400">아내 포트폴리오</h2>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
@@ -239,7 +239,7 @@
 
         // ── 공통 유틸 ─────────────────────────────────────────────
         const fmt  = v => '₩' + Math.round(v).toLocaleString();
-        const fmtM = v => Math.round(v / 10000).toLocaleString() + '만';
+        const fmtM = v => Math.round(v / 10000).toLocaleString();
 
         const CHART_DEFAULTS = {
             responsive: true, maintainAspectRatio: false,
