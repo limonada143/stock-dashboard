@@ -453,12 +453,12 @@
         {
           "name": "삼성전자",
           "ticker": "005930.KS",
-          "shares": 55,
+          "shares": 58,
           "avg_price": 182500,
-          "current_price": 199400,
+          "current_price": 199800,
           "current_value": 10967000,
-          "unrealized_pnl": 929500,
-          "unrealized_pnl_pct": 9.26,
+          "unrealized_pnl": 1003400,
+          "unrealized_pnl_pct": 9.48,
           "type": "주식",
           "category": "반도체"
         }
