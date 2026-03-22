@@ -473,15 +473,18 @@
                 document.getElementById('t-donut-sector-label').classList.add('hidden');
             }
 
+            let tCurrentSector = null;
+
             function tDrillInto(sectorName) {
                 const holdings = allHoldings.filter(h =>
                     holdingToSector(h.name, h.category || '기타') === sectorName
                 );
                 if (!holdings.length) return;
+                tCurrentSector = sectorName;
 
-                let labels, values, colors;
+                let labels, values, colors, onClickFn = null;
                 if (sectorName === '시장지수') {
-                    // 시장지수 → 서브인덱스(S&P500/KOSPI/KOSDAQ/나스닥/기타)로 분류
+                    // 시장지수 → 서브인덱스 도넛 (클릭 시 3레벨로)
                     const subTotals = {};
                     holdings.forEach(h => {
                         const sub = holdingToSubIndex(h.name);
@@ -491,8 +494,12 @@
                     labels = entries.map(([n]) => n);
                     values = entries.map(([,v]) => v);
                     colors = labels.map(l => SUB_INDEX_COLORS[l] || '#6B7280');
+                    onClickFn = (evt, els) => {
+                        if (!els.length) return;
+                        tDrillIntoHoldings(labels[els[0].index]);
+                    };
                 } else {
-                    // 그 외 섹터 → 개별 종목 병합
+                    // 그 외 섹터 → 개별 종목 병합 (최종 레벨)
                     const merged = {};
                     holdings.forEach(h => {
                         if (!merged[h.name]) merged[h.name] = 0;
@@ -508,7 +515,7 @@
                 tDonutChart = new Chart(document.getElementById('totalSectorDonut'), {
                     type: 'doughnut',
                     data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
-                    options: makeTotalDonutOptions(labels, values, colors, null)
+                    options: makeTotalDonutOptions(labels, values, colors, onClickFn)
                 });
 
                 document.getElementById('t-btn-back-donut').classList.remove('hidden');
@@ -517,7 +524,44 @@
                 lbl.classList.remove('hidden');
             }
 
-            function totalDrillBack() { renderTotalDonut(); }
+            function tDrillIntoHoldings(subIndexName) {
+                const holdings = allHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === '시장지수' &&
+                    holdingToSubIndex(h.name) === subIndexName
+                );
+                if (!holdings.length) return;
+                tCurrentSector = '시장지수__' + subIndexName;
+
+                const merged = {};
+                holdings.forEach(h => {
+                    if (!merged[h.name]) merged[h.name] = 0;
+                    merged[h.name] += h.current_value || 0;
+                });
+                const entries = Object.entries(merged).sort((a,b) => b[1]-a[1]);
+                const labels = entries.map(([n]) => n);
+                const values = entries.map(([,v]) => v);
+                const colors = tPalette.slice(0, labels.length);
+
+                if (tDonutChart) tDonutChart.destroy();
+                tDonutChart = new Chart(document.getElementById('totalSectorDonut'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
+                    options: makeTotalDonutOptions(labels, values, colors, null)
+                });
+
+                const lbl = document.getElementById('t-donut-sector-label');
+                lbl.textContent = `시장지수 › ${subIndexName}`;
+                lbl.classList.remove('hidden');
+            }
+
+            function totalDrillBack() {
+                if (tCurrentSector && tCurrentSector.startsWith('시장지수__')) {
+                    tDrillInto('시장지수');
+                } else {
+                    tCurrentSector = null;
+                    renderTotalDonut();
+                }
+            }
             window.totalDrillBack = totalDrillBack;
             renderTotalDonut();
 
@@ -694,17 +738,19 @@
                 document.getElementById('donut-toggle').classList.remove('hidden');
             }
 
+            let uCurrentSector = null;
+            const uPalette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
+                              '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
+                              '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
+
             function drillInto(sectorName, sectorColor) {
                 const etfs = allHoldings.filter(h =>
                     holdingToSector(h.name, h.category || '기타') === sectorName
                 );
                 if (!etfs.length) return;
+                uCurrentSector = sectorName;
 
-                const palette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
-                                 '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
-                                 '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
-
-                let labels, values, colors;
+                let labels, values, colors, onClickFn = null;
                 if (sectorName === '시장지수') {
                     const subTotals = {};
                     etfs.forEach(h => {
@@ -715,11 +761,41 @@
                     labels = entries.map(([n]) => n);
                     values = entries.map(([,v]) => v);
                     colors = labels.map(l => SUB_INDEX_COLORS[l] || '#6B7280');
+                    onClickFn = (evt, els) => {
+                        if (!els.length) return;
+                        drillIntoUserHoldings(labels[els[0].index]);
+                    };
                 } else {
                     labels = etfs.map(h => h.name);
                     values = etfs.map(h => h.current_value);
-                    colors = palette.slice(0, etfs.length);
+                    colors = uPalette.slice(0, etfs.length);
                 }
+
+                if (donutChart) donutChart.destroy();
+                donutChart = new Chart(document.getElementById('userDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors }] },
+                    options: makeDonutOptions(labels, values, colors, onClickFn)
+                });
+
+                document.getElementById('btn-back-donut').classList.remove('hidden');
+                const lbl = document.getElementById('donut-sector-label');
+                lbl.textContent = sectorName;
+                lbl.classList.remove('hidden');
+                document.getElementById('donut-toggle').classList.add('hidden');
+            }
+
+            function drillIntoUserHoldings(subIndexName) {
+                const etfs = allHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === '시장지수' &&
+                    holdingToSubIndex(h.name) === subIndexName
+                );
+                if (!etfs.length) return;
+                uCurrentSector = '시장지수__' + subIndexName;
+
+                const labels = etfs.map(h => h.name);
+                const values = etfs.map(h => h.current_value);
+                const colors = uPalette.slice(0, etfs.length);
 
                 if (donutChart) donutChart.destroy();
                 donutChart = new Chart(document.getElementById('userDonutChart'), {
@@ -728,16 +804,18 @@
                     options: makeDonutOptions(labels, values, colors, null)
                 });
 
-                // UI: 뒤로가기 표시, 토글 숨김
-                document.getElementById('btn-back-donut').classList.remove('hidden');
                 const lbl = document.getElementById('donut-sector-label');
-                lbl.textContent = sectorName;
+                lbl.textContent = `시장지수 › ${subIndexName}`;
                 lbl.classList.remove('hidden');
-                document.getElementById('donut-toggle').classList.add('hidden');
             }
 
             function drillBack() {
-                renderDonut(currentDonutMode);
+                if (uCurrentSector && uCurrentSector.startsWith('시장지수__')) {
+                    drillInto('시장지수', SUB_INDEX_COLORS['기타 시장지수']);
+                } else {
+                    uCurrentSector = null;
+                    renderDonut(currentDonutMode);
+                }
             }
 
             window.switchDonut = mode => renderDonut(mode);
@@ -905,15 +983,19 @@
                 document.getElementById('h-donut-toggle').classList.remove('hidden');
             }
 
+            let hCurrentSector = null;
+            const hPalette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
+                              '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
+                              '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
+
             function hDrillInto(sectorName) {
                 const etfs = allHusbandHoldings.filter(h =>
                     holdingToSector(h.name, h.category || '기타') === sectorName
                 );
                 if (!etfs.length) return;
-                const palette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
-                                 '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
-                                 '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
-                let labels, values, colors;
+                hCurrentSector = sectorName;
+
+                let labels, values, colors, onClickFn = null;
                 if (sectorName === '시장지수') {
                     const subTotals = {};
                     etfs.forEach(h => {
@@ -924,16 +1006,20 @@
                     labels = entries.map(([n]) => n);
                     values = entries.map(([,v]) => v);
                     colors = labels.map(l => SUB_INDEX_COLORS[l] || '#6B7280');
+                    onClickFn = (evt, els) => {
+                        if (!els.length) return;
+                        hDrillIntoHoldings(labels[els[0].index]);
+                    };
                 } else {
                     labels = etfs.map(h => h.name);
                     values = etfs.map(h => h.current_value);
-                    colors = palette.slice(0, etfs.length);
+                    colors = hPalette.slice(0, etfs.length);
                 }
                 if (hDonutChart) hDonutChart.destroy();
                 hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
                     type: 'doughnut',
                     data: { labels, datasets: [{ data: values, backgroundColor: colors }] },
-                    options: makeHDonutOpts(labels, values, colors, null)
+                    options: makeHDonutOpts(labels, values, colors, onClickFn)
                 });
                 document.getElementById('h-btn-back-donut').classList.remove('hidden');
                 const lbl = document.getElementById('h-donut-sector-label');
@@ -941,8 +1027,37 @@
                 document.getElementById('h-donut-toggle').classList.add('hidden');
             }
 
+            function hDrillIntoHoldings(subIndexName) {
+                const etfs = allHusbandHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === '시장지수' &&
+                    holdingToSubIndex(h.name) === subIndexName
+                );
+                if (!etfs.length) return;
+                hCurrentSector = '시장지수__' + subIndexName;
+
+                const labels = etfs.map(h => h.name);
+                const values = etfs.map(h => h.current_value);
+                const colors = hPalette.slice(0, etfs.length);
+
+                if (hDonutChart) hDonutChart.destroy();
+                hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors }] },
+                    options: makeHDonutOpts(labels, values, colors, null)
+                });
+                const lbl = document.getElementById('h-donut-sector-label');
+                lbl.textContent = `시장지수 › ${subIndexName}`; lbl.classList.remove('hidden');
+            }
+
             window.switchHusbandDonut = mode => renderHDonut(mode);
-            window.husbandDrillBack   = () => renderHDonut(hCurrentMode);
+            window.husbandDrillBack   = () => {
+                if (hCurrentSector && hCurrentSector.startsWith('시장지수__')) {
+                    hDrillInto('시장지수');
+                } else {
+                    hCurrentSector = null;
+                    renderHDonut(hCurrentMode);
+                }
+            };
             if (allHusbandHoldings.length > 0) renderHDonut('sector');
 
             // ── 투입금 vs 평가금 차트 ──────────────────────────────
