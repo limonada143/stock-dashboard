@@ -83,8 +83,8 @@
           "category": "시장지수"
         },
         {
-          "name": "TIGER 코리아시전략기기TOP3플러스",
-          "ticker": "TIGER코리아시전략기기TOP3플러스",
+          "name": "TIGER코리아AI전력기기TOP3플러스",
+          "ticker": "TIGER코리아AI전력기기TOP3플러스",
           "shares": 486,
           "avg_price": 13494,
           "current_price": 18425,
@@ -92,7 +92,7 @@
           "unrealized_pnl": 2396466,
           "unrealized_pnl_pct": 36.54,
           "type": "ETF",
-          "category": "방위/전략"
+          "category": "AI/기술"
         },
         {
           "name": "TIGER K방산&우주",
@@ -692,7 +692,7 @@
           "unrealized_pnl": 2176384,
           "unrealized_pnl_pct": 38.72,
           "type": "해외주식",
-          "category": "AI/기술(해외)"
+          "category": "반도체(미국)"
         },
         {
           "name": "PLTR",
@@ -716,7 +716,7 @@
           "unrealized_pnl": 598423,
           "unrealized_pnl_pct": 24.11,
           "type": "해외주식",
-          "category": "기술(해외)"
+          "category": "AI/기술(해외)"
         },
         {
           "name": "IONQ",
@@ -740,7 +740,7 @@
           "unrealized_pnl": 6525243,
           "unrealized_pnl_pct": 31.67,
           "type": "해외주식",
-          "category": "기술(해외)"
+          "category": "AI/기술(해외)"
         },
         {
           "name": "SOXL",
@@ -779,7 +779,7 @@
           "unrealized_pnl": -407366,
           "unrealized_pnl_pct": -7.34,
           "type": "주식",
-          "category": "반도체(해외)"
+          "category": "AI/반도체(해외)"
         },
         {
           "name": "AVGO",
@@ -791,7 +791,7 @@
           "unrealized_pnl": -30581,
           "unrealized_pnl_pct": -8.11,
           "type": "주식",
-          "category": "반도체(해외)"
+          "category": "AI/반도체(해외)"
         },
         {
           "name": "알파벳 A",
@@ -803,7 +803,7 @@
           "unrealized_pnl": 2216151,
           "unrealized_pnl_pct": 40.41,
           "type": "주식",
-          "category": "기술(해외)"
+          "category": "AI/기술(해외)"
         },
         {
           "name": "알파벳 A",
@@ -815,7 +815,7 @@
           "unrealized_pnl": 12484,
           "unrealized_pnl_pct": 3.59,
           "type": "주식",
-          "category": "기술(해외)"
+          "category": "AI/기술(해외)"
         },
         {
           "name": "IONQ",
@@ -851,7 +851,7 @@
           "unrealized_pnl": 2212054,
           "unrealized_pnl_pct": 39.61,
           "type": "주식",
-          "category": "반도체(해외)"
+          "category": "반도체(미국)"
         },
         {
           "name": "OXY",
@@ -923,7 +923,7 @@
           "unrealized_pnl": 2453259,
           "unrealized_pnl_pct": 14.82,
           "type": "ETF",
-          "category": "반도체ETF/레버리지(해외)"
+          "category": "반도체/레버리지(해외)"
         },
         {
           "name": "TSLA",
@@ -935,7 +935,7 @@
           "unrealized_pnl": 4846337,
           "unrealized_pnl_pct": 18.93,
           "type": "주식",
-          "category": "전기차/기술(해외)"
+          "category": "AI/기술(해외)"
         }
       ]
     },
@@ -962,8 +962,7 @@
           "unrealized_pnl": 865860,
           "unrealized_pnl_pct": 35.75,
           "type": "주식",
-          "category": "원자력/에너지",
-          "note": "수량/단가 미표시 (화면에서 확인 불가)"
+          "category": "원자력/에너지"
         },
         {
           "name": "KODEX 증권",

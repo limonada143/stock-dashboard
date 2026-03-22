@@ -332,18 +332,22 @@
             return catToSectorG(cat);
         }
         // 시장지수 내 세부 분류 (드릴다운 전용)
-        function holdingToSubIndex(name) {
+        function holdingToSubIndex(name, cat) {
             const n = name || '';
             if (/S&P\s*500|SP500/i.test(n))                                              return 'S&P500';
             if (/코스닥|KOSDAQ/i.test(n))                                                return 'KOSDAQ';
             if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n))        return '나스닥';
+            if (/팔란티어/i.test(n))                                                     return '나스닥';
             if (/코스피|KOSPI/i.test(n))                                                 return 'KOSPI';
             if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)\b/.test(n)) return 'KOSPI';
+            if ((cat || '') === '국내지수')                                               return 'KOSPI';
+            if (/배당다우존스/i.test(n))                                                  return 'SCHD';
+            if (/TDF/i.test(n))                                                          return 'VTI';
             return '기타 시장지수';
         }
         const SUB_INDEX_COLORS = {
             'S&P500':'#F59E0B', 'KOSPI':'#14B8A6', 'KOSDAQ':'#8B5CF6',
-            '나스닥':'#06B6D4', '기타 시장지수':'#38BDF8'
+            '나스닥':'#06B6D4', 'SCHD':'#34D399', 'VTI':'#A78BFA', '기타 시장지수':'#38BDF8'
         };
 
         function buildTotal(history, portfolio, husbandPortfolio, sectorHistory) {
@@ -487,7 +491,7 @@
                     // 시장지수 → 서브인덱스 도넛 (클릭 시 3레벨로)
                     const subTotals = {};
                     holdings.forEach(h => {
-                        const sub = holdingToSubIndex(h.name);
+                        const sub = holdingToSubIndex(h.name, h.category || '');
                         subTotals[sub] = (subTotals[sub] || 0) + (h.current_value || 0);
                     });
                     const entries = Object.entries(subTotals).sort((a,b) => b[1]-a[1]);
@@ -527,7 +531,7 @@
             function tDrillIntoHoldings(subIndexName) {
                 const holdings = allHoldings.filter(h =>
                     holdingToSector(h.name, h.category || '기타') === '시장지수' &&
-                    holdingToSubIndex(h.name) === subIndexName
+                    holdingToSubIndex(h.name, h.category || '') === subIndexName
                 );
                 if (!holdings.length) return;
                 tCurrentSector = '시장지수__' + subIndexName;
@@ -754,7 +758,7 @@
                 if (sectorName === '시장지수') {
                     const subTotals = {};
                     etfs.forEach(h => {
-                        const sub = holdingToSubIndex(h.name);
+                        const sub = holdingToSubIndex(h.name, h.category || '');
                         subTotals[sub] = (subTotals[sub] || 0) + (h.current_value || 0);
                     });
                     const entries = Object.entries(subTotals).sort((a,b) => b[1]-a[1]);
@@ -788,7 +792,7 @@
             function drillIntoUserHoldings(subIndexName) {
                 const etfs = allHoldings.filter(h =>
                     holdingToSector(h.name, h.category || '기타') === '시장지수' &&
-                    holdingToSubIndex(h.name) === subIndexName
+                    holdingToSubIndex(h.name, h.category || '') === subIndexName
                 );
                 if (!etfs.length) return;
                 uCurrentSector = '시장지수__' + subIndexName;
@@ -999,7 +1003,7 @@
                 if (sectorName === '시장지수') {
                     const subTotals = {};
                     etfs.forEach(h => {
-                        const sub = holdingToSubIndex(h.name);
+                        const sub = holdingToSubIndex(h.name, h.category || '');
                         subTotals[sub] = (subTotals[sub] || 0) + (h.current_value || 0);
                     });
                     const entries = Object.entries(subTotals).sort((a,b) => b[1]-a[1]);
@@ -1030,7 +1034,7 @@
             function hDrillIntoHoldings(subIndexName) {
                 const etfs = allHusbandHoldings.filter(h =>
                     holdingToSector(h.name, h.category || '기타') === '시장지수' &&
-                    holdingToSubIndex(h.name) === subIndexName
+                    holdingToSubIndex(h.name, h.category || '') === subIndexName
                 );
                 if (!etfs.length) return;
                 hCurrentSector = '시장지수__' + subIndexName;

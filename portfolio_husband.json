@@ -34,7 +34,7 @@
           "unrealized_pnl": 680441,
           "unrealized_pnl_pct": 4.69,
           "type": "ETF",
-          "category": "AI/반도체(미국)",
+          "category": "반도체(미국)",
           "currency": "USD"
         },
         {
@@ -47,7 +47,7 @@
           "unrealized_pnl": 20834554,
           "unrealized_pnl_pct": 87.3,
           "type": "주식",
-          "category": "AI/반도체(미국)",
+          "category": "반도체(미국)",
           "currency": "USD"
         },
         {
