@@ -5,8 +5,8 @@
     "total_value": 606740667,
     "total_cost": 361594000,
     "total_cash": 4201468,
-    "unrealized_pnl": 104323525,
-    "unrealized_pnl_pct": 23.33
+    "unrealized_pnl": 110278285,
+    "unrealized_pnl_pct": 24.66
   },
   "accounts": [
     {
@@ -210,10 +210,10 @@
       "type": "종합위탁",
       "currency": "KRW",
       "summary": {
-        "total_value": 64363471,
+        "total_value": 68120641,
         "total_cost": 66812952,
-        "unrealized_pnl": -2448547,
-        "unrealized_pnl_pct": -3.66,
+        "unrealized_pnl": 1308623,
+        "unrealized_pnl_pct": 1.96,
         "cash": 171358
       },
       "holdings": [
@@ -234,10 +234,10 @@
           "ticker": "ACEAI반도체TOP3플러스",
           "shares": 106,
           "avg_price": 47033,
-          "current_price": 13420,
-          "current_value": 1422520,
-          "unrealized_pnl": -3562978,
-          "unrealized_pnl_pct": -71.47,
+          "current_price": 48865,
+          "current_value": 5179690,
+          "unrealized_pnl": 194192,
+          "unrealized_pnl_pct": 3.9,
           "type": "ETF",
           "category": "반도체"
         },
@@ -342,10 +342,10 @@
           "ticker": "엔케이젠바이오텍코리아",
           "shares": 21,
           "avg_price": 9564,
-          "current_price": 3670,
-          "current_value": 77070,
-          "unrealized_pnl": -123780,
-          "unrealized_pnl_pct": -61.7,
+          "current_price": 47981,
+          "current_value": 1007601,
+          "unrealized_pnl": 806757,
+          "unrealized_pnl_pct": 401.68,
           "type": "주식",
           "category": "바이오"
         }
@@ -1047,10 +1047,10 @@
       "type": "연금저축",
       "currency": "KRW",
       "summary": {
-        "total_value": 15315055,
+        "total_value": 17512645,
         "total_cost": 10384350,
-        "unrealized_pnl": 4930591,
-        "unrealized_pnl_pct": 47.48,
+        "unrealized_pnl": 7128181,
+        "unrealized_pnl_pct": 68.64,
         "cash": 0
       },
       "holdings": [
@@ -1083,10 +1083,10 @@
           "ticker": "ACEAI반도체TOP3+",
           "shares": 62,
           "avg_price": 22679,
-          "current_price": 13420,
-          "current_value": 832040,
-          "unrealized_pnl": -574058,
-          "unrealized_pnl_pct": -40.83,
+          "current_price": 48865,
+          "current_value": 3029630,
+          "unrealized_pnl": 1623532,
+          "unrealized_pnl_pct": 115.46,
           "type": "ETF",
           "category": "반도체"
         },
