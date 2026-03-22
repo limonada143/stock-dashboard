@@ -54,19 +54,36 @@
                 </div>
             </div>
 
+            <!-- 섹터 도넛 + 자산 추이 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">부부 합산 섹터 비중</h3>
+                    <div style="height:280px" class="flex justify-center">
+                        <canvas id="totalSectorDonut"></canvas>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-1">자산 추이</h3>
+                    <p class="text-xs text-gray-400 mb-4">부부 합산 월별 평가금액 (Unit:10k)</p>
+                    <div style="height:260px">
+                        <canvas id="totalTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-6">
-                <h3 class="text-lg font-semibold mb-1">자산 추이</h3>
-                <p class="text-xs text-gray-400 mb-4">부부 합산 월별 평가금액 (Unit:10k)</p>
-                <div style="height:320px">
-                    <canvas id="totalTrendChart"></canvas>
+                <h3 class="text-lg font-semibold mb-1">월별 수익률 추이</h3>
+                <p class="text-xs text-gray-400 mb-4">각자 평가손익률 변화</p>
+                <div style="height:260px">
+                    <canvas id="totalPnlChart"></canvas>
                 </div>
             </div>
 
             <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                <h3 class="text-lg font-semibold mb-1">월별 수익률 추이</h3>
-                <p class="text-xs text-gray-400 mb-4">각자 평가손익률 변화</p>
+                <h3 class="text-lg font-semibold mb-1">섹터 비중 추이</h3>
+                <p class="text-xs text-gray-400 mb-4">월말 스냅샷 기준 상위 섹터 변화</p>
                 <div style="height:280px">
-                    <canvas id="totalPnlChart"></canvas>
+                    <canvas id="totalSectorTrendChart"></canvas>
                 </div>
             </div>
         </div>
@@ -262,9 +279,10 @@
         Promise.all([
             fetch('portfolio.json').then(r => r.json()),
             fetch('history.json').then(r => r.json()),
-            fetch('portfolio_husband.json').then(r => r.json()).catch(() => null)
-        ]).then(([portfolio, history, husbandPortfolio]) => {
-            buildTotal(history, portfolio);
+            fetch('portfolio_husband.json').then(r => r.json()).catch(() => null),
+            fetch('sector_history.json').then(r => r.json()).catch(() => [])
+        ]).then(([portfolio, history, husbandPortfolio, sectorHistory]) => {
+            buildTotal(history, portfolio, husbandPortfolio, sectorHistory);
             buildUser(portfolio, history);
             buildHusband(history, husbandPortfolio);
         });
@@ -272,7 +290,29 @@
         // ══════════════════════════════════════════════════════════
         //  TAB 1: TOTAL (최신 - 누적 스택 차트)
         // ══════════════════════════════════════════════════════════
-        function buildTotal(history, portfolio) {
+        // 공통 섹터 색상 (전역)
+        const SECTOR_COLORS_G = {
+            '반도체':'#60A5FA','AI/기술':'#A78BFA','원자력/에너지':'#FBBF24',
+            '방산/우주':'#F87171','조선':'#34D399','시장지수':'#38BDF8',
+            '그룹주/자동차':'#FB923C','바이오':'#F472B6','금융':'#4ADE80','기타':'#6B7280'
+        };
+        const SECTOR_MAP_G = {
+            '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
+            'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
+            '원자력/에너지': ['원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학','에너지(해외)','설비투자'],
+            '방산/우주':     ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
+            '조선':          ['조선'],
+            '시장지수':      ['시장지수','시장지수(미국)','시장지수(일본)','레버리지/지수','해외지수'],
+            '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
+            '바이오':        ['바이오'],
+            '금융':          ['금융','금융(미국)'],
+            '기타':          ['양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','화학','기타','기타(미국)','기타(국내)']
+        };
+        function catToSectorG(cat) {
+            return Object.keys(SECTOR_MAP_G).find(s => SECTOR_MAP_G[s].includes(cat)) || '기타';
+        }
+
+        function buildTotal(history, portfolio, husbandPortfolio, sectorHistory) {
             const byDate = {};
             history.forEach(h => {
                 if (!byDate[h.date]) byDate[h.date] = {};
@@ -282,12 +322,17 @@
             const uVals = dates.map(d => byDate[d].user?.total_value || 0);
             const hVals = dates.map(d => byDate[d].husband?.total_value || 0);
 
-            const ps = portfolio.summary;
+            const lastUser    = history.filter(h => h.note === 'Users').sort((a,b) => a.date.localeCompare(b.date)).at(-1);
             const lastHusband = history.filter(h => h.note === 'Husband').sort((a,b) => a.date.localeCompare(b.date)).at(-1);
+            const ps = portfolio.summary;
 
-            document.getElementById('t-total-value').textContent = fmt(ps.total_value + (lastHusband?.total_value || 0));
-            document.getElementById('t-total-pnl').textContent   = fmt(ps.unrealized_pnl + (lastHusband?.unrealized_pnl || 0));
-            document.getElementById('t-updated').textContent     = portfolio.last_updated;
+            const tVal = (lastUser?.total_value    ?? ps.total_value)    + (lastHusband?.total_value    || 0);
+            const tPnl = (lastUser?.unrealized_pnl ?? ps.unrealized_pnl) + (lastHusband?.unrealized_pnl || 0);
+            const latestDate = [lastUser?.date, lastHusband?.date, portfolio.last_updated].filter(Boolean).sort().at(-1);
+
+            document.getElementById('t-total-value').textContent = fmt(tVal);
+            document.getElementById('t-total-pnl').textContent   = fmt(tPnl);
+            document.getElementById('t-updated').textContent     = latestDate;
 
             new Chart(document.getElementById('totalTrendChart'), {
                 type: 'line',
@@ -328,6 +373,70 @@
                     }
                 }
             });
+
+            // ── 합산 섹터 도넛 ────────────────────────────────────────
+            const allHoldings = [
+                ...portfolio.accounts.flatMap(a => a.holdings || []),
+                ...(husbandPortfolio?.accounts.flatMap(a => a.holdings || []) || [])
+            ];
+            const sectorTotals = {};
+            allHoldings.forEach(h => {
+                const s = catToSectorG(h.category || '기타');
+                sectorTotals[s] = (sectorTotals[s] || 0) + (h.current_value || 0);
+            });
+            const sEntries = Object.entries(sectorTotals).sort((a,b) => b[1]-a[1]);
+            new Chart(document.getElementById('totalSectorDonut'), {
+                type: 'doughnut',
+                data: {
+                    labels: sEntries.map(([s]) => s),
+                    datasets: [{ data: sEntries.map(([,v]) => v),
+                        backgroundColor: sEntries.map(([s]) => SECTOR_COLORS_G[s] || '#6B7280'),
+                        borderWidth: 2, borderColor: '#1F2937' }]
+                },
+                options: { ...CHART_DEFAULTS, cutout: '60%',
+                    plugins: { ...CHART_DEFAULTS.plugins,
+                        legend: { position: 'right', labels: { color: '#E5E7EB', font: { size: 11 }, padding: 8 } },
+                        tooltip: { callbacks: { label: c => {
+                            const total = c.dataset.data.reduce((a,b)=>a+b,0);
+                            return ` ${c.label}: ${(c.raw/total*100).toFixed(1)}%`;
+                        }}}
+                    }
+                }
+            });
+
+            // ── 섹터 비중 추이 ────────────────────────────────────────
+            if (sectorHistory && sectorHistory.length > 0) {
+                const sDates = sectorHistory.map(e => e.date);
+                // 전체 기간에서 등장한 섹터 수집 → 평균 비중 상위 5개
+                const sectorAvg = {};
+                sectorHistory.forEach(e => {
+                    const tot = e.total || 1;
+                    Object.entries(e.sectors).forEach(([s,v]) => {
+                        sectorAvg[s] = (sectorAvg[s] || 0) + v / tot;
+                    });
+                });
+                const top5 = Object.entries(sectorAvg).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([s])=>s);
+                const sDatasets = top5.map(s => lineDataset(
+                    s,
+                    sectorHistory.map(e => e.total ? +((e.sectors[s]||0)/e.total*100).toFixed(1) : null),
+                    SECTOR_COLORS_G[s] || '#6B7280'
+                ));
+                new Chart(document.getElementById('totalSectorTrendChart'), {
+                    type: 'line',
+                    data: { labels: sDates, datasets: sDatasets },
+                    options: { ...CHART_DEFAULTS,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                            y: { ticks: { color: '#9CA3AF', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                        },
+                        plugins: { ...CHART_DEFAULTS.plugins,
+                            legend: { labels: { color: '#E5E7EB' } },
+                            tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y}%` } }
+                        }
+                    }
+                });
+            }
         }
 
         // ══════════════════════════════════════════════════════════
