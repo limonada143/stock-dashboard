@@ -301,7 +301,8 @@
         const SECTOR_COLORS_G = {
             '반도체':'#60A5FA','AI/기술':'#A78BFA','원자력/에너지':'#FBBF24',
             '방산/우주':'#F87171','조선':'#34D399','시장지수':'#38BDF8',
-            '그룹주/자동차':'#FB923C','바이오':'#F472B6','금융':'#4ADE80','기타':'#6B7280'
+            '그룹주/자동차':'#FB923C','바이오':'#F472B6','금융':'#4ADE80','기타':'#6B7280',
+            'S&P500':'#F59E0B','KOSPI':'#14B8A6','KOSDAQ':'#8B5CF6','나스닥':'#06B6D4'
         };
         const SECTOR_MAP_G = {
             '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
@@ -317,6 +318,16 @@
         };
         function catToSectorG(cat) {
             return Object.keys(SECTOR_MAP_G).find(s => SECTOR_MAP_G[s].includes(cat)) || '기타';
+        }
+        // 종목명 우선 분류 (자산운용사 무관, etf_classification_rules.md 기준)
+        function holdingToSector(name, cat) {
+            const n = name || '';
+            if (/S&P\s*500|SP500/i.test(n))                          return 'S&P500';
+            if (/코스닥|KOSDAQ/i.test(n))                             return 'KOSDAQ';
+            if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n)) return '나스닥';
+            if (/코스피|KOSPI/i.test(n))                              return 'KOSPI';
+            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)\b/.test(n)) return 'KOSPI';
+            return catToSectorG(cat);
         }
 
         function buildTotal(history, portfolio, husbandPortfolio, sectorHistory) {
@@ -423,7 +434,7 @@
             function renderTotalDonut() {
                 const sectorTotals = {};
                 allHoldings.forEach(h => {
-                    const s = catToSectorG(h.category || '기타');
+                    const s = holdingToSector(h.name, h.category || '기타');
                     sectorTotals[s] = (sectorTotals[s] || 0) + (h.current_value || 0);
                 });
                 const sEntries = Object.entries(sectorTotals).sort((a,b) => b[1]-a[1]);
@@ -447,11 +458,9 @@
             }
 
             function tDrillInto(sectorName) {
-                const cats = SECTOR_MAP_G[sectorName] || [];
-                const holdings = allHoldings.filter(h => {
-                    const cat = h.category || '기타';
-                    return cats.includes(cat) || (!Object.values(SECTOR_MAP_G).flat().includes(cat) && sectorName === '기타');
-                });
+                const holdings = allHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === sectorName
+                );
                 if (!holdings.length) return;
 
                 // 같은 종목명 병합
@@ -579,12 +588,11 @@
             function buildSectorData() {
                 const totals = {};
                 allHoldings.forEach(h => {
-                    const cat = h.category || '기타';
-                    const sector = Object.keys(SECTOR_MAP).find(s => SECTOR_MAP[s].includes(cat)) || '기타';
+                    const sector = holdingToSector(h.name, h.category || '기타');
                     totals[sector] = (totals[sector] || 0) + (h.current_value || 0);
                 });
                 const labels = Object.keys(totals).sort((a,b) => totals[b] - totals[a]);
-                return { labels, values: labels.map(l => totals[l]), colors: labels.map(l => SECTOR_COLORS[l] || '#6B7280') };
+                return { labels, values: labels.map(l => totals[l]), colors: labels.map(l => SECTOR_COLORS[l] || SECTOR_COLORS_G[l] || '#6B7280') };
             }
 
             function buildCountryData() {
@@ -657,12 +665,9 @@
             }
 
             function drillInto(sectorName, sectorColor) {
-                // 해당 섹터의 ETF만 필터링
-                const cats = SECTOR_MAP[sectorName] || [];
-                const etfs = allHoldings.filter(h => {
-                    const cat = h.category || '기타';
-                    return cats.includes(cat) || (!Object.values(SECTOR_MAP).flat().includes(cat) && sectorName === '기타');
-                });
+                const etfs = allHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === sectorName
+                );
                 if (!etfs.length) return;
 
                 const palette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
@@ -789,11 +794,11 @@
             function buildHSectorData() {
                 const totals = {};
                 allHusbandHoldings.forEach(h => {
-                    const sector = hCatToSector(h.category || '기타');
+                    const sector = holdingToSector(h.name, h.category || '기타');
                     totals[sector] = (totals[sector] || 0) + (h.current_value || 0);
                 });
                 const labels = Object.keys(totals).sort((a,b) => totals[b] - totals[a]);
-                return { labels, values: labels.map(l => totals[l]), colors: labels.map(l => H_SECTOR_COLORS[l] || '#6B7280') };
+                return { labels, values: labels.map(l => totals[l]), colors: labels.map(l => H_SECTOR_COLORS[l] || SECTOR_COLORS_G[l] || '#6B7280') };
             }
 
             function buildHCountryData() {
@@ -858,11 +863,9 @@
             }
 
             function hDrillInto(sectorName) {
-                const cats = H_SECTOR_MAP[sectorName] || [];
-                const etfs = allHusbandHoldings.filter(h => {
-                    const cat = h.category || '기타';
-                    return cats.includes(cat) || (!Object.values(H_SECTOR_MAP).flat().includes(cat) && sectorName === '기타');
-                });
+                const etfs = allHusbandHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === sectorName
+                );
                 if (!etfs.length) return;
                 const palette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
                                  '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
