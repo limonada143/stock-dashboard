@@ -34,7 +34,7 @@
           "unrealized_pnl": 680441,
           "unrealized_pnl_pct": 4.69,
           "type": "ETF",
-          "category": "AI/기술(미국)",
+          "category": "AI/반도체(미국)",
           "currency": "USD"
         },
         {
@@ -47,7 +47,7 @@
           "unrealized_pnl": 20834554,
           "unrealized_pnl_pct": 87.3,
           "type": "주식",
-          "category": "AI/기술(미국)",
+          "category": "AI/반도체(미국)",
           "currency": "USD"
         },
         {
@@ -73,7 +73,7 @@
           "unrealized_pnl": 16443943,
           "unrealized_pnl_pct": 241.93,
           "type": "ETF",
-          "category": "반도체",
+          "category": "반도체(미국)",
           "currency": "USD"
         },
         {
@@ -99,7 +99,7 @@
           "unrealized_pnl": 1273262,
           "unrealized_pnl_pct": 65.14,
           "type": "주식",
-          "category": "원자력/에너지",
+          "category": "원자력/에너지(미국)",
           "currency": "USD"
         },
         {
@@ -148,7 +148,7 @@
           "unrealized_pnl": 1444405,
           "unrealized_pnl_pct": 11.87,
           "type": "ETF",
-          "category": "원자력/에너지"
+          "category": "AI/기술"
         },
         {
           "name": "TIGER미국나스닥100",
@@ -280,7 +280,7 @@
           "unrealized_pnl": 1227434,
           "unrealized_pnl_pct": 24.53,
           "type": "ETF",
-          "category": "기타"
+          "category": "원자력/에너지(미국)"
         },
         {
           "name": "TIME 글로벌우주테크&방산액티브",
@@ -328,7 +328,7 @@
           "unrealized_pnl": -552000,
           "unrealized_pnl_pct": -10.95,
           "type": "ETF",
-          "category": "기타"
+          "category": "원자재"
         },
         {
           "name": "TIGER 글로벌리튬&2차전지SOLACTIVE(합성)",
@@ -340,7 +340,7 @@
           "unrealized_pnl": -60160,
           "unrealized_pnl_pct": -2.01,
           "type": "ETF",
-          "category": "기타(미국)"
+          "category": "원자재"
         },
         {
           "name": "KODEX 미국반도체",
@@ -376,7 +376,7 @@
           "unrealized_pnl": 410080,
           "unrealized_pnl_pct": 6.99,
           "type": "ETF",
-          "category": "반도체"
+          "category": "시장지수(미국)"
         },
         {
           "name": "KODEX TDF2060액티브",
