@@ -334,12 +334,19 @@
         //  TAB 2: USER (cca6c5f 복원)
         // ══════════════════════════════════════════════════════════
         function buildUser(portfolio, history) {
+            // 총 자산·수익률은 history.json 최신값 우선 (투입금 기준 수기 기록)
+            const lastUser = history.filter(h => h.note === 'Users')
+                               .sort((a,b) => a.date.localeCompare(b.date)).at(-1);
             const s = portfolio.summary;
-            document.getElementById('u-total-value').textContent = fmt(s.total_value);
-            document.getElementById('u-total-cost').textContent  = fmt(s.total_cost);
-            document.getElementById('u-pnl').textContent         = fmt(s.unrealized_pnl);
-            document.getElementById('u-pnl-pct').textContent     = s.unrealized_pnl_pct + '%';
-            document.getElementById('u-updated').textContent     = '기준일: ' + portfolio.last_updated;
+            const uVal  = lastUser?.total_value        ?? s.total_value;
+            const uCost = lastUser?.total_cost         ?? s.total_cost;
+            const uPnl  = lastUser?.unrealized_pnl     ?? s.unrealized_pnl;
+            const uPct  = lastUser?.unrealized_pnl_pct ?? s.unrealized_pnl_pct;
+            document.getElementById('u-total-value').textContent = fmt(uVal);
+            document.getElementById('u-total-cost').textContent  = fmt(uCost);
+            document.getElementById('u-pnl').textContent         = fmt(uPnl);
+            document.getElementById('u-pnl-pct').textContent     = Number(uPct).toFixed(2) + '%';
+            document.getElementById('u-updated').textContent     = '기준일: ' + (lastUser?.date ?? portfolio.last_updated);
 
             // 전 계좌 종목 합산 → 같은 종목명끼리 병합
             const rawHoldings = portfolio.accounts.flatMap(a => a.holdings || []);
@@ -547,16 +554,20 @@
             const hHistory = history.filter(h => h.note === 'Husband').sort((a,b) => a.date.localeCompare(b.date));
 
             // ── 요약 카드 ──────────────────────────────────────────
-            if (husbandPortfolio) {
-                const hs = husbandPortfolio.summary;
-                const pnlColor = hs.unrealized_pnl >= 0 ? 'text-pink-400' : 'text-red-400';
-                document.getElementById('h-total-value').textContent = fmt(hs.total_value);
-                document.getElementById('h-total-cost').textContent  = fmt(hs.total_cost);
-                document.getElementById('h-pnl').textContent         = fmt(hs.unrealized_pnl);
-                document.getElementById('h-pnl').className           = `text-xl font-bold ${pnlColor}`;
-                document.getElementById('h-pnl-pct').textContent     = hs.unrealized_pnl_pct.toFixed(2) + '%';
-                document.getElementById('h-updated').textContent     = '기준일: ' + husbandPortfolio.last_updated;
-            }
+            // 총 자산·수익률은 history.json 최신값 우선 (투입금 기준 수기 기록)
+            const lastH = hHistory.at(-1);
+            const hs    = husbandPortfolio?.summary ?? {};
+            const hVal  = lastH?.total_value        ?? hs.total_value  ?? 0;
+            const hCost = lastH?.total_cost         ?? hs.total_cost   ?? 0;
+            const hPnl  = lastH?.unrealized_pnl     ?? hs.unrealized_pnl ?? 0;
+            const hPct  = lastH?.unrealized_pnl_pct ?? hs.unrealized_pnl_pct ?? 0;
+            const pnlColor = hPnl >= 0 ? 'text-pink-400' : 'text-red-400';
+            document.getElementById('h-total-value').textContent = fmt(hVal);
+            document.getElementById('h-total-cost').textContent  = fmt(hCost);
+            document.getElementById('h-pnl').textContent         = fmt(hPnl);
+            document.getElementById('h-pnl').className           = `text-xl font-bold ${pnlColor}`;
+            document.getElementById('h-pnl-pct').textContent     = Number(hPct).toFixed(2) + '%';
+            document.getElementById('h-updated').textContent     = '기준일: ' + (lastH?.date ?? husbandPortfolio?.last_updated ?? '-');
 
             // ── 보유 종목 통합 ─────────────────────────────────────
             const allHusbandHoldings = husbandPortfolio
