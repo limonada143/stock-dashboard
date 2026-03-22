@@ -57,7 +57,14 @@
             <!-- 섹터 도넛 + 자산 추이 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                    <h3 class="text-lg font-semibold mb-4">부부 합산 섹터 비중</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-lg font-semibold">부부 합산 섹터 비중</h3>
+                            <button id="t-btn-back-donut" onclick="totalDrillBack()"
+                                class="hidden text-xs px-2 py-1 rounded bg-gray-700 text-gray-300 hover:text-white transition-colors">← 뒤로</button>
+                            <span id="t-donut-sector-label" class="hidden text-xs text-blue-300 font-semibold"></span>
+                        </div>
+                    </div>
                     <div style="height:280px" class="flex justify-center">
                         <canvas id="totalSectorDonut"></canvas>
                     </div>
@@ -379,30 +386,101 @@
                 ...portfolio.accounts.flatMap(a => a.holdings || []),
                 ...(husbandPortfolio?.accounts.flatMap(a => a.holdings || []) || [])
             ];
-            const sectorTotals = {};
-            allHoldings.forEach(h => {
-                const s = catToSectorG(h.category || '기타');
-                sectorTotals[s] = (sectorTotals[s] || 0) + (h.current_value || 0);
-            });
-            const sEntries = Object.entries(sectorTotals).sort((a,b) => b[1]-a[1]);
-            new Chart(document.getElementById('totalSectorDonut'), {
-                type: 'doughnut',
-                data: {
-                    labels: sEntries.map(([s]) => s),
-                    datasets: [{ data: sEntries.map(([,v]) => v),
-                        backgroundColor: sEntries.map(([s]) => SECTOR_COLORS_G[s] || '#6B7280'),
-                        borderWidth: 2, borderColor: '#1F2937' }]
-                },
-                options: { ...CHART_DEFAULTS, cutout: '60%',
-                    plugins: { ...CHART_DEFAULTS.plugins,
-                        legend: { position: 'right', labels: { color: '#E5E7EB', font: { size: 11 }, padding: 8 } },
-                        tooltip: { callbacks: { label: c => {
-                            const total = c.dataset.data.reduce((a,b)=>a+b,0);
-                            return ` ${c.label}: ${(c.raw/total*100).toFixed(1)}%`;
-                        }}}
+            // ── 합산 섹터 도넛 (드릴다운 포함) ───────────────────────
+            const tPalette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
+                              '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
+                              '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
+
+            let tDonutChart;
+
+            function makeTotalDonutOptions(labels, values, colors, onClickFn) {
+                return {
+                    responsive: true, maintainAspectRatio: false,
+                    onClick: onClickFn || null,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#FFFFFF', font: { size: 11 }, boxWidth: 14, padding: 12,
+                                generateLabels: chart => chart.data.labels.map((label, i) => {
+                                    const total = chart.data.datasets[0].data.reduce((a,b) => a+b, 0);
+                                    const val   = chart.data.datasets[0].data[i];
+                                    const pct   = total > 0 ? ((val/total)*100).toFixed(1) : 0;
+                                    return {
+                                        text: `${label}  ${pct}%`,
+                                        fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                        hidden: false, index: i,
+                                        strokeStyle: 'transparent', fontColor: '#FFFFFF'
+                                    };
+                                })
+                            }
+                        },
+                        tooltip: { callbacks: { label: c => `  ${fmt(c.parsed)}` } }
                     }
-                }
-            });
+                };
+            }
+
+            function renderTotalDonut() {
+                const sectorTotals = {};
+                allHoldings.forEach(h => {
+                    const s = catToSectorG(h.category || '기타');
+                    sectorTotals[s] = (sectorTotals[s] || 0) + (h.current_value || 0);
+                });
+                const sEntries = Object.entries(sectorTotals).sort((a,b) => b[1]-a[1]);
+                const labels = sEntries.map(([s]) => s);
+                const values = sEntries.map(([,v]) => v);
+                const colors = labels.map(s => SECTOR_COLORS_G[s] || '#6B7280');
+
+                if (tDonutChart) tDonutChart.destroy();
+                tDonutChart = new Chart(document.getElementById('totalSectorDonut'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
+                    options: makeTotalDonutOptions(labels, values, colors, (evt, elements) => {
+                        if (!elements.length) return;
+                        const idx = elements[0].index;
+                        tDrillInto(labels[idx]);
+                    })
+                });
+
+                document.getElementById('t-btn-back-donut').classList.add('hidden');
+                document.getElementById('t-donut-sector-label').classList.add('hidden');
+            }
+
+            function tDrillInto(sectorName) {
+                const cats = SECTOR_MAP_G[sectorName] || [];
+                const holdings = allHoldings.filter(h => {
+                    const cat = h.category || '기타';
+                    return cats.includes(cat) || (!Object.values(SECTOR_MAP_G).flat().includes(cat) && sectorName === '기타');
+                });
+                if (!holdings.length) return;
+
+                // 같은 종목명 병합
+                const merged = {};
+                holdings.forEach(h => {
+                    if (!merged[h.name]) merged[h.name] = 0;
+                    merged[h.name] += h.current_value || 0;
+                });
+                const entries = Object.entries(merged).sort((a,b) => b[1]-a[1]);
+                const labels = entries.map(([n]) => n);
+                const values = entries.map(([,v]) => v);
+                const colors = tPalette.slice(0, labels.length);
+
+                if (tDonutChart) tDonutChart.destroy();
+                tDonutChart = new Chart(document.getElementById('totalSectorDonut'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
+                    options: makeTotalDonutOptions(labels, values, colors, null)
+                });
+
+                document.getElementById('t-btn-back-donut').classList.remove('hidden');
+                const lbl = document.getElementById('t-donut-sector-label');
+                lbl.textContent = sectorName;
+                lbl.classList.remove('hidden');
+            }
+
+            function totalDrillBack() { renderTotalDonut(); }
+            window.totalDrillBack = totalDrillBack;
+            renderTotalDonut();
 
             // ── 섹터 비중 추이 ────────────────────────────────────────
             if (sectorHistory && sectorHistory.length > 0) {
