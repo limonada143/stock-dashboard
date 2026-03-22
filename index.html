@@ -20,15 +20,15 @@
         <div class="max-w-5xl mx-auto flex">
             <button onclick="showTab('total')" id="tab-total"
                 class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-blue-500 text-blue-400">
-                합산 Total
+                부부 합산 💑
             </button>
             <button onclick="showTab('user')" id="tab-user"
                 class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-transparent text-gray-400 hover:text-white">
-                아내 포트폴리오
+                아내 포트폴리오 👩
             </button>
             <button onclick="showTab('husband')" id="tab-husband"
                 class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-transparent text-gray-400 hover:text-white">
-                남편 포트폴리오
+                남편 포트폴리오 👨
             </button>
         </div>
     </div>
@@ -41,11 +41,11 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                    <p class="text-xs text-gray-400 mb-1">합산 총 자산</p>
+                    <p class="text-xs text-gray-400 mb-1">합산 총 평가금액</p>
                     <p id="t-total-value" class="text-2xl font-bold text-blue-400">-</p>
                 </div>
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                    <p class="text-xs text-gray-400 mb-1">합산 평가 손익</p>
+                    <p class="text-xs text-gray-400 mb-1">합산 평가손익</p>
                     <p id="t-total-pnl" class="text-2xl font-bold text-green-400">-</p>
                 </div>
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
@@ -59,7 +59,7 @@
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
-                            <h3 class="text-lg font-semibold">부부 합산 섹터 비중</h3>
+                            <h3 class="text-lg font-semibold">자산 비중</h3>
                             <button id="t-btn-back-donut" onclick="totalDrillBack()"
                                 class="hidden text-xs px-2 py-1 rounded bg-gray-700 text-gray-300 hover:text-white transition-colors">← 뒤로</button>
                             <span id="t-donut-sector-label" class="hidden text-xs text-blue-300 font-semibold"></span>
@@ -105,7 +105,7 @@
                     <p id="u-total-value" class="text-xl font-bold text-green-400">-</p>
                 </div>
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                    <p class="text-xs text-gray-400 mb-1">총 매입금액</p>
+                    <p class="text-xs text-gray-400 mb-1">총 투입금액</p>
                     <p id="u-total-cost" class="text-xl font-bold text-gray-300">-</p>
                 </div>
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
@@ -154,13 +154,13 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="text-gray-400 text-xs border-b border-gray-700">
-                                <th class="text-left px-6 py-3">종목명</th>
-                                <th class="text-right px-4 py-3">보유</th>
-                                <th class="text-right px-4 py-3">평단가</th>
-                                <th class="text-right px-4 py-3">현재가</th>
-                                <th class="text-right px-4 py-3">평가금액</th>
-                                <th class="text-right px-4 py-3">수익률</th>
+                            <tr class="text-gray-400 text-xs border-b border-gray-700" id="u-thead">
+                                <th class="text-left px-6 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('name')">종목명 <span id="u-sort-name"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('current_value')">평가금액 <span id="u-sort-current_value"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('unrealized_pnl_pct')">수익률 <span id="u-sort-unrealized_pnl_pct"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('shares')">보유 <span id="u-sort-shares"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('avg_price')">평단가 <span id="u-sort-avg_price"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('current_price')">현재가 <span id="u-sort-current_price"></span></th>
                             </tr>
                         </thead>
                         <tbody id="u-holdings-table"></tbody>
@@ -179,7 +179,7 @@
                     <p id="h-total-value" class="text-xl font-bold text-pink-400">-</p>
                 </div>
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                    <p class="text-xs text-gray-400 mb-1">총 매입금액</p>
+                    <p class="text-xs text-gray-400 mb-1">총 투입금액</p>
                     <p id="h-total-cost" class="text-xl font-bold text-gray-300">-</p>
                 </div>
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
@@ -228,13 +228,13 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="text-gray-400 text-xs border-b border-gray-700">
-                                <th class="text-left px-6 py-3">종목명</th>
-                                <th class="text-right px-4 py-3">보유</th>
-                                <th class="text-right px-4 py-3">평단가</th>
-                                <th class="text-right px-4 py-3">현재가</th>
-                                <th class="text-right px-4 py-3">평가금액</th>
-                                <th class="text-right px-4 py-3">수익률</th>
+                            <tr class="text-gray-400 text-xs border-b border-gray-700" id="h-thead">
+                                <th class="text-left px-6 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('name')">종목명 <span id="h-sort-name"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('current_value')">평가금액 <span id="h-sort-current_value"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('unrealized_pnl_pct')">수익률 <span id="h-sort-unrealized_pnl_pct"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('shares')">보유 <span id="h-sort-shares"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('avg_price')">평단가 <span id="h-sort-avg_price"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('current_price')">현재가 <span id="h-sort-current_price"></span></th>
                             </tr>
                         </thead>
                         <tbody id="h-holdings-table"></tbody>
@@ -264,6 +264,78 @@
         // ── 공통 유틸 ─────────────────────────────────────────────
         const fmt  = v => '₩' + Math.round(v).toLocaleString();
         const fmtM = v => Math.round(v / 10000).toLocaleString();
+
+        // ── 보유종목 정렬 상태 ─────────────────────────────────────
+        let uHoldingsData = [];
+        let hHoldingsData = [];
+        let uSortKey = 'unrealized_pnl_pct', uSortDir = -1;
+        let hSortKey = 'unrealized_pnl_pct', hSortDir = -1;
+
+        function renderUserTable(key, dir) {
+            const SORT_KEYS = ['name','current_value','unrealized_pnl_pct','shares','avg_price','current_price'];
+            SORT_KEYS.forEach(k => { const el = document.getElementById('u-sort-' + k); if (el) el.textContent = ''; });
+            const indicator = document.getElementById('u-sort-' + key);
+            if (indicator) indicator.textContent = dir === -1 ? ' ▼' : ' ▲';
+
+            const sorted = [...uHoldingsData].sort((a, b) => {
+                const av = a[key] ?? (key === 'name' ? '' : -Infinity);
+                const bv = b[key] ?? (key === 'name' ? '' : -Infinity);
+                if (key === 'name') return dir * av.localeCompare(bv);
+                return dir * (bv - av);
+            });
+            const tbody = document.getElementById('u-holdings-table');
+            tbody.innerHTML = sorted.map(h => {
+                const color = (h.unrealized_pnl_pct ?? 0) >= 0 ? 'text-green-400' : 'text-red-400';
+                return `<tr class="border-b border-gray-700 hover:bg-gray-750">
+                    <td class="px-6 py-3 font-medium">${h.name}</td>
+                    <td class="px-4 py-3 text-right">${fmt(h.current_value)}</td>
+                    <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct != null ? h.unrealized_pnl_pct.toFixed(2) + '%' : '-'}</td>
+                    <td class="px-4 py-3 text-right text-gray-300">${h.shares > 0 ? h.shares.toLocaleString() : '-'}</td>
+                    <td class="px-4 py-3 text-right text-gray-300">${h.avg_price > 0 ? Math.round(h.avg_price).toLocaleString() : '-'}</td>
+                    <td class="px-4 py-3 text-right text-gray-300">${h.current_price > 0 ? Math.round(h.current_price).toLocaleString() : '-'}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function sortUserTable(key) {
+            if (uSortKey === key) uSortDir *= -1; else { uSortKey = key; uSortDir = -1; }
+            renderUserTable(uSortKey, uSortDir);
+        }
+
+        function renderHusbandTable(key, dir) {
+            const SORT_KEYS = ['name','current_value','unrealized_pnl_pct','shares','avg_price','current_price'];
+            SORT_KEYS.forEach(k => { const el = document.getElementById('h-sort-' + k); if (el) el.textContent = ''; });
+            const indicator = document.getElementById('h-sort-' + key);
+            if (indicator) indicator.textContent = dir === -1 ? ' ▼' : ' ▲';
+
+            const sorted = [...hHoldingsData].sort((a, b) => {
+                const av = a[key] ?? (key === 'name' ? '' : -Infinity);
+                const bv = b[key] ?? (key === 'name' ? '' : -Infinity);
+                if (key === 'name') return dir * av.localeCompare(bv);
+                return dir * (bv - av);
+            });
+            const tbody = document.getElementById('h-holdings-table');
+            if (sorted.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">종목 데이터가 없습니다.</td></tr>`;
+            } else {
+                tbody.innerHTML = sorted.map(h => {
+                    const color = (h.unrealized_pnl_pct ?? 0) >= 0 ? 'text-green-400' : 'text-red-400';
+                    return `<tr class="border-b border-gray-700 hover:bg-gray-750">
+                        <td class="px-6 py-3 font-medium">${h.name}</td>
+                        <td class="px-4 py-3 text-right">${fmt(h.current_value)}</td>
+                        <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct != null ? h.unrealized_pnl_pct.toFixed(2) + '%' : '-'}</td>
+                        <td class="px-4 py-3 text-right text-gray-300">${h.shares > 0 ? h.shares.toLocaleString() : '-'}</td>
+                        <td class="px-4 py-3 text-right text-gray-300">${h.avg_price > 0 ? Math.round(h.avg_price).toLocaleString() : '-'}</td>
+                        <td class="px-4 py-3 text-right text-gray-300">${h.current_price > 0 ? Math.round(h.current_price).toLocaleString() : '-'}</td>
+                    </tr>`;
+                }).join('');
+            }
+        }
+
+        function sortHusbandTable(key) {
+            if (hSortKey === key) hSortDir *= -1; else { hSortKey = key; hSortDir = -1; }
+            renderHusbandTable(hSortKey, hSortDir);
+        }
 
         const CHART_DEFAULTS = {
             responsive: true, maintainAspectRatio: false,
@@ -351,14 +423,29 @@
         };
 
         function buildTotal(history, portfolio, husbandPortfolio, sectorHistory) {
+            // 날짜별로 user/husband 분류
             const byDate = {};
             history.forEach(h => {
                 if (!byDate[h.date]) byDate[h.date] = {};
                 byDate[h.date][h.note === 'Users' ? 'user' : 'husband'] = h;
             });
-            const dates = Object.keys(byDate).sort();
-            const uVals = dates.map(d => byDate[d].user?.total_value || 0);
-            const hVals = dates.map(d => byDate[d].husband?.total_value || 0);
+            // 월별 마지막 날짜만 남기기 (같은 달 중복 제거)
+            const allDates = Object.keys(byDate).sort();
+            const monthMap = {};
+            allDates.forEach(d => { monthMap[d.slice(0,7)] = d; });
+            const dates = Object.values(monthMap).sort();
+            // 데이터 없는 날은 이전 최신값으로 forward-fill
+            let lastU = null, lastH = null;
+            const uVals = [], hVals = [], uPnl = [], hPnl = [];
+            dates.forEach(d => {
+                if (byDate[d].user)    lastU = byDate[d].user;
+                if (byDate[d].husband) lastH = byDate[d].husband;
+                uVals.push(lastU?.total_value || 0);
+                hVals.push(lastH?.total_value || 0);
+                uPnl.push(lastU?.unrealized_pnl_pct ?? null);
+                hPnl.push(lastH?.unrealized_pnl_pct ?? null);
+            });
+            const timeLabels = dates.map(d => d.slice(0,7).replace('-', '.'));
 
             const lastUser    = history.filter(h => h.note === 'Users').sort((a,b) => a.date.localeCompare(b.date)).at(-1);
             const lastHusband = history.filter(h => h.note === 'Husband').sort((a,b) => a.date.localeCompare(b.date)).at(-1);
@@ -374,7 +461,7 @@
 
             new Chart(document.getElementById('totalTrendChart'), {
                 type: 'line',
-                data: { labels: dates, datasets: [
+                data: { labels: timeLabels, datasets: [
                     { label: "👰 아내", data: uVals, borderColor: '#34D399', backgroundColor: 'rgba(52,211,153,0.4)', fill: true, tension: 0.3, pointRadius: 4 },
                     { label: "🤵 남편", data: hVals, borderColor: '#F472B6', backgroundColor: 'rgba(244,114,182,0.4)', fill: true, tension: 0.3, pointRadius: 4 }
                 ]},
@@ -385,17 +472,15 @@
                         y: { stacked: true, ticks: { color: '#9CA3AF', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.05)' } }
                     },
                     plugins: { ...CHART_DEFAULTS.plugins,
-                        legend: { labels: { color: '#FFFFFF', usePointStyle: true } },
+                        legend: { labels: { color: '#FFFFFF' } },
                         tooltip: { callbacks: { footer: items => `합계: ${fmt(items.reduce((s,i) => s + i.parsed.y, 0))}` } }
                     }
                 }
             });
 
-            const uPnl = dates.map(d => byDate[d].user?.unrealized_pnl_pct || null);
-            const hPnl = dates.map(d => byDate[d].husband?.unrealized_pnl_pct || null);
             new Chart(document.getElementById('totalPnlChart'), {
                 type: 'line',
-                data: { labels: dates, datasets: [
+                data: { labels: timeLabels, datasets: [
                     lineDataset('👰 아내 수익률(%)', uPnl, '#34D399'),
                     lineDataset('🤵 남편 수익률(%)', hPnl, '#F472B6')
                 ]},
@@ -730,7 +815,7 @@
 
                 donutChart = new Chart(document.getElementById('userDonutChart'), {
                     type: 'doughnut',
-                    data: { labels: d.labels, datasets: [{ data: d.values, backgroundColor: d.colors }] },
+                    data: { labels: d.labels, datasets: [{ data: d.values, backgroundColor: d.colors, borderWidth: 2, borderColor: '#1F2937' }] },
                     options: makeDonutOptions(d.labels, d.values, d.colors, onClickFn)
                 });
 
@@ -826,17 +911,22 @@
             window.drillBack   = drillBack;
             renderDonut('sector');
 
+            // 투입금은 history.json 기준 (실제 입금액 수기 기록) — portfolio.summary.total_cost 사용 안 함
+            // 같은 달 여러 항목이면 가장 마지막 날짜 1개만 사용, 라벨은 YYYY.MM
             const userHistory = history.filter(h => h.note === 'Users').sort((a,b) => a.date.localeCompare(b.date));
-            const uLabels = [...userHistory.map(h => h.date), portfolio.last_updated];
-            const uValues = [...userHistory.map(h => h.total_value), s.total_value];
-            const uCosts  = [...userHistory.map(h => h.total_cost),  s.total_cost];
+            const uMonthMap = {};
+            userHistory.forEach(h => { uMonthMap[h.date.slice(0,7)] = h; });
+            const uMonthly = Object.values(uMonthMap);
+            const uLabels = uMonthly.map(h => h.date.slice(0,7).replace('-','.'));
+            const uValues = uMonthly.map(h => h.total_value);
+            const uCosts  = uMonthly.map(h => h.total_cost);
             new Chart(document.getElementById('userPnlChart'), {
                 type: 'line',
                 data: { labels: uLabels, datasets: [
                     { label: '현재 평가금', data: uValues,
                       borderColor: '#34D399', backgroundColor: 'rgba(52,211,153,0.08)',
                       pointBackgroundColor: '#34D399', pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3 },
-                    { label: '투입금 (매입금액)', data: uCosts,
+                    { label: '투입금 (실제 투입금)', data: uCosts,
                       borderColor: '#94A3B8', backgroundColor: 'transparent',
                       pointBackgroundColor: '#94A3B8', pointRadius: 4, borderWidth: 2, borderDash: [5,4], tension: 0.3 }
                 ]},
@@ -849,19 +939,9 @@
                 }
             });
 
-            const tbody = document.getElementById('u-holdings-table');
-            allHoldings.sort((a,b) => b.unrealized_pnl_pct - a.unrealized_pnl_pct).forEach(h => {
-                const color = h.unrealized_pnl_pct >= 0 ? 'text-green-400' : 'text-red-400';
-                tbody.innerHTML += `
-                    <tr class="border-b border-gray-700 hover:bg-gray-750">
-                        <td class="px-6 py-3 font-medium">${h.name}</td>
-                        <td class="px-4 py-3 text-right text-gray-300">${h.shares.toLocaleString()}</td>
-                        <td class="px-4 py-3 text-right text-gray-300">${Math.round(h.avg_price).toLocaleString()}</td>
-                        <td class="px-4 py-3 text-right text-gray-300">${Math.round(h.current_price).toLocaleString()}</td>
-                        <td class="px-4 py-3 text-right">${fmt(h.current_value)}</td>
-                        <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct.toFixed(2)}%</td>
-                    </tr>`;
-            });
+            uHoldingsData = allHoldings;
+            uSortKey = 'unrealized_pnl_pct'; uSortDir = -1;
+            renderUserTable(uSortKey, uSortDir);
         }
 
         // ══════════════════════════════════════════════════════════
@@ -977,7 +1057,7 @@
                 if (hDonutChart) hDonutChart.destroy();
                 hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
                     type: 'doughnut',
-                    data: { labels: d.labels, datasets: [{ data: d.values, backgroundColor: d.colors }] },
+                    data: { labels: d.labels, datasets: [{ data: d.values, backgroundColor: d.colors, borderWidth: 2, borderColor: '#1F2937' }] },
                     options: makeHDonutOpts(d.labels, d.values, d.colors, onClickFn)
                 });
                 document.getElementById('h-btn-sector').className  = `px-3 py-1 transition-colors ${mode==='sector'  ? 'bg-pink-600 text-white' : 'bg-gray-700 text-gray-300'}`;
@@ -1022,7 +1102,7 @@
                 if (hDonutChart) hDonutChart.destroy();
                 hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
                     type: 'doughnut',
-                    data: { labels, datasets: [{ data: values, backgroundColor: colors }] },
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
                     options: makeHDonutOpts(labels, values, colors, onClickFn)
                 });
                 document.getElementById('h-btn-back-donut').classList.remove('hidden');
@@ -1046,7 +1126,7 @@
                 if (hDonutChart) hDonutChart.destroy();
                 hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
                     type: 'doughnut',
-                    data: { labels, datasets: [{ data: values, backgroundColor: colors }] },
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
                     options: makeHDonutOpts(labels, values, colors, null)
                 });
                 const lbl = document.getElementById('h-donut-sector-label');
@@ -1065,13 +1145,17 @@
             if (allHusbandHoldings.length > 0) renderHDonut('sector');
 
             // ── 투입금 vs 평가금 차트 ──────────────────────────────
+            // 같은 달 여러 항목이면 가장 마지막 날짜 1개만 사용, 라벨은 YYYY.MM
+            const hMonthMap = {};
+            hHistory.forEach(h => { hMonthMap[h.date.slice(0,7)] = h; });
+            const hMonthly = Object.values(hMonthMap);
             new Chart(document.getElementById('husbandPnlChart'), {
                 type: 'line',
-                data: { labels: hHistory.map(h => h.date), datasets: [
-                    { label: '현재 평가금', data: hHistory.map(h => h.total_value),
+                data: { labels: hMonthly.map(h => h.date.slice(0,7).replace('-','.')), datasets: [
+                    { label: '현재 평가금', data: hMonthly.map(h => h.total_value),
                       borderColor: '#F472B6', backgroundColor: 'rgba(244,114,182,0.08)',
                       pointBackgroundColor: '#F472B6', pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3 },
-                    { label: '투입금 (매입금액)', data: hHistory.map(h => h.total_cost),
+                    { label: '투입금 (실제 투입금)', data: hMonthly.map(h => h.total_cost),
                       borderColor: '#94A3B8', backgroundColor: 'transparent',
                       pointBackgroundColor: '#94A3B8', pointRadius: 4, borderWidth: 2, borderDash: [5,4], tension: 0.3 }
                 ]},
@@ -1085,26 +1169,9 @@
             });
 
             // ── 보유 종목 테이블 ───────────────────────────────────
-            const tbody = document.getElementById('h-holdings-table');
-            const holdings = allHusbandHoldings
-                .filter(h => h.current_value > 0)
-                .sort((a,b) => (b.unrealized_pnl_pct || 0) - (a.unrealized_pnl_pct || 0));
-            if (holdings.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">종목 데이터가 없습니다.</td></tr>`;
-            } else {
-                holdings.forEach(h => {
-                    const color = (h.unrealized_pnl_pct || 0) >= 0 ? 'text-green-400' : 'text-red-400';
-                    tbody.innerHTML += `
-                        <tr class="border-b border-gray-700 hover:bg-gray-750">
-                            <td class="px-6 py-3 font-medium">${h.name}</td>
-                            <td class="px-4 py-3 text-right text-gray-300">${h.shares > 0 ? h.shares.toLocaleString() : '-'}</td>
-                            <td class="px-4 py-3 text-right text-gray-300">${h.avg_price > 0 ? Math.round(h.avg_price).toLocaleString() : '-'}</td>
-                            <td class="px-4 py-3 text-right text-gray-300">${h.current_price > 0 ? Math.round(h.current_price).toLocaleString() : '-'}</td>
-                            <td class="px-4 py-3 text-right">${fmt(h.current_value)}</td>
-                            <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct != null ? h.unrealized_pnl_pct.toFixed(2) + '%' : '-'}</td>
-                        </tr>`;
-                });
-            }
+            hHoldingsData = allHusbandHoldings.filter(h => h.current_value > 0);
+            hSortKey = 'unrealized_pnl_pct'; hSortDir = -1;
+            renderHusbandTable(hSortKey, hSortDir);
         }
     </script>
 </body>

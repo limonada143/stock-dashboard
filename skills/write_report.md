@@ -186,5 +186,8 @@ Telegram은 4096자 제한이 있으므로 MD 전체 대신 **핵심 요약**만
 
 - `history.json`의 직전 스냅샷은 `note` 필드("Users" / "Husband")로 구분
 - 전월 대비는 가장 최근 스냅샷 기준 (당일 데이터 제외)
+- 대시보드 트렌드 차트: 특정 날짜에 한쪽 데이터가 없으면 **이전 최신값으로 forward-fill** (0 표시 방지)
+- **투입금 vs 평가금 차트** (아내/남편 탭): `history.json`의 `total_cost`만 사용. `portfolio.json summary.total_cost`는 매입금 합계라 실제 투입금과 다르므로 절대 사용하지 않음
+- `history.json total_cost`는 실제 입출금 기반 수기 기록. 새 스냅샷 추가 시 이전 값에 입출금 차액만 가감하여 계산
 - 총 자산(`total_value`)은 익절 포함 사용자 수정값이므로 `portfolio.json`의 `summary.total_value`를 우선 사용
 - 섹터 분류는 `sector_history.json` 최신 항목 기준 (없으면 `portfolio.json` 직접 집계)
