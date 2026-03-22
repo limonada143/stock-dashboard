@@ -301,9 +301,8 @@
         const SECTOR_COLORS_G = {
             '반도체':'#60A5FA','AI/기술':'#A78BFA','원자력/에너지':'#FBBF24',
             '방산/우주':'#F87171','조선':'#34D399','시장지수':'#38BDF8',
-            '그룹주/자동차':'#FB923C','바이오':'#F472B6','금융':'#4ADE80','기타':'#6B7280',
-            'S&P500':'#F59E0B','KOSPI':'#14B8A6','KOSDAQ':'#8B5CF6','나스닥':'#06B6D4',
-            '원자재':'#D97706'
+            '그룹주/자동차':'#FB923C','바이오':'#F472B6','금융':'#4ADE80',
+            '원자재':'#D97706','기타':'#6B7280'
         };
         const SECTOR_MAP_G = {
             '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)','AI/반도체(미국)','반도체/레버리지(해외)'],
@@ -322,15 +321,30 @@
             return Object.keys(SECTOR_MAP_G).find(s => SECTOR_MAP_G[s].includes(cat)) || '기타';
         }
         // 종목명 우선 분류 (자산운용사 무관, etf_classification_rules.md 기준)
+        // S&P500/KOSPI/KOSDAQ/나스닥은 모두 시장지수의 하위 분류
         function holdingToSector(name, cat) {
             const n = name || '';
-            if (/S&P\s*500|SP500/i.test(n))                          return 'S&P500';
-            if (/코스닥|KOSDAQ/i.test(n))                             return 'KOSDAQ';
-            if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n)) return '나스닥';
-            if (/코스피|KOSPI/i.test(n))                              return 'KOSPI';
-            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)\b/.test(n)) return 'KOSPI';
+            if (/S&P\s*500|SP500/i.test(n))                                              return '시장지수';
+            if (/코스닥|KOSDAQ/i.test(n))                                                return '시장지수';
+            if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n))        return '시장지수';
+            if (/코스피|KOSPI/i.test(n))                                                 return '시장지수';
+            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)\b/.test(n)) return '시장지수';
             return catToSectorG(cat);
         }
+        // 시장지수 내 세부 분류 (드릴다운 전용)
+        function holdingToSubIndex(name) {
+            const n = name || '';
+            if (/S&P\s*500|SP500/i.test(n))                                              return 'S&P500';
+            if (/코스닥|KOSDAQ/i.test(n))                                                return 'KOSDAQ';
+            if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n))        return '나스닥';
+            if (/코스피|KOSPI/i.test(n))                                                 return 'KOSPI';
+            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)\b/.test(n)) return 'KOSPI';
+            return '기타 시장지수';
+        }
+        const SUB_INDEX_COLORS = {
+            'S&P500':'#F59E0B', 'KOSPI':'#14B8A6', 'KOSDAQ':'#8B5CF6',
+            '나스닥':'#06B6D4', '기타 시장지수':'#38BDF8'
+        };
 
         function buildTotal(history, portfolio, husbandPortfolio, sectorHistory) {
             const byDate = {};
@@ -465,16 +479,30 @@
                 );
                 if (!holdings.length) return;
 
-                // 같은 종목명 병합
-                const merged = {};
-                holdings.forEach(h => {
-                    if (!merged[h.name]) merged[h.name] = 0;
-                    merged[h.name] += h.current_value || 0;
-                });
-                const entries = Object.entries(merged).sort((a,b) => b[1]-a[1]);
-                const labels = entries.map(([n]) => n);
-                const values = entries.map(([,v]) => v);
-                const colors = tPalette.slice(0, labels.length);
+                let labels, values, colors;
+                if (sectorName === '시장지수') {
+                    // 시장지수 → 서브인덱스(S&P500/KOSPI/KOSDAQ/나스닥/기타)로 분류
+                    const subTotals = {};
+                    holdings.forEach(h => {
+                        const sub = holdingToSubIndex(h.name);
+                        subTotals[sub] = (subTotals[sub] || 0) + (h.current_value || 0);
+                    });
+                    const entries = Object.entries(subTotals).sort((a,b) => b[1]-a[1]);
+                    labels = entries.map(([n]) => n);
+                    values = entries.map(([,v]) => v);
+                    colors = labels.map(l => SUB_INDEX_COLORS[l] || '#6B7280');
+                } else {
+                    // 그 외 섹터 → 개별 종목 병합
+                    const merged = {};
+                    holdings.forEach(h => {
+                        if (!merged[h.name]) merged[h.name] = 0;
+                        merged[h.name] += h.current_value || 0;
+                    });
+                    const entries = Object.entries(merged).sort((a,b) => b[1]-a[1]);
+                    labels = entries.map(([n]) => n);
+                    values = entries.map(([,v]) => v);
+                    colors = tPalette.slice(0, labels.length);
+                }
 
                 if (tDonutChart) tDonutChart.destroy();
                 tDonutChart = new Chart(document.getElementById('totalSectorDonut'), {
@@ -676,9 +704,22 @@
                                  '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
                                  '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
 
-                const labels = etfs.map(h => h.name);
-                const values = etfs.map(h => h.current_value);
-                const colors = palette.slice(0, etfs.length);
+                let labels, values, colors;
+                if (sectorName === '시장지수') {
+                    const subTotals = {};
+                    etfs.forEach(h => {
+                        const sub = holdingToSubIndex(h.name);
+                        subTotals[sub] = (subTotals[sub] || 0) + (h.current_value || 0);
+                    });
+                    const entries = Object.entries(subTotals).sort((a,b) => b[1]-a[1]);
+                    labels = entries.map(([n]) => n);
+                    values = entries.map(([,v]) => v);
+                    colors = labels.map(l => SUB_INDEX_COLORS[l] || '#6B7280');
+                } else {
+                    labels = etfs.map(h => h.name);
+                    values = etfs.map(h => h.current_value);
+                    colors = palette.slice(0, etfs.length);
+                }
 
                 if (donutChart) donutChart.destroy();
                 donutChart = new Chart(document.getElementById('userDonutChart'), {
@@ -872,9 +913,22 @@
                 const palette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
                                  '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
                                  '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
-                const labels = etfs.map(h => h.name);
-                const values = etfs.map(h => h.current_value);
-                const colors = palette.slice(0, etfs.length);
+                let labels, values, colors;
+                if (sectorName === '시장지수') {
+                    const subTotals = {};
+                    etfs.forEach(h => {
+                        const sub = holdingToSubIndex(h.name);
+                        subTotals[sub] = (subTotals[sub] || 0) + (h.current_value || 0);
+                    });
+                    const entries = Object.entries(subTotals).sort((a,b) => b[1]-a[1]);
+                    labels = entries.map(([n]) => n);
+                    values = entries.map(([,v]) => v);
+                    colors = labels.map(l => SUB_INDEX_COLORS[l] || '#6B7280');
+                } else {
+                    labels = etfs.map(h => h.name);
+                    values = etfs.map(h => h.current_value);
+                    colors = palette.slice(0, etfs.length);
+                }
                 if (hDonutChart) hDonutChart.destroy();
                 hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
                     type: 'doughnut',
