@@ -2,13 +2,39 @@
   "owner": "user",
   "last_updated": "2026-03-21",
   "summary": {
-    "total_value": 606740667,
-    "total_cost": 361594000,
-    "total_cash": 4201468,
-    "unrealized_pnl": 110278285,
-    "unrealized_pnl_pct": 24.66
+    "total_value": 603424363,
+    "total_cost": 477394492,
+    "total_cash": 3746043,
+    "unrealized_pnl": 125949630,
+    "unrealized_pnl_pct": 26.38
   },
   "accounts": [
+    {
+      "id": "714546251401",
+      "name": "삼성증권",
+      "type": "일반계좌",
+      "currency": "KRW",
+      "summary": {
+        "total_value": 38683600,
+        "total_cost": 30981581,
+        "unrealized_pnl": 7702019,
+        "unrealized_pnl_pct": 24.86
+      },
+      "holdings": [
+        {
+          "name": "삼성전자",
+          "ticker": "삼성전자",
+          "shares": 194,
+          "avg_price": 159699,
+          "current_price": 199800,
+          "current_value": 38683600,
+          "unrealized_pnl": 7702019,
+          "unrealized_pnl_pct": 24.86,
+          "type": "주식",
+          "category": "반도체"
+        }
+      ]
+    },
     {
       "id": "43707842-22",
       "name": "한국투자 연금저축",
@@ -210,10 +236,10 @@
       "type": "종합위탁",
       "currency": "KRW",
       "summary": {
-        "total_value": 68120641,
+        "total_value": 66884210,
         "total_cost": 66812952,
-        "unrealized_pnl": 1308623,
-        "unrealized_pnl_pct": 1.96,
+        "unrealized_pnl": -2243,
+        "unrealized_pnl_pct": 0.00,
         "cash": 171358
       },
       "holdings": [
@@ -359,8 +385,8 @@
       "summary": {
         "total_value": 57662200,
         "total_cost": 44421757,
-        "unrealized_pnl": 13241609,
-        "unrealized_pnl_pct": 29.81,
+        "unrealized_pnl": 13235834,
+        "unrealized_pnl_pct": 29.8,
         "cash": 572700
       },
       "holdings": [
@@ -627,11 +653,11 @@
       "type": "일반계좌",
       "currency": "KRW",
       "summary": {
-        "total_value": 86291102,
-        "total_cost": 65806828,
-        "unrealized_pnl": 24991215,
-        "unrealized_pnl_pct": 40.77,
-        "cash": 55672
+        "total_value": 90478652,
+        "total_cost": 60513393,
+        "unrealized_pnl": 29965259,
+        "unrealized_pnl_pct": 49.47,
+        "cash": 159538
       },
       "holdings": [
         {
@@ -762,11 +788,11 @@
       "type": "해외주식",
       "currency": "KRW",
       "summary": {
-        "total_value": 110852747,
-        "total_cost": 88657187,
-        "unrealized_pnl": 17688931.077746987,
-        "unrealized_pnl_pct": 18.99,
-        "cash": 0
+        "total_value": 115164671,
+        "total_cost": 93163817,
+        "unrealized_pnl": 22000854,
+        "unrealized_pnl_pct": 23.62,
+        "cash": 2796835
       },
       "holdings": [
         {
