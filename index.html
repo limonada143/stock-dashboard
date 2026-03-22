@@ -328,7 +328,7 @@
             if (/코스닥|KOSDAQ/i.test(n))                                                return '시장지수';
             if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n))        return '시장지수';
             if (/코스피|KOSPI/i.test(n))                                                 return '시장지수';
-            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)\b/.test(n)) return '시장지수';
+            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)/.test(n)) return '시장지수';
             return catToSectorG(cat);
         }
         // 시장지수 내 세부 분류 (드릴다운 전용)
@@ -339,7 +339,7 @@
             if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n))        return '나스닥';
             if (/팔란티어/i.test(n))                                                     return '나스닥';
             if (/코스피|KOSPI/i.test(n))                                                 return 'KOSPI';
-            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)\b/.test(n)) return 'KOSPI';
+            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)/.test(n)) return 'KOSPI';
             if ((cat || '') === '국내지수')                                               return 'KOSPI';
             if (/배당다우존스/i.test(n))                                                  return 'SCHD';
             if (/TDF/i.test(n))                                                          return 'VTI';
