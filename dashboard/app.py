@@ -35,14 +35,58 @@ def pnl_color(val: float) -> str:
     return "red" if val > 0 else "blue"
 
 
+def load_history_df() -> pd.DataFrame:
+    """history.json → 부부 합산 DataFrame (월별 등간격 x 좌표 포함)"""
+    path = ROOT / "history.json"
+    if not path.exists():
+        return pd.DataFrame()
+    with open(path, encoding="utf-8") as f:
+        raw = json.load(f)
+    df_u = (pd.DataFrame([r for r in raw if r.get("note") == "Users"])
+              [["date", "total_value", "total_cost", "unrealized_pnl_pct"]]
+              .rename(columns={"total_value": "user_value", "total_cost": "user_cost",
+                               "unrealized_pnl_pct": "user_pct"}))
+    df_h = (pd.DataFrame([r for r in raw if r.get("note") == "Husband"])
+              [["date", "total_value", "total_cost", "unrealized_pnl_pct"]]
+              .rename(columns={"total_value": "husb_value", "total_cost": "husb_cost",
+                               "unrealized_pnl_pct": "husb_pct"}))
+    df = (pd.merge(df_u, df_h, on="date", how="outer")
+            .sort_values("date").reset_index(drop=True))
+    for col in ["user_value", "husb_value", "user_cost", "husb_cost", "user_pct", "husb_pct"]:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+    # 합산은 양쪽 모두 데이터가 있는 날만 계산
+    df["total_value"] = df[["user_value", "husb_value"]].sum(axis=1, min_count=2)
+    df["total_cost"]  = df[["user_cost",  "husb_cost" ]].sum(axis=1, min_count=2)
+    df["total_pct"]   = (df["total_value"] - df["total_cost"]) / df["total_cost"] * 100
+    return df
+
+
+_BASE_DATE = pd.Timestamp("2024-12-01")
+
+
+def to_mx(date_str: str) -> int:
+    """날짜 → 기준일로부터의 일수. 하루 = 1칸 등간격."""
+    return (pd.Timestamp(date_str) - _BASE_DATE).days
+
+
+def month_ticks(dates: list) -> tuple:
+    """날짜 목록 → 월 시작점 tick values & labels (일별 등간격 기준)"""
+    d0 = pd.Timestamp(min(dates)).replace(day=1)
+    d1 = pd.Timestamp(max(dates)) + pd.offsets.MonthBegin(1)
+    months = pd.date_range(d0, d1, freq="MS")
+    vals   = [(m - _BASE_DATE).days for m in months]
+    labels = [m.strftime("%y.%m") for m in months]
+    return vals, labels
+
+
 # ── 페이지 설정 ──────────────────────────────────────────
 st.set_page_config(
-    page_title="가족 포트폴리오 대시보드",
+    page_title="부부 포트폴리오 대시보드",
     page_icon="📈",
     layout="wide",
 )
 
-st.title("📈 가족 포트폴리오 대시보드")
+st.title("📈 부부 포트폴리오 대시보드")
 
 total = load_json(DATA_DIR / "portfolio_total.json")
 user = load_json(DATA_DIR / "portfolio_user.json")
@@ -64,7 +108,7 @@ with tab1:
     st.caption(f"마지막 업데이트: {last_updated}  |  USD/KRW: {fx:,.0f}")
 
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("가족 총 자산", fmt_krw(summary.get("family_total_krw", 0)))
+    col1.metric("부부 총 자산", fmt_krw(summary.get("family_total_krw", 0)))
     col2.metric(
         "총 평가손익",
         fmt_krw(summary.get("family_pnl_krw", 0)),
@@ -80,7 +124,7 @@ with tab1:
     st.divider()
     col_left, col_right = st.columns(2)
 
-    # 카테고리 파이 차트
+    # 섹터별 비중 파이 차트
     cats = total.get("category_breakdown_krw", {})
     if cats:
         with col_left:
@@ -94,36 +138,84 @@ with tab1:
             fig_pie.update_traces(textposition="inside", textinfo="percent+label")
             st.plotly_chart(fig_pie, use_container_width=True)
 
-    # 월별 자산 추이
-    history = total.get("monthly_history", [])
-    if len(history) >= 2:
+    # ── history.json 기반 추이 차트 (월별 등간격) ──────────
+    df_hist = load_history_df()
+    if not df_hist.empty:
+        df_hist["mx"] = df_hist["date"].apply(to_mx)
+        tvs, tls = month_ticks(df_hist["date"].tolist())
+        xax = dict(tickvals=tvs, ticktext=tls, showgrid=True, gridcolor="#eeeeee")
+        _layout = dict(legend=dict(orientation="h"), margin=dict(l=0, r=0, t=28, b=0))
+
+        # ① 자산 추이
+        df_tot  = df_hist.dropna(subset=["total_value"])
+        df_user = df_hist.dropna(subset=["user_value"])
+        df_husb = df_hist.dropna(subset=["husb_value"])
+
         with col_right:
-            st.subheader("월별 총 자산 추이")
-            df_hist = pd.DataFrame(history)
-            fig_line = go.Figure()
-            fig_line.add_trace(go.Scatter(
-                x=df_hist["date"], y=df_hist["total_value_krw"],
-                mode="lines+markers", name="총 자산",
+            st.subheader("자산 추이")
+            fig_asset = go.Figure()
+            fig_asset.add_trace(go.Scatter(
+                x=df_tot["mx"],  y=df_tot["total_value"],
+                mode="lines+markers", name="부부 합산",
                 line=dict(color="#FF4B4B", width=2),
             ))
-            fig_line.add_trace(go.Scatter(
-                x=df_hist["date"], y=df_hist["user_value_krw"],
-                mode="lines+markers", name="나의 자산",
-                line=dict(color="#4B7BFF", width=2, dash="dot"),
+            fig_asset.add_trace(go.Scatter(
+                x=df_user["mx"], y=df_user["user_value"],
+                mode="lines+markers", name="나",
+                line=dict(color="#4B7BFF", width=1.5, dash="dot"),
             ))
-            fig_line.add_trace(go.Scatter(
-                x=df_hist["date"], y=df_hist["husband_value_krw"],
-                mode="lines+markers", name="남편 자산",
-                line=dict(color="#4BFF9A", width=2, dash="dot"),
+            fig_asset.add_trace(go.Scatter(
+                x=df_husb["mx"], y=df_husb["husb_value"],
+                mode="lines+markers", name="남편",
+                line=dict(color="#4BFF9A", width=1.5, dash="dot"),
             ))
-            fig_line.update_layout(
-                yaxis_tickformat=",",
-                legend=dict(orientation="h"),
-                margin=dict(l=0, r=0, t=20, b=0),
-            )
-            st.plotly_chart(fig_line, use_container_width=True)
-    elif history:
-        st.info("월별 추이 차트는 2개월 이상의 데이터가 필요합니다.")
+            fig_asset.update_layout(xaxis=xax,
+                yaxis=dict(tickformat=",", ticksuffix="원"), **_layout)
+            st.plotly_chart(fig_asset, use_container_width=True)
+
+        # ② 투입금 vs 평가금  /  ③ 수익률 추이
+        col_a, col_b = st.columns(2)
+
+        with col_a:
+            st.subheader("투입금 vs 평가금")
+            df_cv = df_hist.dropna(subset=["total_value", "total_cost"])
+            fig_cv = go.Figure()
+            fig_cv.add_trace(go.Scatter(
+                x=df_cv["mx"], y=df_cv["total_value"],
+                mode="lines+markers", name="평가금",
+                line=dict(color="#FF4B4B", width=2),
+            ))
+            fig_cv.add_trace(go.Scatter(
+                x=df_cv["mx"], y=df_cv["total_cost"],
+                mode="lines+markers", name="투입금",
+                line=dict(color="#888888", width=2, dash="dash"),
+            ))
+            fig_cv.update_layout(xaxis=xax,
+                yaxis=dict(tickformat=",", ticksuffix="원"), **_layout)
+            st.plotly_chart(fig_cv, use_container_width=True)
+
+        with col_b:
+            st.subheader("수익률 추이")
+            fig_pct = go.Figure()
+            fig_pct.add_trace(go.Scatter(
+                x=df_tot["mx"],  y=df_tot["total_pct"],
+                mode="lines+markers", name="부부 합산",
+                line=dict(color="#FF4B4B", width=2),
+            ))
+            fig_pct.add_trace(go.Scatter(
+                x=df_user["mx"], y=df_user["user_pct"],
+                mode="lines+markers", name="나",
+                line=dict(color="#4B7BFF", width=1.5, dash="dot"),
+            ))
+            fig_pct.add_trace(go.Scatter(
+                x=df_husb["mx"], y=df_husb["husb_pct"],
+                mode="lines+markers", name="남편",
+                line=dict(color="#4BFF9A", width=1.5, dash="dot"),
+            ))
+            fig_pct.add_hline(y=0, line_dash="solid", line_color="#cccccc")
+            fig_pct.update_layout(xaxis=xax,
+                yaxis=dict(ticksuffix="%"), **_layout)
+            st.plotly_chart(fig_pct, use_container_width=True)
 
 
 # ── TAB 2: My Portfolio ──────────────────────────────────
@@ -219,3 +311,57 @@ with tab2:
 
 with tab3:
     render_portfolio_tab(husband, "남편")
+
+    # ── 남편 자산 추이 (history.json) ──────────────────────
+    st.divider()
+    st.subheader("남편 자산 추이")
+    path_hist = ROOT / "history.json"
+    if path_hist.exists():
+        with open(path_hist, encoding="utf-8") as _f:
+            _raw = json.load(_f)
+        _df_h = (pd.DataFrame([r for r in _raw if r.get("note") == "Husband"])
+                   [["date", "total_value", "total_cost", "unrealized_pnl_pct"]]
+                   .sort_values("date").reset_index(drop=True))
+        _df_h["mx"] = _df_h["date"].apply(to_mx)
+        _tvs, _tls = month_ticks(_df_h["date"].tolist())
+        _xax = dict(tickvals=_tvs, ticktext=_tls, showgrid=True, gridcolor="#eeeeee")
+
+        col_ha, col_hb = st.columns(2)
+        with col_ha:
+            st.caption("평가금 vs 투입금")
+            fig_hcv = go.Figure()
+            fig_hcv.add_trace(go.Scatter(
+                x=_df_h["mx"], y=_df_h["total_value"],
+                mode="lines+markers", name="평가금",
+                line=dict(color="#4BFF9A", width=2),
+                text=_df_h["date"], hovertemplate="%{text}<br>%{y:,.0f}원<extra></extra>",
+            ))
+            fig_hcv.add_trace(go.Scatter(
+                x=_df_h["mx"], y=_df_h["total_cost"],
+                mode="lines+markers", name="투입금",
+                line=dict(color="#888888", width=2, dash="dash"),
+                text=_df_h["date"], hovertemplate="%{text}<br>%{y:,.0f}원<extra></extra>",
+            ))
+            fig_hcv.update_layout(
+                xaxis=_xax,
+                yaxis=dict(tickformat=",", ticksuffix="원"),
+                legend=dict(orientation="h"), margin=dict(l=0, r=0, t=10, b=0),
+            )
+            st.plotly_chart(fig_hcv, use_container_width=True)
+
+        with col_hb:
+            st.caption("수익률 추이")
+            fig_hpct = go.Figure()
+            fig_hpct.add_trace(go.Scatter(
+                x=_df_h["mx"], y=_df_h["unrealized_pnl_pct"],
+                mode="lines+markers", name="수익률",
+                line=dict(color="#4BFF9A", width=2),
+                text=_df_h["date"], hovertemplate="%{text}<br>%{y:.2f}%<extra></extra>",
+            ))
+            fig_hpct.add_hline(y=0, line_dash="solid", line_color="#cccccc")
+            fig_hpct.update_layout(
+                xaxis=_xax,
+                yaxis=dict(ticksuffix="%"),
+                legend=dict(orientation="h"), margin=dict(l=0, r=0, t=10, b=0),
+            )
+            st.plotly_chart(fig_hpct, use_container_width=True)

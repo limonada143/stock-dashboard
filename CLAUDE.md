@@ -1,55 +1,68 @@
 # CLAUDE.md
 
-이 파일은 이 저장소에서 부부 자산 관리 및 투자 트래킹을 수행하고, 3-Tab 대시보드를 구축하는 AI를 위한 지침서입니다.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+이 저장소에서 부부 자산 관리 및 투자 트래킹을 수행하고, 3-Tab 대시보드를 구축하는 AI를 위한 지침서입니다.
 
 ## Project Overview
 사용자 및 배우자의 주식/자산 계좌 현황(스크린샷 및 텍스트)을 분석하여 매수/매도 이력을 추적하고, 매월 1회 총합 및 개별 자산 현황, 섹터별 비중, 전월 대비 변동성을 시각화하는 3-Tab 대시보드(Total, User, Husband) 리포트를 생성하는 부부 금융 관리 프로젝트입니다.
 
 ## Commands
-1. 데이터 입력 및 동기화 (Data Entry)
-   - 소유자 식별: 입력된 스크린샷이나 텍스트에서 해당 계좌가 'User'의 것인지 'Husband'의 것인지 명확히 분류하여 기록합니다.
-   - 스크린샷 분석: 증권사 앱 스크린샷에서 종목명, 수량, 평단가, 수익률, 계좌 통화를 정확히 추출합니다.
-   - 텍스트 기록: "남편 계좌 테슬라 10주 매수" 등 텍스트 입력 시 해당 인원의 포트폴리오에 즉시 반영합니다.
-   - 데이터 우선순위: 같은 날짜에 입력한 텍스트 입력과 스크린샷 데이터가 충돌할 경우, 스크린샷의 정보를 최우선으로 하여 데이터를 보정합니다. 그보다도 가장 우선되는 것은 history.json에 입력되어있는 날짜의 합계입니다. 이 금액이 지정된 날짜에 먼저 적혀있다면 덮어쓰지마세요. 해당 날짜에 총압이 없다면 새로 적어도 좋습니다.
-   - 같은 종목을 여러 계좌에서 매수한 경우를 대비하여 사용자 및 배우자 각각의 토탈 계좌용 수량을 추적하는 json파일을 따로 만들어 둡니다. 
-   - history.json에서 "total cost"는 현재 주식내용에서 절대 업데이트 하면 안됩니다. 이는 user와 husband가 실제 입출금한 내역에 의해서만 업데이트 될 것이므로, 이에 대한 업데이트는 유저가 직접하거나, 입출금 내역을 따로 말해줄 것입니다. 그 때 이전달말일 대비의 입출금 차액을 통해서만 증가시키거나 감소시킵니다. 별 말이 없다면 이전 히스토리 값을 받아오세요. 
-   - history.json에서 "total value"는 최신 주식내용이 있고 실시간으로 받아온 값이 있다면 그 값으로 새로운 날짜로 업데이트 해서 아랫쪽에 추가로 적어주면 됩니다. 그 때의 "total cost"는 유저 입력이 없다면 직전 값 유지, 나머지 "unrealized_pnl", "unrealized_pnl_pct"는 그 값을 기반으로 계산하여 업데이트 하면 됩니다. 
 
-2. 리포팅 및 대시보드 업데이트 (Monthly Reporting)
-   - 월간 정기 업데이트: 매월 말일 혹은 요청 시, 수집된 데이터를 바탕으로 월간 대시보드용 데이터를 컴파일합니다.
-   - Total Dashboard (통합): 
-     * 부부 합산 총 자산 규모 및 전월 대비 변동률 (MoM) 분석
-     * 전체 포트폴리오의 섹터별 투자 비중 (Tech, Energy, Finance 등) 시각화
-   - Individual Dashboard (개인별 탭):
-     * User 및 Husband 각자의 보유 종목 리스트, 수량, 평균 단가 요약
-     * 개인별 수익률 상/하위 종목 브리핑 및 자산 기여도
-   - 월말마다의 데이터 (또는 유저가 현재날짜의 데이터를 취합하여 리포트 생성을 원할시)를 취합하여 따로 pdf로 페이지를 내려받습니다. 이후 예를 들어 2달 뒤, 2달 이전의 포트폴리오와의 비교 요청이 있다면 분석을 실시합니다.    
+### 대시보드 실행
+```bash
+streamlit run dashboard/app.py
+```
 
-Test
+### 가격 업데이트
+```bash
+python update_prices.py
+```
 
-Bash
-# 데이터 무결성 검사 (합산 금액 일치 여부, JSON 포맷 검증)
+### 스크린샷 분석
+```bash
+python analyze_screenshot.py
+```
+
+### 데이터 무결성 검사
+```bash
 pytest tests/
-
+```
 
 ## Architecture
-data/portfolio_user.json: User의 자산 현황과 거래 이력 마스터 데이터
 
-data/portfolio_husband.json: Husband의 자산 현황과 거래 이력 마스터 데이터
+### 데이터 파일 (루트)
+- `history.json`: 부부 합산 월별 총자산 히스토리 (`total_cost`, `total_value`, `unrealized_pnl`, `unrealized_pnl_pct`)
+- `sector_history.json`: 섹터별 비중 히스토리
+- `portfolio_husband.json`: 루트 레벨 남편 포트폴리오 마스터 데이터
 
-data/portfolio_total.json: 두 데이터를 병합하고 월별 히스토리를 저장하는 스냅샷 데이터
+### 데이터 파일 (dashboard/)
+- `dashboard/portfolio_user.json`: User 자산 현황 및 거래 이력
+- `dashboard/portfolio_husband.json`: Husband 자산 현황 및 거래 이력
+- `dashboard/portfolio_total.json`: 부부 합산 월별 스냅샷
 
-dashboard/: 3-Tab UI를 구현하는 코드 (예: Python Streamlit, Dash 등) 및 시각화 모듈
-
-reports/: 텍스트 형태의 월간 요약 마크다운 리포트 저장소
+### 코드
+- `dashboard/app.py`: Streamlit 3-Tab 대시보드 (Total / User / Husband)
+- `skills/account_classifier.py`: 계좌 소유자(user/husband) 분류 유틸리티
+- `skills/aggregator.py`: 포트폴리오 데이터 집계 유틸리티
+- `skills/update_price.py`: 가격 업데이트 스크립트
+- `analyze_screenshot.py`: 증권사 앱 스크린샷 파싱
+- `reports/`: 월간 마크다운 리포트 저장소
 
 ## Key Conventions & Rules
-소유권 분리: 모든 거래 이력과 자산 데이터에는 반드시 owner 필드("user" 또는 "husband")를 명시합니다.
 
-통화 및 환율: 원화(KRW)와 외화(USD) 자산을 구분하되, 통합 대시보드(Total)에서는 실시간 환율을 적용해 하나의 기준 통화(예: KRW)로 환산하여 합산합니다.
+### 데이터 입력 및 동기화
+- **소유자 식별**: 모든 거래 이력과 자산 데이터에 `owner` 필드(`"user"` 또는 `"husband"`) 필수 명시
+- **데이터 우선순위**: history.json에 기입된 날짜의 합계 > 스크린샷 > 텍스트 입력 순. 해당 날짜에 이미 값이 있으면 덮어쓰지 않음
+- **total_cost 불변 원칙**: `history.json`의 `total_cost`는 실제 입출금 내역 발생 시에만 업데이트. 주식 가격 변동으로는 절대 수정하지 않음. 유저가 명시하지 않으면 직전 값 유지
+- **total_value 업데이트**: 최신 주가 반영 시 새 날짜로 항목 추가(기존 항목 덮어쓰기 금지). `unrealized_pnl` = `total_value - total_cost`, `unrealized_pnl_pct` = `unrealized_pnl / total_cost * 100`
 
-정확성: 수량과 평단가는 소수점까지 정확하게 기록합니다.
+### 통화 및 환율
+- KRW/USD 자산 구분 기록
+- Total 대시보드에서는 실시간 환율 적용해 KRW 기준으로 합산
 
-톤앤매너: 보고는 객관적이고 명확하게 하되, 데이터 기반의 통찰(예: 특정 섹터 편중 현상 알림 등)을 짧게 덧붙입니다. 
+### 정확성
+- 수량과 평단가는 소수점까지 정확하게 기록
 
-프라이버시: 민감한 금융 정보이므로 외부 API 전송 시 개인 식별 정보를 마스킹하고, 로컬 환경 내에서만 데이터를 처리합니다.
+### 톤앤매너
+- 보고는 객관적·명확하게, 데이터 기반의 통찰(섹터 편중 등)을 짧게 덧붙임

@@ -254,5 +254,21 @@
     "unrealized_pnl": 155356702,
     "unrealized_pnl_pct": 63.95,
     "note": "Husband"
+  },
+  {
+    "date": "2026-03-23",
+    "total_value": 571233272,
+    "total_cost": 357710903,
+    "unrealized_pnl": 213522369,
+    "unrealized_pnl_pct": 59.69,
+    "note": "Users"
+  },
+  {
+    "date": "2026-03-23",
+    "total_value": 388226240,
+    "total_cost": 242941168,
+    "unrealized_pnl": 145285072,
+    "unrealized_pnl_pct": 59.80,
+    "note": "Husband"
   }
 ]
