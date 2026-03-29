@@ -904,18 +904,6 @@
           "category": "AI/기술(해외)"
         },
         {
-          "name": "RGTI",
-          "ticker": "RGTI",
-          "shares": 0,
-          "avg_price": 31230,
-          "current_price": 20087,
-          "current_value": 0,
-          "unrealized_pnl": 0,
-          "unrealized_pnl_pct": 0,
-          "type": "주식",
-          "category": "양자컴퓨팅(해외)"
-        },
-        {
           "name": "RKLB",
           "ticker": "RKLB",
           "shares": 145,
