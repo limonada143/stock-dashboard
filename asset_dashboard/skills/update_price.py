@@ -87,7 +87,7 @@ TICKER_MAP = {
 # USD 심볼 목록 (가격 × 환율 변환 대상)
 USD_TICKERS = {
     "AMZN","ARM","AVGO","GOOGL","IONQ","KORU","NVDA","NVDL",
-    "OXY","PLTR","RGTI","RKLB","SOXL","SPCE","TSLA","VRT","GRT",
+    "OXY","PLTR","RGTI","RKLB","SOXL","SPCE","TSLA","USO","VRT","GRT",
     "TE","TEL",
 }
 
@@ -150,7 +150,7 @@ def update_portfolio(filepath, dry_run=False, usd_krw=1450.0):
             })
 
             if not dry_run:
-                h['current_price']      = round(price, 4) if is_usd else round(price_krw)
+                h['current_price']      = round(price_krw)
                 h['current_value']      = new_val
                 h['unrealized_pnl']     = new_pnl
                 h['unrealized_pnl_pct'] = new_pct
@@ -193,8 +193,8 @@ def main():
     print(f"  → 1 USD = {usd_krw:,.1f} KRW\n")
 
     files = [
-        '/Users/macmini/myClaude/portfolio.json',
-        '/Users/macmini/myClaude/portfolio_husband.json',
+        '/Users/macmini/myClaude/asset_dashboard/portfolio.json',
+        '/Users/macmini/myClaude/asset_dashboard/portfolio_husband.json',
     ]
 
     for filepath in files:
@@ -258,7 +258,7 @@ def save_sector_snapshot(files, today, dry_run=False):
         'total': round(sum(totals.values()))
     }
 
-    hist_path = '/Users/macmini/myClaude/sector_history.json'
+    hist_path = '/Users/macmini/myClaude/asset_dashboard/sector_history.json'
     try:
         with open(hist_path) as f:
             hist = json.load(f)

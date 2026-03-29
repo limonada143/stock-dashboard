@@ -219,7 +219,7 @@ with tab1:
 
 
 # ── TAB 2: My Portfolio ──────────────────────────────────
-def render_portfolio_tab(portfolio: dict, owner_label: str):
+def render_portfolio_tab(portfolio: dict, owner_label: str, cash_krw: int = 0):
     if not portfolio or not portfolio.get("holdings"):
         st.info(f"{owner_label} 포트폴리오 데이터가 없습니다.")
         return
@@ -228,15 +228,17 @@ def render_portfolio_tab(portfolio: dict, owner_label: str):
     account = portfolio.get("account", {})
     currency = account.get("currency", "KRW")
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     total_val = summary.get("total_value") or summary.get("total_value_usd", 0)
     pnl = summary.get("unrealized_pnl") or summary.get("unrealized_pnl_usd", 0)
     pnl_pct = summary.get("unrealized_pnl_pct", 0)
+    cash_pct = cash_krw / (total_val + cash_krw) * 100 if (total_val + cash_krw) > 0 else 0
 
     label_suffix = f" ({currency})" if currency == "USD" else ""
     col1.metric(f"평가금액{label_suffix}", f"{total_val:,.0f}")
     col2.metric("평가손익", f"{pnl:+,.0f}", f"{pnl_pct:+.2f}%")
-    col3.metric("계좌명", account.get("name", "-"))
+    col3.metric("예수금 (현금)", f"{cash_krw:,.0f}", f"비중 {cash_pct:.1f}%")
+    col4.metric("계좌명", account.get("name", "-"))
 
     st.divider()
 
@@ -307,10 +309,14 @@ def render_portfolio_tab(portfolio: dict, owner_label: str):
 
 
 with tab2:
-    render_portfolio_tab(user, "나의")
+    _user_full = load_json(ROOT / "portfolio.json")
+    _user_cash = _user_full.get("summary", {}).get("total_cash", 0)
+    render_portfolio_tab(user, "나의", cash_krw=_user_cash)
 
 with tab3:
-    render_portfolio_tab(husband, "남편")
+    _husb_full = load_json(ROOT / "portfolio_husband.json")
+    _husb_cash = _husb_full.get("summary", {}).get("total_cash_krw", 0)
+    render_portfolio_tab(husband, "남편", cash_krw=_husb_cash)
 
     # ── 남편 자산 추이 (history.json) ──────────────────────
     st.divider()
