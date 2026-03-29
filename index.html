@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Investment Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            Chart.defaults.color = '#E5E7EB';
+            Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+        });
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+
+    <!-- 탭 네비게이션 -->
+    <div class="sticky top-0 z-10 bg-gray-950 border-b border-gray-700">
+        <div class="max-w-5xl mx-auto flex">
+            <button onclick="showTab('total')" id="tab-total"
+                class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-blue-500 text-blue-400">
+                부부 합산 💑
+            </button>
+            <button onclick="showTab('user')" id="tab-user"
+                class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-transparent text-gray-400 hover:text-white">
+                아내 포트폴리오 👩
+            </button>
+            <button onclick="showTab('husband')" id="tab-husband"
+                class="tab-btn flex-1 py-4 text-sm font-semibold transition-colors border-b-2 border-transparent text-gray-400 hover:text-white">
+                남편 포트폴리오 👨
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto p-6">
+
+        <!-- ===== TAB 1: TOTAL ===== -->
+        <div id="page-total">
+            <h2 class="text-2xl font-bold mb-6 text-blue-400">부부 합산 자산 💕💐</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">합산 총 평가금액</p>
+                    <p id="t-total-value" class="text-2xl font-bold text-blue-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">합산 평가손익</p>
+                    <p id="t-total-pnl" class="text-2xl font-bold text-green-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">기준일</p>
+                    <p id="t-updated" class="text-lg font-semibold text-gray-300">-</p>
+                </div>
+            </div>
+
+            <!-- 섹터 도넛 + 자산 추이 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-lg font-semibold">자산 비중</h3>
+                            <button id="t-btn-back-donut" onclick="totalDrillBack()"
+                                class="hidden text-xs px-2 py-1 rounded bg-gray-700 text-gray-300 hover:text-white transition-colors">← 뒤로</button>
+                            <span id="t-donut-sector-label" class="hidden text-xs text-blue-300 font-semibold"></span>
+                        </div>
+                    </div>
+                    <div style="height:280px" class="flex justify-center">
+                        <canvas id="totalSectorDonut"></canvas>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-1">자산 추이</h3>
+                    <p class="text-xs text-gray-400 mb-4">부부 합산 월별 평가금액 (Unit:10k)</p>
+                    <div style="height:260px">
+                        <canvas id="totalTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-6">
+                <h3 class="text-lg font-semibold mb-1">월별 수익률 추이</h3>
+                <p class="text-xs text-gray-400 mb-4">각자 평가손익률 변화</p>
+                <div style="height:260px">
+                    <canvas id="totalPnlChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                <h3 class="text-lg font-semibold mb-1">섹터 비중 추이</h3>
+                <p class="text-xs text-gray-400 mb-4">월말 스냅샷 기준 상위 섹터 변화</p>
+                <div style="height:280px">
+                    <canvas id="totalSectorTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB 2: USER ===== -->
+        <div id="page-user" class="hidden">
+            <h2 class="text-2xl font-bold mb-6 text-green-400">아내 포트폴리오</h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">총 평가금액</p>
+                    <p id="u-total-value" class="text-xl font-bold text-green-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">총 투입금액</p>
+                    <p id="u-total-cost" class="text-xl font-bold text-gray-300">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">평가손익</p>
+                    <p id="u-pnl" class="text-xl font-bold text-green-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">수익률</p>
+                    <p id="u-pnl-pct" class="text-xl font-bold text-yellow-400">-</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-lg font-semibold">자산 비중</h3>
+                            <button id="btn-back-donut" onclick="drillBack()"
+                                class="hidden text-xs px-2 py-1 rounded bg-gray-700 text-gray-300 hover:text-white transition-colors">← 뒤로</button>
+                            <span id="donut-sector-label" class="hidden text-xs text-blue-300 font-semibold"></span>
+                        </div>
+                        <div id="donut-toggle" class="flex rounded-lg overflow-hidden border border-gray-600 text-xs font-semibold">
+                            <button id="btn-sector" onclick="switchDonut('sector')"
+                                class="px-3 py-1 bg-blue-600 text-white transition-colors">섹터</button>
+                            <button id="btn-country" onclick="switchDonut('country')"
+                                class="px-3 py-1 bg-gray-700 text-gray-300 transition-colors">국가</button>
+                        </div>
+                    </div>
+                    <div style="height:280px" class="flex justify-center">
+                        <canvas id="userDonutChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">투입금 vs 평가금</h3>
+                    <div style="height:280px">
+                        <canvas id="userPnlChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-700">
+                    <h3 class="text-lg font-semibold">보유 종목</h3>
+                    <p id="u-updated" class="text-xs text-gray-400 mt-1">-</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-gray-400 text-xs border-b border-gray-700" id="u-thead">
+                                <th class="text-left px-6 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('name')">종목명 <span id="u-sort-name"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('current_value')">평가금액 <span id="u-sort-current_value"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('unrealized_pnl_pct')">수익률 <span id="u-sort-unrealized_pnl_pct"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('shares')">보유 <span id="u-sort-shares"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('avg_price')">평단가 <span id="u-sort-avg_price"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortUserTable('current_price')">현재가 <span id="u-sort-current_price"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="u-holdings-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB 3: HUSBAND ===== -->
+        <div id="page-husband" class="hidden">
+            <h2 class="text-2xl font-bold mb-6 text-pink-400">남편 포트폴리오</h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">총 평가금액</p>
+                    <p id="h-total-value" class="text-xl font-bold text-pink-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">총 투입금액</p>
+                    <p id="h-total-cost" class="text-xl font-bold text-gray-300">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">평가손익</p>
+                    <p id="h-pnl" class="text-xl font-bold text-pink-400">-</p>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">수익률</p>
+                    <p id="h-pnl-pct" class="text-xl font-bold text-yellow-400">-</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-lg font-semibold">자산 비중</h3>
+                            <button id="h-btn-back-donut" onclick="husbandDrillBack()"
+                                class="hidden text-xs px-2 py-1 rounded bg-gray-700 text-gray-300 hover:text-white transition-colors">← 뒤로</button>
+                            <span id="h-donut-sector-label" class="hidden text-xs text-pink-300 font-semibold"></span>
+                        </div>
+                        <div id="h-donut-toggle" class="flex rounded-lg overflow-hidden border border-gray-600 text-xs font-semibold">
+                            <button id="h-btn-sector" onclick="switchHusbandDonut('sector')"
+                                class="px-3 py-1 bg-pink-600 text-white transition-colors">섹터</button>
+                            <button id="h-btn-country" onclick="switchHusbandDonut('country')"
+                                class="px-3 py-1 bg-gray-700 text-gray-300 transition-colors">국가</button>
+                        </div>
+                    </div>
+                    <div style="height:280px" class="flex justify-center">
+                        <canvas id="husbandDonutChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">투입금 vs 평가금</h3>
+                    <div style="height:280px">
+                        <canvas id="husbandPnlChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-700">
+                    <h3 class="text-lg font-semibold">보유 종목</h3>
+                    <p id="h-updated" class="text-xs text-gray-400 mt-1">-</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-gray-400 text-xs border-b border-gray-700" id="h-thead">
+                                <th class="text-left px-6 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('name')">종목명 <span id="h-sort-name"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('current_value')">평가금액 <span id="h-sort-current_value"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('unrealized_pnl_pct')">수익률 <span id="h-sort-unrealized_pnl_pct"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('shares')">보유 <span id="h-sort-shares"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('avg_price')">평단가 <span id="h-sort-avg_price"></span></th>
+                                <th class="text-right px-4 py-3 cursor-pointer select-none hover:text-white" onclick="sortHusbandTable('current_price')">현재가 <span id="h-sort-current_price"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="h-holdings-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ── 탭 전환 ──────────────────────────────────────────────
+        function showTab(name) {
+            ['total','user','husband'].forEach(t => {
+                document.getElementById('page-' + t).classList.add('hidden');
+                const btn = document.getElementById('tab-' + t);
+                btn.classList.remove('border-blue-500','border-green-500','border-pink-500','text-blue-400','text-green-400','text-pink-400');
+                btn.classList.add('border-transparent','text-gray-400');
+            });
+            document.getElementById('page-' + name).classList.remove('hidden');
+            const colors = { total: ['border-blue-500','text-blue-400'], user: ['border-green-500','text-green-400'], husband: ['border-pink-500','text-pink-400'] };
+            const btn = document.getElementById('tab-' + name);
+            btn.classList.remove('border-transparent','text-gray-400');
+            btn.classList.add(...colors[name]);
+        }
+
+        // ── 공통 유틸 ─────────────────────────────────────────────
+        const fmt  = v => '₩' + Math.round(v).toLocaleString();
+        const fmtM = v => Math.round(v / 10000).toLocaleString();
+
+        // ── 보유종목 정렬 상태 ─────────────────────────────────────
+        let uHoldingsData = [];
+        let hHoldingsData = [];
+        let uSortKey = 'unrealized_pnl_pct', uSortDir = -1;
+        let hSortKey = 'unrealized_pnl_pct', hSortDir = -1;
+
+        function renderUserTable(key, dir) {
+            const SORT_KEYS = ['name','current_value','unrealized_pnl_pct','shares','avg_price','current_price'];
+            SORT_KEYS.forEach(k => { const el = document.getElementById('u-sort-' + k); if (el) el.textContent = ''; });
+            const indicator = document.getElementById('u-sort-' + key);
+            if (indicator) indicator.textContent = dir === -1 ? ' ▼' : ' ▲';
+
+            const sorted = [...uHoldingsData].sort((a, b) => {
+                const av = a[key] ?? (key === 'name' ? '' : -Infinity);
+                const bv = b[key] ?? (key === 'name' ? '' : -Infinity);
+                if (key === 'name') return dir * av.localeCompare(bv);
+                return dir * (bv - av);
+            });
+            const tbody = document.getElementById('u-holdings-table');
+            tbody.innerHTML = sorted.map(h => {
+                const color = (h.unrealized_pnl_pct ?? 0) >= 0 ? 'text-green-400' : 'text-red-400';
+                return `<tr class="border-b border-gray-700 hover:bg-gray-750">
+                    <td class="px-6 py-3 font-medium">${h.name}</td>
+                    <td class="px-4 py-3 text-right">${fmt(h.current_value)}</td>
+                    <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct != null ? h.unrealized_pnl_pct.toFixed(2) + '%' : '-'}</td>
+                    <td class="px-4 py-3 text-right text-gray-300">${h.shares > 0 ? h.shares.toLocaleString() : '-'}</td>
+                    <td class="px-4 py-3 text-right text-gray-300">${h.avg_price > 0 ? Math.round(h.avg_price).toLocaleString() : '-'}</td>
+                    <td class="px-4 py-3 text-right text-gray-300">${h.current_price > 0 ? Math.round(h.current_price).toLocaleString() : '-'}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function sortUserTable(key) {
+            if (uSortKey === key) uSortDir *= -1; else { uSortKey = key; uSortDir = -1; }
+            renderUserTable(uSortKey, uSortDir);
+        }
+
+        function renderHusbandTable(key, dir) {
+            const SORT_KEYS = ['name','current_value','unrealized_pnl_pct','shares','avg_price','current_price'];
+            SORT_KEYS.forEach(k => { const el = document.getElementById('h-sort-' + k); if (el) el.textContent = ''; });
+            const indicator = document.getElementById('h-sort-' + key);
+            if (indicator) indicator.textContent = dir === -1 ? ' ▼' : ' ▲';
+
+            const sorted = [...hHoldingsData].sort((a, b) => {
+                const av = a[key] ?? (key === 'name' ? '' : -Infinity);
+                const bv = b[key] ?? (key === 'name' ? '' : -Infinity);
+                if (key === 'name') return dir * av.localeCompare(bv);
+                return dir * (bv - av);
+            });
+            const tbody = document.getElementById('h-holdings-table');
+            if (sorted.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">종목 데이터가 없습니다.</td></tr>`;
+            } else {
+                tbody.innerHTML = sorted.map(h => {
+                    const color = (h.unrealized_pnl_pct ?? 0) >= 0 ? 'text-green-400' : 'text-red-400';
+                    return `<tr class="border-b border-gray-700 hover:bg-gray-750">
+                        <td class="px-6 py-3 font-medium">${h.name}</td>
+                        <td class="px-4 py-3 text-right">${fmt(h.current_value)}</td>
+                        <td class="px-4 py-3 text-right font-semibold ${color}">${h.unrealized_pnl_pct != null ? h.unrealized_pnl_pct.toFixed(2) + '%' : '-'}</td>
+                        <td class="px-4 py-3 text-right text-gray-300">${h.shares > 0 ? h.shares.toLocaleString() : '-'}</td>
+                        <td class="px-4 py-3 text-right text-gray-300">${h.avg_price > 0 ? Math.round(h.avg_price).toLocaleString() : '-'}</td>
+                        <td class="px-4 py-3 text-right text-gray-300">${h.current_price > 0 ? Math.round(h.current_price).toLocaleString() : '-'}</td>
+                    </tr>`;
+                }).join('');
+            }
+        }
+
+        function sortHusbandTable(key) {
+            if (hSortKey === key) hSortDir *= -1; else { hSortKey = key; hSortDir = -1; }
+            renderHusbandTable(hSortKey, hSortDir);
+        }
+
+        const CHART_DEFAULTS = {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#E5E7EB', font: { size: 11 } } } }
+        };
+
+        function lineDataset(label, data, color, fill=false, dash=[]) {
+            return {
+                label, data,
+                borderColor: color,
+                backgroundColor: fill ? color.replace(')',',0.1)').replace('rgb','rgba') : 'transparent',
+                pointBackgroundColor: color,
+                pointRadius: 4, pointHoverRadius: 7,
+                borderWidth: 2, borderDash: dash,
+                fill, tension: 0.3, spanGaps: true
+            };
+        }
+
+        // ── 데이터 로드 ───────────────────────────────────────────
+        Promise.all([
+            fetch('portfolio.json').then(r => r.json()),
+            fetch('history.json').then(r => r.json()),
+            fetch('portfolio_husband.json').then(r => r.json()).catch(() => null),
+            fetch('sector_history.json').then(r => r.json()).catch(() => [])
+        ]).then(([portfolio, history, husbandPortfolio, sectorHistory]) => {
+            buildTotal(history, portfolio, husbandPortfolio, sectorHistory);
+            buildUser(portfolio, history);
+            buildHusband(history, husbandPortfolio);
+        });
+
+        // ══════════════════════════════════════════════════════════
+        //  TAB 1: TOTAL (최신 - 누적 스택 차트)
+        // ══════════════════════════════════════════════════════════
+        // 공통 섹터 색상 (전역)
+        const SECTOR_COLORS_G = {
+            '반도체':'#60A5FA','AI/기술':'#A78BFA','원자력/에너지':'#FBBF24',
+            '방산/우주':'#F87171','조선':'#34D399','시장지수':'#38BDF8',
+            '그룹주/자동차':'#FB923C','바이오':'#F472B6','금융':'#4ADE80',
+            '원자재':'#D97706','기타':'#6B7280'
+        };
+        const SECTOR_MAP_G = {
+            '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)','AI/반도체(미국)','반도체/레버리지(해외)'],
+            'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
+            '원자력/에너지': ['원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학','에너지(해외)','설비투자'],
+            '방산/우주':     ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
+            '조선':          ['조선'],
+            '시장지수':      ['시장지수','시장지수(미국)','시장지수(일본)','레버리지/지수','해외지수','국내지수'],
+            '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
+            '바이오':        ['바이오'],
+            '금융':          ['금융','금융(미국)'],
+            '원자재':        ['원자재','원자재(해외)','원자재(국내)'],
+            '기타':          ['양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','화학','기타','기타(미국)','기타(국내)']
+        };
+        function catToSectorG(cat) {
+            return Object.keys(SECTOR_MAP_G).find(s => SECTOR_MAP_G[s].includes(cat)) || '기타';
+        }
+        // 종목명 우선 분류 (자산운용사 무관, etf_classification_rules.md 기준)
+        // S&P500/KOSPI/KOSDAQ/나스닥은 모두 시장지수의 하위 분류
+        function holdingToSector(name, cat) {
+            const n = name || '';
+            if (/S&P\s*500|SP500/i.test(n))                                              return '시장지수';
+            if (/코스닥|KOSDAQ/i.test(n))                                                return '시장지수';
+            if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n))        return '시장지수';
+            if (/코스피|KOSPI/i.test(n))                                                 return '시장지수';
+            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)/.test(n)) return '시장지수';
+            return catToSectorG(cat);
+        }
+        // 시장지수 내 세부 분류 (드릴다운 전용)
+        function holdingToSubIndex(name, cat) {
+            const n = name || '';
+            if (/S&P\s*500|SP500/i.test(n))                                              return 'S&P500';
+            if (/코스닥|KOSDAQ/i.test(n))                                                return 'KOSDAQ';
+            if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n))        return '나스닥';
+            if (/팔란티어/i.test(n))                                                     return '나스닥';
+            if (/코스피|KOSPI/i.test(n))                                                 return 'KOSPI';
+            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)/.test(n)) return 'KOSPI';
+            if ((cat || '') === '국내지수')                                               return 'KOSPI';
+            if (/배당다우존스/i.test(n))                                                  return 'SCHD';
+            if (/TDF/i.test(n))                                                          return 'VTI';
+            return '기타 시장지수';
+        }
+        const SUB_INDEX_COLORS = {
+            'S&P500':'#F59E0B', 'KOSPI':'#14B8A6', 'KOSDAQ':'#8B5CF6',
+            '나스닥':'#06B6D4', 'SCHD':'#34D399', 'VTI':'#A78BFA', '기타 시장지수':'#38BDF8'
+        };
+
+        function buildTotal(history, portfolio, husbandPortfolio, sectorHistory) {
+            // 날짜별로 user/husband 분류
+            const byDate = {};
+            history.forEach(h => {
+                if (!byDate[h.date]) byDate[h.date] = {};
+                byDate[h.date][h.note === 'Users' ? 'user' : 'husband'] = h;
+            });
+            // 월별 마지막 날짜만 남기기 (같은 달 중복 제거)
+            const allDates = Object.keys(byDate).sort();
+            const monthMap = {};
+            allDates.forEach(d => { monthMap[d.slice(0,7)] = d; });
+            const dates = Object.values(monthMap).sort();
+            // 데이터 없는 날은 이전 최신값으로 forward-fill
+            let lastU = null, lastH = null;
+            const uVals = [], hVals = [], uPnl = [], hPnl = [];
+            dates.forEach(d => {
+                if (byDate[d].user)    lastU = byDate[d].user;
+                if (byDate[d].husband) lastH = byDate[d].husband;
+                uVals.push(lastU?.total_value || 0);
+                hVals.push(lastH?.total_value || 0);
+                uPnl.push(lastU?.unrealized_pnl_pct ?? null);
+                hPnl.push(lastH?.unrealized_pnl_pct ?? null);
+            });
+            const timeLabels = dates.map(d => d.slice(0,7).replace('-', '.'));
+
+            const lastUser    = history.filter(h => h.note === 'Users').sort((a,b) => a.date.localeCompare(b.date)).at(-1);
+            const lastHusband = history.filter(h => h.note === 'Husband').sort((a,b) => a.date.localeCompare(b.date)).at(-1);
+            const ps = portfolio.summary;
+
+            const tVal = (lastUser?.total_value    ?? ps.total_value)    + (lastHusband?.total_value    || 0);
+            const tPnl = (lastUser?.unrealized_pnl ?? ps.unrealized_pnl) + (lastHusband?.unrealized_pnl || 0);
+            const latestDate = [lastUser?.date, lastHusband?.date, portfolio.last_updated].filter(Boolean).sort().at(-1);
+
+            document.getElementById('t-total-value').textContent = fmt(tVal);
+            document.getElementById('t-total-pnl').textContent   = fmt(tPnl);
+            document.getElementById('t-updated').textContent     = latestDate;
+
+            new Chart(document.getElementById('totalTrendChart'), {
+                type: 'line',
+                data: { labels: timeLabels, datasets: [
+                    { label: "👰 아내", data: uVals, borderColor: '#34D399', backgroundColor: 'rgba(52,211,153,0.4)', fill: true, tension: 0.3, pointRadius: 4 },
+                    { label: "🤵 남편", data: hVals, borderColor: '#F472B6', backgroundColor: 'rgba(244,114,182,0.4)', fill: true, tension: 0.3, pointRadius: 4 }
+                ]},
+                options: { ...CHART_DEFAULTS,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { stacked: true, ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { stacked: true, ticks: { color: '#9CA3AF', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    },
+                    plugins: { ...CHART_DEFAULTS.plugins,
+                        legend: { labels: { color: '#FFFFFF' } },
+                        tooltip: { callbacks: { footer: items => `합계: ${fmt(items.reduce((s,i) => s + i.parsed.y, 0))}` } }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('totalPnlChart'), {
+                type: 'line',
+                data: { labels: timeLabels, datasets: [
+                    lineDataset('👰 아내 수익률(%)', uPnl, '#34D399'),
+                    lineDataset('🤵 남편 수익률(%)', hPnl, '#F472B6')
+                ]},
+                options: { ...CHART_DEFAULTS,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { ticks: { color: '#9CA3AF', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    },
+                    plugins: { ...CHART_DEFAULTS.plugins,
+                        legend: { labels: { color: '#FFFFFF' } },
+                        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '%' } }
+                    }
+                }
+            });
+
+            // ── 합산 섹터 도넛 ────────────────────────────────────────
+            const allHoldings = [
+                ...portfolio.accounts.flatMap(a => a.holdings || []),
+                ...(husbandPortfolio?.accounts.flatMap(a => a.holdings || []) || [])
+            ];
+            // ── 합산 섹터 도넛 (드릴다운 포함) ───────────────────────
+            const tPalette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
+                              '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
+                              '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
+
+            let tDonutChart;
+
+            function makeTotalDonutOptions(labels, values, colors, onClickFn) {
+                return {
+                    responsive: true, maintainAspectRatio: false,
+                    onClick: onClickFn || null,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#FFFFFF', font: { size: 11 }, boxWidth: 14, padding: 12,
+                                generateLabels: chart => chart.data.labels.map((label, i) => {
+                                    const total = chart.data.datasets[0].data.reduce((a,b) => a+b, 0);
+                                    const val   = chart.data.datasets[0].data[i];
+                                    const pct   = total > 0 ? ((val/total)*100).toFixed(1) : 0;
+                                    return {
+                                        text: `${label}  ${pct}%`,
+                                        fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                        hidden: false, index: i,
+                                        strokeStyle: 'transparent', fontColor: '#FFFFFF'
+                                    };
+                                })
+                            }
+                        },
+                        tooltip: { callbacks: { label: c => `  ${fmt(c.parsed)}` } }
+                    }
+                };
+            }
+
+            function renderTotalDonut() {
+                const sectorTotals = {};
+                allHoldings.forEach(h => {
+                    const s = holdingToSector(h.name, h.category || '기타');
+                    sectorTotals[s] = (sectorTotals[s] || 0) + (h.current_value || 0);
+                });
+                const sEntries = Object.entries(sectorTotals).sort((a,b) => b[1]-a[1]);
+                const labels = sEntries.map(([s]) => s);
+                const values = sEntries.map(([,v]) => v);
+                const colors = labels.map(s => SECTOR_COLORS_G[s] || '#6B7280');
+
+                if (tDonutChart) tDonutChart.destroy();
+                tDonutChart = new Chart(document.getElementById('totalSectorDonut'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
+                    options: makeTotalDonutOptions(labels, values, colors, (evt, elements) => {
+                        if (!elements.length) return;
+                        const idx = elements[0].index;
+                        tDrillInto(labels[idx]);
+                    })
+                });
+
+                document.getElementById('t-btn-back-donut').classList.add('hidden');
+                document.getElementById('t-donut-sector-label').classList.add('hidden');
+            }
+
+            let tCurrentSector = null;
+
+            function tDrillInto(sectorName) {
+                const holdings = allHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === sectorName
+                );
+                if (!holdings.length) return;
+                tCurrentSector = sectorName;
+
+                let labels, values, colors, onClickFn = null;
+                if (sectorName === '시장지수') {
+                    // 시장지수 → 서브인덱스 도넛 (클릭 시 3레벨로)
+                    const subTotals = {};
+                    holdings.forEach(h => {
+                        const sub = holdingToSubIndex(h.name, h.category || '');
+                        subTotals[sub] = (subTotals[sub] || 0) + (h.current_value || 0);
+                    });
+                    const entries = Object.entries(subTotals).sort((a,b) => b[1]-a[1]);
+                    labels = entries.map(([n]) => n);
+                    values = entries.map(([,v]) => v);
+                    colors = labels.map(l => SUB_INDEX_COLORS[l] || '#6B7280');
+                    onClickFn = (evt, els) => {
+                        if (!els.length) return;
+                        tDrillIntoHoldings(labels[els[0].index]);
+                    };
+                } else {
+                    // 그 외 섹터 → 개별 종목 병합 (최종 레벨)
+                    const merged = {};
+                    holdings.forEach(h => {
+                        if (!merged[h.name]) merged[h.name] = 0;
+                        merged[h.name] += h.current_value || 0;
+                    });
+                    const entries = Object.entries(merged).sort((a,b) => b[1]-a[1]);
+                    labels = entries.map(([n]) => n);
+                    values = entries.map(([,v]) => v);
+                    colors = tPalette.slice(0, labels.length);
+                }
+
+                if (tDonutChart) tDonutChart.destroy();
+                tDonutChart = new Chart(document.getElementById('totalSectorDonut'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
+                    options: makeTotalDonutOptions(labels, values, colors, onClickFn)
+                });
+
+                document.getElementById('t-btn-back-donut').classList.remove('hidden');
+                const lbl = document.getElementById('t-donut-sector-label');
+                lbl.textContent = sectorName;
+                lbl.classList.remove('hidden');
+            }
+
+            function tDrillIntoHoldings(subIndexName) {
+                const holdings = allHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === '시장지수' &&
+                    holdingToSubIndex(h.name, h.category || '') === subIndexName
+                );
+                if (!holdings.length) return;
+                tCurrentSector = '시장지수__' + subIndexName;
+
+                const merged = {};
+                holdings.forEach(h => {
+                    if (!merged[h.name]) merged[h.name] = 0;
+                    merged[h.name] += h.current_value || 0;
+                });
+                const entries = Object.entries(merged).sort((a,b) => b[1]-a[1]);
+                const labels = entries.map(([n]) => n);
+                const values = entries.map(([,v]) => v);
+                const colors = tPalette.slice(0, labels.length);
+
+                if (tDonutChart) tDonutChart.destroy();
+                tDonutChart = new Chart(document.getElementById('totalSectorDonut'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
+                    options: makeTotalDonutOptions(labels, values, colors, null)
+                });
+
+                const lbl = document.getElementById('t-donut-sector-label');
+                lbl.textContent = `시장지수 › ${subIndexName}`;
+                lbl.classList.remove('hidden');
+            }
+
+            function totalDrillBack() {
+                if (tCurrentSector && tCurrentSector.startsWith('시장지수__')) {
+                    tDrillInto('시장지수');
+                } else {
+                    tCurrentSector = null;
+                    renderTotalDonut();
+                }
+            }
+            window.totalDrillBack = totalDrillBack;
+            renderTotalDonut();
+
+            // ── 섹터 비중 추이 ────────────────────────────────────────
+            if (sectorHistory && sectorHistory.length > 0) {
+                const sDates = sectorHistory.map(e => e.date);
+                // 전체 기간에서 등장한 섹터 수집 → 평균 비중 상위 5개
+                const sectorAvg = {};
+                sectorHistory.forEach(e => {
+                    const tot = e.total || 1;
+                    Object.entries(e.sectors).forEach(([s,v]) => {
+                        sectorAvg[s] = (sectorAvg[s] || 0) + v / tot;
+                    });
+                });
+                const top5 = Object.entries(sectorAvg).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([s])=>s);
+                const sDatasets = top5.map(s => lineDataset(
+                    s,
+                    sectorHistory.map(e => e.total ? +((e.sectors[s]||0)/e.total*100).toFixed(1) : null),
+                    SECTOR_COLORS_G[s] || '#6B7280'
+                ));
+                new Chart(document.getElementById('totalSectorTrendChart'), {
+                    type: 'line',
+                    data: { labels: sDates, datasets: sDatasets },
+                    options: { ...CHART_DEFAULTS,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                            y: { ticks: { color: '#9CA3AF', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                        },
+                        plugins: { ...CHART_DEFAULTS.plugins,
+                            legend: { labels: { color: '#E5E7EB' } },
+                            tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y}%` } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  TAB 2: USER (cca6c5f 복원)
+        // ══════════════════════════════════════════════════════════
+        function buildUser(portfolio, history) {
+            // 총 자산·수익률은 history.json 최신값 우선 (투입금 기준 수기 기록)
+            const lastUser = history.filter(h => h.note === 'Users')
+                               .sort((a,b) => a.date.localeCompare(b.date)).at(-1);
+            const s = portfolio.summary;
+            const uVal  = lastUser?.total_value        ?? s.total_value;
+            const uCost = lastUser?.total_cost         ?? s.total_cost;
+            const uPnl  = lastUser?.unrealized_pnl     ?? s.unrealized_pnl;
+            const uPct  = lastUser?.unrealized_pnl_pct ?? s.unrealized_pnl_pct;
+            document.getElementById('u-total-value').textContent = fmt(uVal);
+            document.getElementById('u-total-cost').textContent  = fmt(uCost);
+            document.getElementById('u-pnl').textContent         = fmt(uPnl);
+            document.getElementById('u-pnl-pct').textContent     = Number(uPct).toFixed(2) + '%';
+            document.getElementById('u-updated').textContent     = '기준일: ' + (lastUser?.date ?? portfolio.last_updated);
+
+            // 전 계좌 종목 합산 → 같은 종목명끼리 병합
+            const rawHoldings = portfolio.accounts.flatMap(a => a.holdings || []);
+            const holdingMap = {};
+            rawHoldings.forEach(h => {
+                if (!holdingMap[h.name]) {
+                    holdingMap[h.name] = { ...h, current_value: 0, shares: 0, unrealized_pnl: 0, _cost: 0 };
+                }
+                const m = holdingMap[h.name];
+                m.shares        += h.shares;
+                m.current_value += h.current_value || 0;
+                m._cost         += (h.avg_price || 0) * h.shares;
+                m.unrealized_pnl += h.unrealized_pnl || 0;
+                m.current_price  = h.current_price; // 현재가는 동일 종목이므로 마지막 값 사용
+            });
+            // 합산 평단가·수익률 재계산
+            Object.values(holdingMap).forEach(m => {
+                m.avg_price          = m.shares > 0 ? m._cost / m.shares : 0;
+                m.unrealized_pnl_pct = m._cost > 0 ? (m.unrealized_pnl / m._cost) * 100 : 0;
+            });
+            const allHoldings = Object.values(holdingMap);
+
+            const SECTOR_MAP = {
+                '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
+                'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
+                '원자력/에너지': ['원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학','에너지(해외)','설비투자'],
+                '방산/우주':     ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
+                '조선':          ['조선'],
+                '시장지수':      ['시장지수','시장지수(미국)','시장지수(일본)','레버리지/지수','해외지수'],
+                '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
+                '바이오':        ['바이오'],
+                '금융':          ['금융','금융(미국)'],
+                '기타':          ['양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','화학','기타','기타(미국)','기타(국내)']
+            };
+            const SECTOR_COLORS = {
+                '반도체':        '#60A5FA', 'AI/기술':       '#A78BFA',
+                '원자력/에너지': '#FBBF24', '방산/우주':     '#F87171',
+                '조선':          '#34D399', '시장지수':      '#38BDF8',
+                '그룹주/자동차': '#FB923C', '바이오':        '#F472B6',
+                '금융':          '#4ADE80', '기타':          '#6B7280'
+            };
+
+            function buildSectorData() {
+                const totals = {};
+                allHoldings.forEach(h => {
+                    const sector = holdingToSector(h.name, h.category || '기타');
+                    totals[sector] = (totals[sector] || 0) + (h.current_value || 0);
+                });
+                const labels = Object.keys(totals).sort((a,b) => totals[b] - totals[a]);
+                return { labels, values: labels.map(l => totals[l]), colors: labels.map(l => SECTOR_COLORS[l] || SECTOR_COLORS_G[l] || '#6B7280') };
+            }
+
+            function buildCountryData() {
+                let kr = 0, us = 0;
+                allHoldings.forEach(h => {
+                    if (h.name.includes('미국') || (h.category || '').includes('해외') || (h.category || '').includes('(해외)'))
+                        us += h.current_value || 0;
+                    else
+                        kr += h.current_value || 0;
+                });
+                return { labels: ['한국', '미국/해외'], values: [kr, us], colors: ['#34D399', '#60A5FA'] };
+            }
+
+            let donutChart;
+            let currentDonutMode = 'sector';
+
+            function makeDonutOptions(labels, values, colors, onClickFn) {
+                return {
+                    responsive: true, maintainAspectRatio: false,
+                    onClick: onClickFn || null,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#FFFFFF', font: { size: 11 }, boxWidth: 14, padding: 12,
+                                generateLabels: chart => chart.data.labels.map((label, i) => {
+                                    const total = chart.data.datasets[0].data.reduce((a,b) => a+b, 0);
+                                    const val   = chart.data.datasets[0].data[i];
+                                    const pct   = total > 0 ? ((val/total)*100).toFixed(1) : 0;
+                                    return {
+                                        text: `${label}  ${pct}%`,
+                                        fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                        hidden: false, index: i,
+                                        strokeStyle: 'transparent',
+                                        fontColor: '#FFFFFF'
+                                    };
+                                })
+                            }
+                        },
+                        tooltip: { callbacks: { label: c => `  ${fmt(c.parsed)}` } }
+                    }
+                };
+            }
+
+            function renderDonut(mode) {
+                currentDonutMode = mode;
+                const d = mode === 'sector' ? buildSectorData() : buildCountryData();
+                if (donutChart) donutChart.destroy();
+
+                // 섹터 모드일 때만 클릭 드릴다운 활성화
+                const onClickFn = mode === 'sector' ? (evt, elements) => {
+                    if (!elements.length) return;
+                    const idx = elements[0].index;
+                    const sectorName = d.labels[idx];
+                    drillInto(sectorName, d.colors[idx]);
+                } : null;
+
+                donutChart = new Chart(document.getElementById('userDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels: d.labels, datasets: [{ data: d.values, backgroundColor: d.colors, borderWidth: 2, borderColor: '#1F2937' }] },
+                    options: makeDonutOptions(d.labels, d.values, d.colors, onClickFn)
+                });
+
+                // UI 상태
+                document.getElementById('btn-sector').className  = `px-3 py-1 transition-colors ${mode==='sector'  ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`;
+                document.getElementById('btn-country').className = `px-3 py-1 transition-colors ${mode==='country' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`;
+                document.getElementById('btn-back-donut').classList.add('hidden');
+                document.getElementById('donut-sector-label').classList.add('hidden');
+                document.getElementById('donut-toggle').classList.remove('hidden');
+            }
+
+            let uCurrentSector = null;
+            const uPalette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
+                              '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
+                              '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
+
+            function drillInto(sectorName, sectorColor) {
+                const etfs = allHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === sectorName
+                );
+                if (!etfs.length) return;
+                uCurrentSector = sectorName;
+
+                let labels, values, colors, onClickFn = null;
+                if (sectorName === '시장지수') {
+                    const subTotals = {};
+                    etfs.forEach(h => {
+                        const sub = holdingToSubIndex(h.name, h.category || '');
+                        subTotals[sub] = (subTotals[sub] || 0) + (h.current_value || 0);
+                    });
+                    const entries = Object.entries(subTotals).sort((a,b) => b[1]-a[1]);
+                    labels = entries.map(([n]) => n);
+                    values = entries.map(([,v]) => v);
+                    colors = labels.map(l => SUB_INDEX_COLORS[l] || '#6B7280');
+                    onClickFn = (evt, els) => {
+                        if (!els.length) return;
+                        drillIntoUserHoldings(labels[els[0].index]);
+                    };
+                } else {
+                    labels = etfs.map(h => h.name);
+                    values = etfs.map(h => h.current_value);
+                    colors = uPalette.slice(0, etfs.length);
+                }
+
+                if (donutChart) donutChart.destroy();
+                donutChart = new Chart(document.getElementById('userDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors }] },
+                    options: makeDonutOptions(labels, values, colors, onClickFn)
+                });
+
+                document.getElementById('btn-back-donut').classList.remove('hidden');
+                const lbl = document.getElementById('donut-sector-label');
+                lbl.textContent = sectorName;
+                lbl.classList.remove('hidden');
+                document.getElementById('donut-toggle').classList.add('hidden');
+            }
+
+            function drillIntoUserHoldings(subIndexName) {
+                const etfs = allHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === '시장지수' &&
+                    holdingToSubIndex(h.name, h.category || '') === subIndexName
+                );
+                if (!etfs.length) return;
+                uCurrentSector = '시장지수__' + subIndexName;
+
+                const labels = etfs.map(h => h.name);
+                const values = etfs.map(h => h.current_value);
+                const colors = uPalette.slice(0, etfs.length);
+
+                if (donutChart) donutChart.destroy();
+                donutChart = new Chart(document.getElementById('userDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors }] },
+                    options: makeDonutOptions(labels, values, colors, null)
+                });
+
+                const lbl = document.getElementById('donut-sector-label');
+                lbl.textContent = `시장지수 › ${subIndexName}`;
+                lbl.classList.remove('hidden');
+            }
+
+            function drillBack() {
+                if (uCurrentSector && uCurrentSector.startsWith('시장지수__')) {
+                    drillInto('시장지수', SUB_INDEX_COLORS['기타 시장지수']);
+                } else {
+                    uCurrentSector = null;
+                    renderDonut(currentDonutMode);
+                }
+            }
+
+            window.switchDonut = mode => renderDonut(mode);
+            window.drillBack   = drillBack;
+            renderDonut('sector');
+
+            // 투입금은 history.json 기준 (실제 입금액 수기 기록) — portfolio.summary.total_cost 사용 안 함
+            // 같은 달 여러 항목이면 가장 마지막 날짜 1개만 사용, 라벨은 YYYY.MM
+            const userHistory = history.filter(h => h.note === 'Users').sort((a,b) => a.date.localeCompare(b.date));
+            const uMonthMap = {};
+            userHistory.forEach(h => { uMonthMap[h.date.slice(0,7)] = h; });
+            const uMonthly = Object.values(uMonthMap);
+            const uLabels = uMonthly.map(h => h.date.slice(0,7).replace('-','.'));
+            const uValues = uMonthly.map(h => h.total_value);
+            const uCosts  = uMonthly.map(h => h.total_cost);
+            new Chart(document.getElementById('userPnlChart'), {
+                type: 'line',
+                data: { labels: uLabels, datasets: [
+                    { label: '현재 평가금', data: uValues,
+                      borderColor: '#34D399', backgroundColor: 'rgba(52,211,153,0.08)',
+                      pointBackgroundColor: '#34D399', pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3 },
+                    { label: '투입금 (실제 투입금)', data: uCosts,
+                      borderColor: '#94A3B8', backgroundColor: 'transparent',
+                      pointBackgroundColor: '#94A3B8', pointRadius: 4, borderWidth: 2, borderDash: [5,4], tension: 0.3 }
+                ]},
+                options: { ...CHART_DEFAULTS,
+                    scales: {
+                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                    },
+                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } } }
+                }
+            });
+
+            uHoldingsData = allHoldings;
+            uSortKey = 'unrealized_pnl_pct'; uSortDir = -1;
+            renderUserTable(uSortKey, uSortDir);
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  TAB 3: HUSBAND
+        // ══════════════════════════════════════════════════════════
+        function buildHusband(history, husbandPortfolio) {
+            const hHistory = history.filter(h => h.note === 'Husband').sort((a,b) => a.date.localeCompare(b.date));
+
+            // ── 요약 카드 ──────────────────────────────────────────
+            // 총 자산·수익률은 history.json 최신값 우선 (투입금 기준 수기 기록)
+            const lastH = hHistory.at(-1);
+            const hs    = husbandPortfolio?.summary ?? {};
+            const hVal  = lastH?.total_value        ?? hs.total_value  ?? 0;
+            const hCost = lastH?.total_cost         ?? hs.total_cost   ?? 0;
+            const hPnl  = lastH?.unrealized_pnl     ?? hs.unrealized_pnl ?? 0;
+            const hPct  = lastH?.unrealized_pnl_pct ?? hs.unrealized_pnl_pct ?? 0;
+            const pnlColor = hPnl >= 0 ? 'text-pink-400' : 'text-red-400';
+            document.getElementById('h-total-value').textContent = fmt(hVal);
+            document.getElementById('h-total-cost').textContent  = fmt(hCost);
+            document.getElementById('h-pnl').textContent         = fmt(hPnl);
+            document.getElementById('h-pnl').className           = `text-xl font-bold ${pnlColor}`;
+            document.getElementById('h-pnl-pct').textContent     = Number(hPct).toFixed(2) + '%';
+            document.getElementById('h-updated').textContent     = '기준일: ' + (lastH?.date ?? husbandPortfolio?.last_updated ?? '-');
+
+            // ── 보유 종목 통합 ─────────────────────────────────────
+            const allHusbandHoldings = husbandPortfolio
+                ? husbandPortfolio.accounts.flatMap(a => a.holdings || [])
+                : [];
+
+            // ── 섹터/색상 맵 (남편 카테고리 포함) ─────────────────
+            const H_SECTOR_MAP = {
+                '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지'],
+                'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','IT/기술','기술(해외)'],
+                '원자력/에너지': ['원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학'],
+                '방산/우주':     ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
+                '조선':          ['조선'],
+                '시장지수':      ['시장지수','시장지수(미국)','시장지수(일본)','레버리지/지수','해외지수'],
+                '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
+                '바이오':        ['바이오'],
+                '금융':          ['금융','금융(미국)'],
+                '기타':          ['기타','기타(미국)','기타(국내)','철강','화학','혼합/채권']
+            };
+            const H_SECTOR_COLORS = {
+                '반도체':        '#60A5FA', 'AI/기술':       '#A78BFA',
+                '원자력/에너지': '#FBBF24', '방산/우주':     '#F87171',
+                '조선':          '#34D399', '시장지수':      '#38BDF8',
+                '그룹주/자동차': '#FB923C', '바이오':        '#F472B6',
+                '금융':          '#4ADE80', '기타':          '#6B7280'
+            };
+
+            function hCatToSector(cat) {
+                return Object.keys(H_SECTOR_MAP).find(s => H_SECTOR_MAP[s].includes(cat)) || '기타';
+            }
+
+            function buildHSectorData() {
+                const totals = {};
+                allHusbandHoldings.forEach(h => {
+                    const sector = holdingToSector(h.name, h.category || '기타');
+                    totals[sector] = (totals[sector] || 0) + (h.current_value || 0);
+                });
+                const labels = Object.keys(totals).sort((a,b) => totals[b] - totals[a]);
+                return { labels, values: labels.map(l => totals[l]), colors: labels.map(l => H_SECTOR_COLORS[l] || SECTOR_COLORS_G[l] || '#6B7280') };
+            }
+
+            function buildHCountryData() {
+                let kr = 0, us = 0, jp = 0;
+                allHusbandHoldings.forEach(h => {
+                    const cat = h.category || '';
+                    if (cat.includes('미국') || h.currency === 'USD') us += h.current_value || 0;
+                    else if (cat.includes('일본'))                    jp += h.current_value || 0;
+                    else                                              kr += h.current_value || 0;
+                });
+                const labels = [], values = [], colors = [];
+                if (kr > 0) { labels.push('한국'); values.push(kr); colors.push('#34D399'); }
+                if (us > 0) { labels.push('미국'); values.push(us); colors.push('#60A5FA'); }
+                if (jp > 0) { labels.push('일본'); values.push(jp); colors.push('#FBBF24'); }
+                return { labels, values, colors };
+            }
+
+            let hDonutChart;
+            let hCurrentMode = 'sector';
+
+            function makeHDonutOpts(labels, values, colors, onClickFn) {
+                return {
+                    responsive: true, maintainAspectRatio: false,
+                    onClick: onClickFn || null,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#FFFFFF', font: { size: 11 }, boxWidth: 14, padding: 12,
+                                generateLabels: chart => chart.data.labels.map((label, i) => {
+                                    const total = chart.data.datasets[0].data.reduce((a,b) => a+b, 0);
+                                    const val   = chart.data.datasets[0].data[i];
+                                    const pct   = total > 0 ? ((val/total)*100).toFixed(1) : 0;
+                                    return { text: `${label}  ${pct}%`, fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                             hidden: false, index: i, strokeStyle: 'transparent', fontColor: '#FFFFFF' };
+                                })
+                            }
+                        },
+                        tooltip: { callbacks: { label: c => `  ${fmt(c.parsed)}` } }
+                    }
+                };
+            }
+
+            function renderHDonut(mode) {
+                hCurrentMode = mode;
+                const d = mode === 'sector' ? buildHSectorData() : buildHCountryData();
+                const onClickFn = mode === 'sector' ? (evt, els) => {
+                    if (!els.length) return;
+                    hDrillInto(d.labels[els[0].index], d.colors[els[0].index]);
+                } : null;
+                if (hDonutChart) hDonutChart.destroy();
+                hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels: d.labels, datasets: [{ data: d.values, backgroundColor: d.colors, borderWidth: 2, borderColor: '#1F2937' }] },
+                    options: makeHDonutOpts(d.labels, d.values, d.colors, onClickFn)
+                });
+                document.getElementById('h-btn-sector').className  = `px-3 py-1 transition-colors ${mode==='sector'  ? 'bg-pink-600 text-white' : 'bg-gray-700 text-gray-300'}`;
+                document.getElementById('h-btn-country').className = `px-3 py-1 transition-colors ${mode==='country' ? 'bg-pink-600 text-white' : 'bg-gray-700 text-gray-300'}`;
+                document.getElementById('h-btn-back-donut').classList.add('hidden');
+                document.getElementById('h-donut-sector-label').classList.add('hidden');
+                document.getElementById('h-donut-toggle').classList.remove('hidden');
+            }
+
+            let hCurrentSector = null;
+            const hPalette = ['#60A5FA','#93C5FD','#38BDF8','#67E8F9','#34D399','#6EE7B7',
+                              '#FBBF24','#FCD34D','#F87171','#FCA5A5','#A78BFA','#C4B5FD',
+                              '#FB923C','#FDBA74','#F472B6','#F9A8D4','#4ADE80','#86EFAC'];
+
+            function hDrillInto(sectorName) {
+                const etfs = allHusbandHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === sectorName
+                );
+                if (!etfs.length) return;
+                hCurrentSector = sectorName;
+
+                let labels, values, colors, onClickFn = null;
+                if (sectorName === '시장지수') {
+                    const subTotals = {};
+                    etfs.forEach(h => {
+                        const sub = holdingToSubIndex(h.name, h.category || '');
+                        subTotals[sub] = (subTotals[sub] || 0) + (h.current_value || 0);
+                    });
+                    const entries = Object.entries(subTotals).sort((a,b) => b[1]-a[1]);
+                    labels = entries.map(([n]) => n);
+                    values = entries.map(([,v]) => v);
+                    colors = labels.map(l => SUB_INDEX_COLORS[l] || '#6B7280');
+                    onClickFn = (evt, els) => {
+                        if (!els.length) return;
+                        hDrillIntoHoldings(labels[els[0].index]);
+                    };
+                } else {
+                    labels = etfs.map(h => h.name);
+                    values = etfs.map(h => h.current_value);
+                    colors = hPalette.slice(0, etfs.length);
+                }
+                if (hDonutChart) hDonutChart.destroy();
+                hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
+                    options: makeHDonutOpts(labels, values, colors, onClickFn)
+                });
+                document.getElementById('h-btn-back-donut').classList.remove('hidden');
+                const lbl = document.getElementById('h-donut-sector-label');
+                lbl.textContent = sectorName; lbl.classList.remove('hidden');
+                document.getElementById('h-donut-toggle').classList.add('hidden');
+            }
+
+            function hDrillIntoHoldings(subIndexName) {
+                const etfs = allHusbandHoldings.filter(h =>
+                    holdingToSector(h.name, h.category || '기타') === '시장지수' &&
+                    holdingToSubIndex(h.name, h.category || '') === subIndexName
+                );
+                if (!etfs.length) return;
+                hCurrentSector = '시장지수__' + subIndexName;
+
+                const labels = etfs.map(h => h.name);
+                const values = etfs.map(h => h.current_value);
+                const colors = hPalette.slice(0, etfs.length);
+
+                if (hDonutChart) hDonutChart.destroy();
+                hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#1F2937' }] },
+                    options: makeHDonutOpts(labels, values, colors, null)
+                });
+                const lbl = document.getElementById('h-donut-sector-label');
+                lbl.textContent = `시장지수 › ${subIndexName}`; lbl.classList.remove('hidden');
+            }
+
+            window.switchHusbandDonut = mode => renderHDonut(mode);
+            window.husbandDrillBack   = () => {
+                if (hCurrentSector && hCurrentSector.startsWith('시장지수__')) {
+                    hDrillInto('시장지수');
+                } else {
+                    hCurrentSector = null;
+                    renderHDonut(hCurrentMode);
+                }
+            };
+            if (allHusbandHoldings.length > 0) renderHDonut('sector');
+
+            // ── 투입금 vs 평가금 차트 ──────────────────────────────
+            // 같은 달 여러 항목이면 가장 마지막 날짜 1개만 사용, 라벨은 YYYY.MM
+            const hMonthMap = {};
+            hHistory.forEach(h => { hMonthMap[h.date.slice(0,7)] = h; });
+            const hMonthly = Object.values(hMonthMap);
+            new Chart(document.getElementById('husbandPnlChart'), {
+                type: 'line',
+                data: { labels: hMonthly.map(h => h.date.slice(0,7).replace('-','.')), datasets: [
+                    { label: '현재 평가금', data: hMonthly.map(h => h.total_value),
+                      borderColor: '#F472B6', backgroundColor: 'rgba(244,114,182,0.08)',
+                      pointBackgroundColor: '#F472B6', pointRadius: 4, borderWidth: 2, fill: true, tension: 0.3 },
+                    { label: '투입금 (실제 투입금)', data: hMonthly.map(h => h.total_cost),
+                      borderColor: '#94A3B8', backgroundColor: 'transparent',
+                      pointBackgroundColor: '#94A3B8', pointRadius: 4, borderWidth: 2, borderDash: [5,4], tension: 0.3 }
+                ]},
+                options: { ...CHART_DEFAULTS,
+                    scales: {
+                        x: { ticks: { color: '#6B7280' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                        y: { ticks: { color: '#6B7280', callback: v => fmtM(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                    },
+                    plugins: { ...CHART_DEFAULTS.plugins, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } } }
+                }
+            });
+
+            // ── 보유 종목 테이블 ───────────────────────────────────
+            hHoldingsData = allHusbandHoldings.filter(h => h.current_value > 0);
+            hSortKey = 'unrealized_pnl_pct'; hSortDir = -1;
+            renderHusbandTable(hSortKey, hSortDir);
+        }
+    </script>
+</body>
+</html>
