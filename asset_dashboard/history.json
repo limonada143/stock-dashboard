@@ -144,6 +144,14 @@
     "note": "Users"
   },
   {
+    "date": "2026-03-30",
+    "total_value": 578976196,
+    "total_cost": 358910903,
+    "unrealized_pnl": 220065293,
+    "unrealized_pnl_pct": 61.32,
+    "note": "Users"
+  },
+  {
     "date": "2024-12-31",
     "total_value": 146010000,
     "total_cost": 73110000,
@@ -285,6 +293,14 @@
     "total_cost": 243518478,
     "unrealized_pnl": 132088632,
     "unrealized_pnl_pct": 54.37,
+    "note": "Husband"
+  },
+  {
+    "date": "2026-03-30",
+    "total_value": 379238965,
+    "total_cost": 243518478,
+    "unrealized_pnl": 135720487,
+    "unrealized_pnl_pct": 55.73,
     "note": "Husband"
   }
 
