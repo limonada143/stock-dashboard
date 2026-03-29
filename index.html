@@ -356,10 +356,10 @@
 
         // ── 데이터 로드 ───────────────────────────────────────────
         Promise.all([
-            fetch('portfolio.json').then(r => r.json()),
-            fetch('history.json').then(r => r.json()),
-            fetch('portfolio_husband.json').then(r => r.json()).catch(() => null),
-            fetch('sector_history.json').then(r => r.json()).catch(() => [])
+            fetch('asset_dashboard/portfolio.json').then(r => r.json()),
+            fetch('asset_dashboard/history.json').then(r => r.json()),
+            fetch('asset_dashboard/portfolio_husband.json').then(r => r.json()).catch(() => null),
+            fetch('asset_dashboard/sector_history.json').then(r => r.json()).catch(() => [])
         ]).then(([portfolio, history, husbandPortfolio, sectorHistory]) => {
             buildTotal(history, portfolio, husbandPortfolio, sectorHistory);
             buildUser(portfolio, history);
