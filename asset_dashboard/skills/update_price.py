@@ -79,10 +79,12 @@ TICKER_MAP = {
     "현대차우": "005385.KS",
     "현대차2우B": "005387.KS",
     "두산에너빌리티": "034020.KS",
-    "엔케이젠바이오텍코리아": "182400.KQ",        
     "토모큐브": "475960.KQ",              # 최근 상장 코드(475960)로 수정
     "대한조선": "439260.KS",            
 }
+
+# 매도 완료 — 가격 업데이트에서 영구 제외
+BLACKLIST = {"엔케이젠바이오텍코리아", "엔케이젠바이오", "182400.KQ"}
 
 # USD 심볼 목록 (가격 × 환율 변환 대상)
 USD_TICKERS = {
@@ -123,6 +125,9 @@ def update_portfolio(filepath, dry_run=False, usd_krw=1450.0):
             ticker = h.get('ticker', '').strip()
             if not ticker:
                 skipped.append(h['name'])
+                continue
+
+            if h.get('name', '') in BLACKLIST or ticker in BLACKLIST:
                 continue
 
             price, is_usd = get_price(ticker)
