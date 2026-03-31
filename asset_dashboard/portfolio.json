@@ -362,19 +362,7 @@
           "unrealized_pnl_pct": -20.22,
           "type": "주식",
           "category": "기타"
-        },
-        {
-          "name": "엔케이젠바이오",
-          "ticker": "엔케이젠바이오텍코리아",
-          "shares": 21,
-          "avg_price": 9564,
-          "current_price": 47981,
-          "current_value": 1007601,
-          "unrealized_pnl": 806757,
-          "unrealized_pnl_pct": 401.68,
-          "type": "주식",
-          "category": "바이오"
-        }
+        }   
       ]
     },
     {
