@@ -30,11 +30,11 @@
       "name": "TIGER 반도체TOP10",
       "ticker": "TIGER반도체TOP10",
       "shares": 772,
-      "avg_price": 23249,
+      "avg_price": 23245.82,
       "current_price": 34205,
       "current_value": 26406260,
-      "unrealized_pnl": 8457984,
-      "unrealized_pnl_pct": 47.12,
+      "unrealized_pnl": 8460486.96,
+      "unrealized_pnl_pct": 47.14,
       "type": "ETF",
       "category": "반도체"
     },
@@ -142,7 +142,7 @@
       "current_price": 40530,
       "current_value": 5268900,
       "unrealized_pnl": 811352,
-      "unrealized_pnl_pct": 18.20,
+      "unrealized_pnl_pct": 18.2,
       "type": "ETF",
       "category": "해외지수"
     },
