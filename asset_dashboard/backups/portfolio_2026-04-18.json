@@ -2,11 +2,11 @@
   "owner": "user",
   "last_updated": "2026-04-18",
   "summary": {
-    "total_value": 658522740,
+    "total_value": 660518713,
     "total_cost": 477394492,
-    "total_cash": 11347295,
-    "unrealized_pnl": 163661604,
-    "unrealized_pnl_pct": 33.07
+    "total_cash": 9328843,
+    "unrealized_pnl": 127422181,
+    "unrealized_pnl_pct": 23.9
   },
   "accounts": [
     {
@@ -15,9 +15,9 @@
       "type": "일반계좌",
       "currency": "KRW",
       "summary": {
-        "total_value": 38880000,
+        "total_value": 41904000,
         "total_cost": 30981581,
-        "unrealized_pnl": 10134180,
+        "unrealized_pnl": 10922394,
         "unrealized_pnl_pct": 35.25,
         "cash": 3017888
       },
@@ -28,8 +28,8 @@
           "shares": 180,
           "avg_price": 159699,
           "current_price": 216000,
-          "current_value": 38880000,
-          "unrealized_pnl": 10134180,
+          "current_value": 41904000,
+          "unrealized_pnl": 10922394,
           "unrealized_pnl_pct": 35.25,
           "type": "주식",
           "category": "반도체"
@@ -237,10 +237,10 @@
       "type": "종합위탁",
       "currency": "KRW",
       "summary": {
-        "total_value": 69947300,
+        "total_value": 69352800,
         "total_cost": 67994156,
-        "unrealized_pnl": 3508500,
-        "unrealized_pnl_pct": 5.28,
+        "unrealized_pnl": 4968920,
+        "unrealized_pnl_pct": 7.72,
         "cash": 4249548
       },
       "holdings": [
@@ -250,9 +250,9 @@
           "shares": 170,
           "avg_price": 84261,
           "current_price": 101915,
-          "current_value": 17325550,
-          "unrealized_pnl": 3001180,
-          "unrealized_pnl_pct": 20.95,
+          "current_value": 20383000,
+          "unrealized_pnl": 4269600,
+          "unrealized_pnl_pct": 26.5,
           "type": "ETF",
           "category": "레버리지/지수"
         },
@@ -262,9 +262,9 @@
           "shares": 280,
           "avg_price": 46512,
           "current_price": 51085,
-          "current_value": 14303800,
-          "unrealized_pnl": 1280440,
-          "unrealized_pnl_pct": 9.83,
+          "current_value": 13282100,
+          "unrealized_pnl": 1426100,
+          "unrealized_pnl_pct": 12.03,
           "type": "ETF",
           "category": "반도체"
         },
@@ -274,9 +274,9 @@
           "shares": 85,
           "avg_price": 57654,
           "current_price": 56300,
-          "current_value": 4785500,
-          "unrealized_pnl": -115090,
-          "unrealized_pnl_pct": -2.35,
+          "current_value": 4222500,
+          "unrealized_pnl": -105300,
+          "unrealized_pnl_pct": -2.43,
           "type": "주식",
           "category": "바이오"
         },
@@ -286,9 +286,9 @@
           "shares": 16,
           "avg_price": 261335,
           "current_price": 253500,
-          "current_value": 4056000,
-          "unrealized_pnl": -125360,
-          "unrealized_pnl_pct": -3.0,
+          "current_value": 3295500,
+          "unrealized_pnl": -132860,
+          "unrealized_pnl_pct": -3.88,
           "type": "주식",
           "category": "자동차"
         },
@@ -298,9 +298,9 @@
           "shares": 470,
           "avg_price": 37713,
           "current_price": 39100,
-          "current_value": 18377000,
-          "unrealized_pnl": 651890,
-          "unrealized_pnl_pct": 3.68,
+          "current_value": 18572500,
+          "unrealized_pnl": 681150,
+          "unrealized_pnl_pct": 3.81,
           "type": "주식",
           "category": "철강"
         },
@@ -310,9 +310,9 @@
           "shares": 230,
           "avg_price": 12190,
           "current_price": 10685,
-          "current_value": 2457550,
-          "unrealized_pnl": -346150,
-          "unrealized_pnl_pct": -12.35,
+          "current_value": 2350700,
+          "unrealized_pnl": -345620,
+          "unrealized_pnl_pct": -12.82,
           "type": "ETF",
           "category": "시장지수"
         },
@@ -322,9 +322,9 @@
           "shares": 480,
           "avg_price": 17507,
           "current_price": 16095,
-          "current_value": 7725600,
-          "unrealized_pnl": -677760,
-          "unrealized_pnl_pct": -8.07,
+          "current_value": 6438000,
+          "unrealized_pnl": -668000,
+          "unrealized_pnl_pct": -9.4,
           "type": "ETF",
           "category": "레버리지/지수"
         },
@@ -334,9 +334,9 @@
           "shares": 170,
           "avg_price": 6335,
           "current_price": 5390,
-          "current_value": 916300,
-          "unrealized_pnl": -160650,
-          "unrealized_pnl_pct": -14.92,
+          "current_value": 808500,
+          "unrealized_pnl": -156150,
+          "unrealized_pnl_pct": -16.19,
           "type": "주식",
           "category": "기타"
         }
@@ -348,10 +348,10 @@
       "type": "신연금저축",
       "currency": "KRW",
       "summary": {
-        "total_value": 61444575,
+        "total_value": 60944200,
         "total_cost": 44421757,
-        "unrealized_pnl": 15813900,
-        "unrealized_pnl_pct": 34.66,
+        "unrealized_pnl": 15734770,
+        "unrealized_pnl_pct": 34.8,
         "cash": 510301
       },
       "holdings": [
@@ -373,9 +373,9 @@
           "shares": 160,
           "avg_price": 26162,
           "current_price": 29040,
-          "current_value": 4646400,
-          "unrealized_pnl": 460480,
-          "unrealized_pnl_pct": 11.0,
+          "current_value": 4356000,
+          "unrealized_pnl": 461100,
+          "unrealized_pnl_pct": 11.84,
           "type": "ETF",
           "category": "금융"
         },
@@ -385,9 +385,9 @@
           "shares": 105,
           "avg_price": 16123,
           "current_price": 16345,
-          "current_value": 1716225,
-          "unrealized_pnl": 23310,
-          "unrealized_pnl_pct": 1.38,
+          "current_value": 1634500,
+          "unrealized_pnl": 22700,
+          "unrealized_pnl_pct": 1.41,
           "type": "ETF",
           "category": "철강"
         },
@@ -409,9 +409,9 @@
           "shares": 60,
           "avg_price": 37387,
           "current_price": 43950,
-          "current_value": 2637000,
-          "unrealized_pnl": 393780,
-          "unrealized_pnl_pct": 17.55,
+          "current_value": 2197500,
+          "unrealized_pnl": 388550,
+          "unrealized_pnl_pct": 21.48,
           "type": "ETF",
           "category": "해외지수"
         },
@@ -457,9 +457,9 @@
           "shares": 350,
           "avg_price": 25818,
           "current_price": 30335,
-          "current_value": 10617250,
-          "unrealized_pnl": 1580950,
-          "unrealized_pnl_pct": 17.5,
+          "current_value": 10313900,
+          "unrealized_pnl": 1578960,
+          "unrealized_pnl_pct": 18.08,
           "type": "ETF",
           "category": "시장지수"
         },
@@ -481,9 +481,9 @@
           "shares": 200,
           "avg_price": 16857,
           "current_price": 15365,
-          "current_value": 3073000,
-          "unrealized_pnl": -298400,
-          "unrealized_pnl_pct": -8.85,
+          "current_value": 3687600,
+          "unrealized_pnl": -370320,
+          "unrealized_pnl_pct": -9.13,
           "type": "ETF",
           "category": "원유/에너지(미국)"
         }
@@ -495,10 +495,10 @@
       "type": "개인형IRP",
       "currency": "KRW",
       "summary": {
-        "total_value": 25457930,
+        "total_value": 23312360,
         "total_cost": 19399583,
-        "unrealized_pnl": 5025079.960000079,
-        "unrealized_pnl_pct": 24.59,
+        "unrealized_pnl": 4751964.960000001,
+        "unrealized_pnl_pct": 25.6,
         "cash": 8197
       },
       "holdings": [
@@ -567,10 +567,10 @@
           "ticker": "ACEAI반도체TOP3+",
           "shares": 42,
           "avg_price": 44582.26190476,
-          "current_price": 51085,
-          "current_value": 2145570,
-          "unrealized_pnl": 273115,
-          "unrealized_pnl_pct": 14.59,
+          "current_price": 16220,
+          "current_value": 5028200,
+          "unrealized_pnl": 4030,
+          "unrealized_pnl_pct": 0.08,
           "type": "ETF",
           "category": "반도체"
         },
@@ -594,10 +594,10 @@
       "type": "일반계좌",
       "currency": "KRW",
       "summary": {
-        "total_value": 100786037,
+        "total_value": 99637632,
         "total_cost": 60513393,
-        "unrealized_pnl": 35025228,
-        "unrealized_pnl_pct": 53.26,
+        "unrealized_pnl": 39209719.0,
+        "unrealized_pnl_pct": 64.89,
         "cash": 50307
       },
       "holdings": [
@@ -691,9 +691,9 @@
           "shares": 50,
           "avg_price": 64410,
           "current_price": 67553,
-          "current_value": 3377660,
-          "unrealized_pnl": 157160,
-          "unrealized_pnl_pct": 4.88,
+          "current_value": 2229255,
+          "unrealized_pnl": -31773,
+          "unrealized_pnl_pct": -1.41,
           "type": "해외주식",
           "category": "양자컴퓨팅(해외)"
         },
@@ -728,8 +728,8 @@
           "avg_price": 892422,
           "current_price": 1009194,
           "current_value": 5045970,
-          "unrealized_pnl": 583860,
-          "unrealized_pnl_pct": 13.08,
+          "unrealized_pnl": 4957284,
+          "unrealized_pnl_pct": 5589.7,
           "type": "해외주식",
           "category": "AI/기술(해외)"
         }
@@ -741,10 +741,10 @@
       "type": "해외주식",
       "currency": "KRW",
       "summary": {
-        "total_value": 115143168,
+        "total_value": 117948103,
         "total_cost": 93163817,
-        "unrealized_pnl": 32775010.187747,
-        "unrealized_pnl_pct": 39.79,
+        "unrealized_pnl": -9918620.5622534,
+        "unrealized_pnl_pct": -7.76,
         "cash": 2796835
       },
       "holdings": [
@@ -765,10 +765,10 @@
           "ticker": "DRAM",
           "shares": 55,
           "avg_price": 52170.75,
-          "current_price": 36,
-          "current_value": 1957,
-          "unrealized_pnl": -2867434,
-          "unrealized_pnl_pct": -99.93,
+          "current_price": 52170.75,
+          "current_value": 441993,
+          "unrealized_pnl": 64806,
+          "unrealized_pnl_pct": 17.18,
           "type": "ETF",
           "category": "AI/반도체(해외)"
         },
@@ -790,9 +790,9 @@
           "shares": 16,
           "avg_price": 368396,
           "current_price": 500794,
-          "current_value": 8012697,
-          "unrealized_pnl": 2118361,
-          "unrealized_pnl_pct": 35.94,
+          "current_value": 7511903,
+          "unrealized_pnl": -42884125,
+          "unrealized_pnl_pct": -85.09,
           "type": "주식",
           "category": "AI/기술(해외)"
         },
@@ -814,9 +814,9 @@
           "shares": 17,
           "avg_price": 229025,
           "current_price": 295598,
-          "current_value": 5025172,
-          "unrealized_pnl": 1131747,
-          "unrealized_pnl_pct": 29.07,
+          "current_value": 4433975,
+          "unrealized_pnl": 1126835,
+          "unrealized_pnl_pct": 34.07,
           "type": "주식",
           "category": "반도체(미국)"
         },
@@ -838,9 +838,9 @@
           "shares": 65,
           "avg_price": 64013,
           "current_price": 124290,
-          "current_value": 8078829,
-          "unrealized_pnl": 3917984,
-          "unrealized_pnl_pct": 94.16,
+          "current_value": 7830249,
+          "unrealized_pnl": 3917383,
+          "unrealized_pnl_pct": 100.12,
           "type": "주식",
           "category": "우주/방산(해외)"
         },
@@ -862,9 +862,9 @@
           "shares": 290,
           "avg_price": 70140,
           "current_price": 138771,
-          "current_value": 40243471,
-          "unrealized_pnl": 19902871,
-          "unrealized_pnl_pct": 97.85,
+          "current_value": 40382241,
+          "unrealized_pnl": 20287189,
+          "unrealized_pnl_pct": 100.96,
           "type": "ETF",
           "category": "반도체/레버리지(해외)"
         },
@@ -874,9 +874,9 @@
           "shares": 58,
           "avg_price": 471240,
           "current_price": 587181,
-          "current_value": 34056483,
-          "unrealized_pnl": 6724563,
-          "unrealized_pnl_pct": 24.6,
+          "current_value": 33469302,
+          "unrealized_pnl": 6720838,
+          "unrealized_pnl_pct": 25.13,
           "type": "주식",
           "category": "AI/기술(해외)"
         },
@@ -885,10 +885,10 @@
           "ticker": "IONQ",
           "shares": 30,
           "avg_price": 67104,
-          "current_price": 67553,
-          "current_value": 2026596,
-          "unrealized_pnl": 13476,
-          "unrealized_pnl_pct": 0.67,
+          "current_price": 587181,
+          "current_value": 33469302,
+          "unrealized_pnl": 6720838,
+          "unrealized_pnl_pct": 25.13,
           "type": "주식",
           "category": "양자컴퓨팅(해외)"
         }
@@ -1002,22 +1002,22 @@
       "type": "일반계좌",
       "currency": "KRW",
       "summary": {
-        "total_value": 4862020,
+        "total_value": 4652598,
         "total_cost": 10384350,
-        "unrealized_pnl": 549845.488477,
-        "unrealized_pnl_pct": 12.75,
+        "unrealized_pnl": 358737.09677000064,
+        "unrealized_pnl_pct": 8.35,
         "cash": 0
       },
       "holdings": [
         {
           "name": "알파벳 A",
           "ticker": "GOOGL",
-          "shares": 3.656255,
-          "avg_price": 433698,
+          "shares": 3.537737,
+          "avg_price": 482814,
           "current_price": 500794,
-          "current_value": 1831029,
-          "unrealized_pnl": 245319,
-          "unrealized_pnl_pct": 15.47,
+          "current_value": 1771676,
+          "unrealized_pnl": 63607,
+          "unrealized_pnl_pct": 3.72,
           "type": "해외주식",
           "category": "AI/기술(해외)"
         },
@@ -1048,12 +1048,12 @@
         {
           "name": "AVGO",
           "ticker": "AVGO",
-          "shares": 0.806374,
-          "avg_price": 477612,
+          "shares": 0.781263,
+          "avg_price": 474109,
           "current_price": 595858,
-          "current_value": 480484,
-          "unrealized_pnl": 95350,
-          "unrealized_pnl_pct": 24.76,
+          "current_value": 465521,
+          "unrealized_pnl": 95117,
+          "unrealized_pnl_pct": 25.68,
           "type": "해외주식",
           "category": "AI/반도체(해외)"
         },
@@ -1068,18 +1068,6 @@
           "unrealized_pnl_pct": 26.6,
           "type": "해외주식",
           "category": "우주/방산(해외)"
-        },
-        {
-          "name": "IONQ",
-          "ticker": "IONQ",
-          "shares": 2,
-          "avg_price": 62971,
-          "current_price": 67553,
-          "current_value": 135106,
-          "unrealized_pnl": 9164,
-          "unrealized_pnl_pct": 7.28,
-          "type": "해외주식",
-          "category": "양잨컴퓨팅(해외)"
         }
       ]
     },
@@ -1200,10 +1188,10 @@
       "type": "RIA",
       "currency": "KRW",
       "summary": {
-        "total_value": 21265610,
+        "total_value": 22030920,
         "total_cost": 10384350,
-        "unrealized_pnl": 2195209,
-        "unrealized_pnl_pct": 11.51,
+        "unrealized_pnl": 2759645.960000001,
+        "unrealized_pnl_pct": 14.32,
         "cash": 678350
       },
       "holdings": [
@@ -1237,9 +1225,9 @@
           "shares": 179,
           "avg_price": 43080,
           "current_price": 51085,
-          "current_value": 9144215,
-          "unrealized_pnl": 1432895,
-          "unrealized_pnl_pct": 18.58,
+          "current_value": 8990960,
+          "unrealized_pnl": 1432992,
+          "unrealized_pnl_pct": 18.96,
           "type": "ETF",
           "category": "반도체"
         },
@@ -1297,9 +1285,9 @@
           "shares": 31,
           "avg_price": 36713,
           "current_price": 38320,
-          "current_value": 1187920,
-          "unrealized_pnl": 49817,
-          "unrealized_pnl_pct": 4.38,
+          "current_value": 996320,
+          "unrealized_pnl": 50570,
+          "unrealized_pnl_pct": 5.35,
           "type": "ETF",
           "category": "전력/에너지"
         }
