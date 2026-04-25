@@ -93,12 +93,12 @@ TICKER_MAP = {
 # USD 심볼 목록 (가격 × 환율 변환 대상)
 USD_TICKERS = {
     "AMZN","ARM","AVGO","DRAM","GOOGL","IONQ","KORU","META","NVDA","NVDL",
-    "OXY","PLTR","RGTI","RKLB","SOXL","SPCE","TSLA","USO","VRT","GRT",
+    "OXY","PLTR","RGTI","RKLB","SOXL","SPCE","TSLA","USD","USO","VRT","GRT",
     "TE","TEL",
 }
 
-# 가격 조회 제외 — USD 현금 포지션 등
-BLACKLIST = {"엔케이젠바이오텍코리아", "엔케이젠바이오", "182400.KQ", "USD"}
+# 가격 조회 제외
+BLACKLIST = {"엔케이젠바이오텍코리아", "엔케이젠바이오", "182400.KQ"}
 
 def get_usd_krw():
     try:
