@@ -5,8 +5,8 @@
     "total_value": 718083743,
     "total_cost": 477394492,
     "total_cash": 20736754,
-    "unrealized_pnl": 184245671,
-    "unrealized_pnl_pct": 35.91
+    "unrealized_pnl": 182461871,
+    "unrealized_pnl_pct": 35.44
   },
   "accounts": [
     {
@@ -239,8 +239,8 @@
       "summary": {
         "total_value": 85146285,
         "total_cost": 67994156,
-        "unrealized_pnl": 4870318,
-        "unrealized_pnl_pct": 6.07,
+        "unrealized_pnl": 3086518,
+        "unrealized_pnl_pct": 3.76,
         "cash": 7326
       },
       "holdings": [
@@ -356,11 +356,11 @@
           "name": "엘앤에프",
           "ticker": "066970.KS",
           "shares": 10,
-          "avg_price": 19820,
+          "avg_price": 198200,
           "current_price": 198500,
           "current_value": 1985000,
-          "unrealized_pnl": 1786800,
-          "unrealized_pnl_pct": 901.51,
+          "unrealized_pnl": 3000,
+          "unrealized_pnl_pct": 0.15,
           "type": "주식",
           "category": "2차전지"
         },

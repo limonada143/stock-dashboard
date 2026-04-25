@@ -322,9 +322,9 @@
   {
     "date": "2026-04-25",
     "total_value": 718998952,
-    "total_cost": 359910903,
-    "unrealized_pnl": 359088049,
-    "unrealized_pnl_pct": 99.77,
+    "total_cost": 373110903,
+    "unrealized_pnl": 345888049,
+    "unrealized_pnl_pct": 92.7,
     "note": "Users"
   }
 ]
