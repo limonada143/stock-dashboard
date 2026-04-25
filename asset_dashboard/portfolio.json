@@ -2,11 +2,11 @@
   "owner": "user",
   "last_updated": "2026-04-25",
   "summary": {
-    "total_value": 723824343,
+    "total_value": 718083743,
     "total_cost": 477394492,
     "total_cash": 20736754,
-    "unrealized_pnl": 188202471,
-    "unrealized_pnl_pct": 36.55
+    "unrealized_pnl": 184245671,
+    "unrealized_pnl_pct": 35.91
   },
   "accounts": [
     {
@@ -237,10 +237,10 @@
       "type": "종합위탁",
       "currency": "KRW",
       "summary": {
-        "total_value": 90886885,
+        "total_value": 85146285,
         "total_cost": 67994156,
-        "unrealized_pnl": 8827118,
-        "unrealized_pnl_pct": 10.76,
+        "unrealized_pnl": 4870318,
+        "unrealized_pnl_pct": 6.07,
         "cash": 7326
       },
       "holdings": [
@@ -354,13 +354,13 @@
         },
         {
           "name": "엘앤에프",
-          "ticker": "엘앤에프",
+          "ticker": "066970.KS",
           "shares": 10,
           "avg_price": 19820,
-          "current_price": 16095,
-          "current_value": 7725600,
-          "unrealized_pnl": -677760,
-          "unrealized_pnl_pct": -8.07,
+          "current_price": 198500,
+          "current_value": 1985000,
+          "unrealized_pnl": 1786800,
+          "unrealized_pnl_pct": 901.51,
           "type": "주식",
           "category": "2차전지"
         },
