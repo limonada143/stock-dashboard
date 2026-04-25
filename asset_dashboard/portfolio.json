@@ -4,9 +4,9 @@
   "summary": {
     "total_value": 718998952,
     "total_cost": 477394492,
-    "total_cash": 20736754,
-    "unrealized_pnl": 183377080,
-    "unrealized_pnl_pct": 35.62
+    "total_cash": 22545945,
+    "unrealized_pnl": 189987853,
+    "unrealized_pnl_pct": 37.51
   },
   "accounts": [
     {
@@ -356,7 +356,7 @@
           "name": "엘앤에프",
           "ticker": "엘앤에프",
           "shares": 10,
-          "avg_price": 198200,
+          "avg_price": 19820,
           "current_price": 16095,
           "current_value": 7725600,
           "unrealized_pnl": -677760,
@@ -642,11 +642,11 @@
       "type": "일반계좌",
       "currency": "KRW",
       "summary": {
-        "total_value": 101512254,
+        "total_value": 100124548,
         "total_cost": 60513393,
-        "unrealized_pnl": 34694075,
-        "unrealized_pnl_pct": 51.92,
-        "cash": 50307
+        "unrealized_pnl": 36883659,
+        "unrealized_pnl_pct": 58.32,
+        "cash": 1438013
       },
       "holdings": [
         {
@@ -758,18 +758,6 @@
           "category": "AI/기술(해외)"
         },
         {
-          "name": "USD",
-          "ticker": "USD",
-          "shares": 30,
-          "avg_price": 119243,
-          "current_price": 138771,
-          "current_value": 1387706,
-          "unrealized_pnl": 477386,
-          "unrealized_pnl_pct": 52.44,
-          "type": "ETF",
-          "category": "반도체/레버리지(해외)"
-        },
-        {
           "name": "META",
           "ticker": "META",
           "shares": 5,
@@ -789,11 +777,11 @@
       "type": "해외주식",
       "currency": "KRW",
       "summary": {
-        "total_value": 111017216,
+        "total_value": 110595731,
         "total_cost": 86603094,
-        "unrealized_pnl": 26039856.143095,
-        "unrealized_pnl_pct": 30.64,
-        "cash": 103338
+        "unrealized_pnl": 28677245,
+        "unrealized_pnl_pct": 35.01,
+        "cash": 524823
       },
       "holdings": [
         {
@@ -939,18 +927,6 @@
           "unrealized_pnl_pct": 0.24,
           "type": "해외주식",
           "category": "AI/반도체(해외)"
-        },
-        {
-          "name": "USD",
-          "ticker": "USD",
-          "shares": 26,
-          "avg_price": 117649,
-          "current_price": 84297,
-          "current_value": 421485,
-          "unrealized_pnl": 369,
-          "unrealized_pnl_pct": 0.1,
-          "type": "해외주식",
-          "category": "반도체/레버리지(해외)"
         },
         {
           "name": "옥시덴탈 페트롤리움",
