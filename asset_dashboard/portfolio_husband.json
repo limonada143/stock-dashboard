@@ -2,13 +2,13 @@
   "owner": "husband",
   "last_updated": "2026-04-25",
   "summary": {
-    "total_value": 387889609,
+    "total_value": 439635532,
     "total_cost": 242941168,
-    "total_cash_krw": 70207499,
-    "total_cash_usd": 0,
-    "unrealized_pnl": 114745849,
-    "unrealized_pnl_pct": 42.01,
-    "total_cash": 0
+    "total_cash_krw": 64117403,
+    "total_cash_usd": 3550.74,
+    "unrealized_pnl": 132576961,
+    "unrealized_pnl_pct": 54.57,
+    "total_cash": 64117403
   },
   "accounts": [
     {
@@ -21,23 +21,10 @@
         "total_cost": 0,
         "unrealized_pnl": 114745849.4821428,
         "unrealized_pnl_pct": 42.01,
-        "cash_krw": 14218265,
-        "cash_usd": 263.08
+        "cash_krw": 0,
+        "cash_usd": 0
       },
       "holdings": [
-        {
-          "name": "NVDL",
-          "ticker": "NVDL",
-          "shares": 76,
-          "avg_price": 134907,
-          "current_price": 150909,
-          "current_value": 11469116,
-          "unrealized_pnl": 1216184,
-          "unrealized_pnl_pct": 11.86,
-          "type": "ETF",
-          "category": "반도체/레버리지",
-          "currency": "USD"
-        },
         {
           "name": "NVDA",
           "ticker": "NVDA",
@@ -52,19 +39,6 @@
           "currency": "USD"
         },
         {
-          "name": "버티브홀딩스",
-          "ticker": "VRT",
-          "shares": 3,
-          "avg_price": 490744,
-          "current_price": 477530,
-          "current_value": 1432591,
-          "unrealized_pnl": -39641,
-          "unrealized_pnl_pct": -2.69,
-          "type": "주식",
-          "category": "반도체",
-          "currency": "USD"
-        },
-        {
           "name": "PLTR",
           "ticker": "PLTR",
           "shares": 169,
@@ -75,6 +49,45 @@
           "unrealized_pnl_pct": 74.49,
           "type": "주식",
           "category": "AI/기술(미국)",
+          "currency": "USD"
+        },
+        {
+          "name": "NVDL",
+          "ticker": "NVDL",
+          "shares": 76,
+          "avg_price": 134907,
+          "current_price": 150909,
+          "current_value": 11469116,
+          "unrealized_pnl": 1216184,
+          "unrealized_pnl_pct": 11.86,
+          "type": "ETF",
+          "category": "반도체/레버리지",
+          "currency": "USD"
+        },
+        {
+          "name": "TE",
+          "ticker": "TE",
+          "shares": 325,
+          "avg_price": 6014.14769231,
+          "current_price": 7810,
+          "current_value": 2538163,
+          "unrealized_pnl": 583565,
+          "unrealized_pnl_pct": 29.86,
+          "type": "주식",
+          "category": "원자력/에너지(미국)",
+          "currency": "USD"
+        },
+        {
+          "name": "버티브홀딩스",
+          "ticker": "VRT",
+          "shares": 3,
+          "avg_price": 490744,
+          "current_price": 477530,
+          "current_value": 1432591,
+          "unrealized_pnl": -39641,
+          "unrealized_pnl_pct": -2.69,
+          "type": "주식",
+          "category": "반도체",
           "currency": "USD"
         },
         {
@@ -104,34 +117,9 @@
           "currency": "USD"
         },
         {
-          "name": "TE",
-          "ticker": "TE",
-          "shares": 325,
-          "avg_price": 6014.14769231,
-          "current_price": 7810,
-          "current_value": 2538163,
-          "unrealized_pnl": 583565,
-          "unrealized_pnl_pct": 29.86,
-          "type": "주식",
-          "category": "원자력/에너지(미국)",
-          "currency": "USD"
-        },
-        {
-          "name": "TIME 코스닥액티브",
-          "ticker": "TIME코스닥액티브",
-          "shares": 50,
-          "avg_price": 12130,
-          "current_price": 11065,
-          "current_value": 553250,
-          "unrealized_pnl": -53250,
-          "unrealized_pnl_pct": -8.78,
-          "type": "ETF",
-          "category": "시장지수"
-        },
-        {
           "name": "TIGER 미국배당다우존스",
           "ticker": "TIGER미국배당다우존스",
-          "shares": 1378,
+          "shares": 1678,
           "avg_price": 10817.7067938,
           "current_price": 14775,
           "current_value": 20359950,
@@ -139,18 +127,6 @@
           "unrealized_pnl_pct": 36.58,
           "type": "ETF",
           "category": "시장지수(미국)"
-        },
-        {
-          "name": "TIGER 일본니케이225",
-          "ticker": "TIGER일본니케이225",
-          "shares": 296,
-          "avg_price": 27094.93243243,
-          "current_price": 33430,
-          "current_value": 9895280,
-          "unrealized_pnl": 1875180,
-          "unrealized_pnl_pct": 23.38,
-          "type": "ETF",
-          "category": "시장지수(일본)"
         },
         {
           "name": "TIGER 코리아AI전력기기TOP3플러스",
@@ -165,14 +141,14 @@
           "category": "AI/기술"
         },
         {
-          "name": "TIGER미국나스닥100",
-          "ticker": "TIGER미국나스닥100",
-          "shares": 181,
-          "avg_price": 119093,
-          "current_price": 177195,
-          "current_value": 32072295,
-          "unrealized_pnl": 10516462,
-          "unrealized_pnl_pct": 48.79,
+          "name": "TIGER미국S&P500",
+          "ticker": "TIGER미국S&P500",
+          "shares": 762,
+          "avg_price": 15138.727,
+          "current_price": 26230,
+          "current_value": 16603590,
+          "unrealized_pnl": 7020776,
+          "unrealized_pnl_pct": 73.26,
           "type": "ETF",
           "category": "시장지수(미국)"
         },
@@ -189,16 +165,52 @@
           "category": "원자력/에너지(국내)"
         },
         {
-          "name": "TIGER미국S&P500",
-          "ticker": "TIGER미국S&P500",
-          "shares": 633,
-          "avg_price": 15138.727,
-          "current_price": 26230,
-          "current_value": 16603590,
-          "unrealized_pnl": 7020776,
-          "unrealized_pnl_pct": 73.26,
+          "name": "TIME 코스닥액티브",
+          "ticker": "TIME코스닥액티브",
+          "shares": 50,
+          "avg_price": 12130,
+          "current_price": 11065,
+          "current_value": 553250,
+          "unrealized_pnl": -53250,
+          "unrealized_pnl_pct": -8.78,
+          "type": "ETF",
+          "category": "시장지수"
+        },
+        {
+          "name": "TIGER 일본니케이225",
+          "ticker": "TIGER일본니케이225",
+          "shares": 296,
+          "avg_price": 27094.93243243,
+          "current_price": 33430,
+          "current_value": 9895280,
+          "unrealized_pnl": 1875180,
+          "unrealized_pnl_pct": 23.38,
+          "type": "ETF",
+          "category": "시장지수(일본)"
+        },
+        {
+          "name": "TIGER미국나스닥100",
+          "ticker": "TIGER미국나스닥100",
+          "shares": 55,
+          "avg_price": 119093,
+          "current_price": 177195,
+          "current_value": 32072295,
+          "unrealized_pnl": 10516462,
+          "unrealized_pnl_pct": 48.79,
           "type": "ETF",
           "category": "시장지수(미국)"
+        },
+        {
+          "name": "TIME 글로벌우주테크&방산액티브",
+          "ticker": "478150.KS",
+          "shares": 537,
+          "avg_price": 23718.69,
+          "current_price": 22115,
+          "current_value": 11875755,
+          "unrealized_pnl": -861182,
+          "unrealized_pnl_pct": -6.76,
+          "type": "ETF",
+          "category": "방산/우주(미국)"
         },
         {
           "name": "TIGER 미국테크TOP10 INDXX",
@@ -251,7 +263,7 @@
         {
           "name": "KODEX 반도체",
           "ticker": "KODEX반도체",
-          "shares": 149,
+          "shares": 10,
           "avg_price": 71202.215,
           "current_price": 119595,
           "current_value": 17819655,
@@ -309,18 +321,6 @@
           "category": "원자력/에너지(미국)"
         },
         {
-          "name": "TIME 글로벌우주테크&방산액티브",
-          "ticker": "478150.KS",
-          "shares": 537,
-          "avg_price": 23718.69,
-          "current_price": 22115,
-          "current_value": 11875755,
-          "unrealized_pnl": -861182,
-          "unrealized_pnl_pct": -6.76,
-          "type": "ETF",
-          "category": "방산/우주(미국)"
-        },
-        {
           "name": "KODEX 코스피100",
           "ticker": "237350.KS",
           "shares": 62,
@@ -367,18 +367,6 @@
           "unrealized_pnl_pct": 16.19,
           "type": "ETF",
           "category": "원자재"
-        },
-        {
-          "name": "KODEX 미국반도체",
-          "ticker": "KODEX미국반도체",
-          "shares": 248,
-          "avg_price": 40255,
-          "current_price": 49885,
-          "current_value": 12371480,
-          "unrealized_pnl": 2388240,
-          "unrealized_pnl_pct": 23.92,
-          "type": "ETF",
-          "category": "반도체(미국)"
         },
         {
           "name": "KODEX 미국AI테크TOP10",
