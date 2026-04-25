@@ -2,12 +2,12 @@
   "owner": "husband",
   "last_updated": "2026-04-25",
   "summary": {
-    "total_value": 439635532,
+    "total_value": 409030702,
     "total_cost": 242941168,
     "total_cash_krw": 64117403,
     "total_cash_usd": 3550.74,
-    "unrealized_pnl": 132576961,
-    "unrealized_pnl_pct": 54.57,
+    "unrealized_pnl": 101972131,
+    "unrealized_pnl_pct": 41.97,
     "total_cash": 64117403
   },
   "accounts": [
@@ -165,42 +165,6 @@
           "category": "원자력/에너지(국내)"
         },
         {
-          "name": "TIME 코스닥액티브",
-          "ticker": "TIME코스닥액티브",
-          "shares": 50,
-          "avg_price": 12130,
-          "current_price": 11065,
-          "current_value": 553250,
-          "unrealized_pnl": -53250,
-          "unrealized_pnl_pct": -8.78,
-          "type": "ETF",
-          "category": "시장지수"
-        },
-        {
-          "name": "TIGER 일본니케이225",
-          "ticker": "TIGER일본니케이225",
-          "shares": 296,
-          "avg_price": 27094.93243243,
-          "current_price": 33430,
-          "current_value": 9895280,
-          "unrealized_pnl": 1875180,
-          "unrealized_pnl_pct": 23.38,
-          "type": "ETF",
-          "category": "시장지수(일본)"
-        },
-        {
-          "name": "TIGER미국나스닥100",
-          "ticker": "TIGER미국나스닥100",
-          "shares": 55,
-          "avg_price": 119093,
-          "current_price": 177195,
-          "current_value": 32072295,
-          "unrealized_pnl": 10516462,
-          "unrealized_pnl_pct": 48.79,
-          "type": "ETF",
-          "category": "시장지수(미국)"
-        },
-        {
           "name": "TIME 글로벌우주테크&방산액티브",
           "ticker": "478150.KS",
           "shares": 537,
@@ -225,88 +189,40 @@
           "category": "AI/기술(미국)"
         },
         {
-          "name": "KODEX 신재생에너지액티브",
-          "ticker": "385510.KS",
-          "shares": 84,
-          "avg_price": 34750,
-          "current_price": 55015,
-          "current_value": 4621260,
-          "unrealized_pnl": 1702260,
-          "unrealized_pnl_pct": 58.32,
+          "name": "KODEX 코스피",
+          "ticker": "226490.KS",
+          "shares": 150,
+          "avg_price": 61961.67,
+          "current_price": 66890,
+          "current_value": 10033500,
+          "unrealized_pnl": 739250,
+          "unrealized_pnl_pct": 7.95,
           "type": "ETF",
-          "category": "원자력/에너지(국내)"
+          "category": "시장지수"
         },
         {
-          "name": "TIGER 2차전지TOP10",
-          "ticker": "364980.KS",
-          "shares": 300,
-          "avg_price": 10448,
-          "current_price": 13425,
-          "current_value": 4027500,
-          "unrealized_pnl": 893100,
-          "unrealized_pnl_pct": 28.49,
+          "name": "TIGER 일본니케이225",
+          "ticker": "TIGER일본니케이225",
+          "shares": 296,
+          "avg_price": 27094.93243243,
+          "current_price": 33430,
+          "current_value": 9895280,
+          "unrealized_pnl": 1875180,
+          "unrealized_pnl_pct": 23.38,
           "type": "ETF",
-          "category": "기타(국내)"
+          "category": "시장지수(일본)"
         },
         {
-          "name": "TIGER 미국방산TOP10",
-          "ticker": "494840.KS",
-          "shares": 332,
-          "avg_price": 14923.95,
-          "current_price": 13675,
-          "current_value": 4540100,
-          "unrealized_pnl": -414651,
-          "unrealized_pnl_pct": -8.37,
+          "name": "TIGER미국나스닥100",
+          "ticker": "133690.KR",
+          "shares": 55,
+          "avg_price": 119093,
+          "current_price": 177195,
+          "current_value": 9745725,
+          "unrealized_pnl": 10516462,
+          "unrealized_pnl_pct": 48.79,
           "type": "ETF",
-          "category": "방산/우주(미국)"
-        },
-        {
-          "name": "KODEX 반도체",
-          "ticker": "KODEX반도체",
-          "shares": 10,
-          "avg_price": 71202.215,
-          "current_price": 119595,
-          "current_value": 17819655,
-          "unrealized_pnl": 7210525,
-          "unrealized_pnl_pct": 67.97,
-          "type": "ETF",
-          "category": "반도체"
-        },
-        {
-          "name": "KODEX 철강",
-          "ticker": "117680.KS",
-          "shares": 320,
-          "avg_price": 15360,
-          "current_price": 16910,
-          "current_value": 5411200,
-          "unrealized_pnl": 496000,
-          "unrealized_pnl_pct": 10.09,
-          "type": "ETF",
-          "category": "철강"
-        },
-        {
-          "name": "토모큐브",
-          "ticker": "토모큐브",
-          "shares": 40,
-          "avg_price": 54850,
-          "current_price": 55300,
-          "current_value": 2212000,
-          "unrealized_pnl": 18000,
-          "unrealized_pnl_pct": 0.82,
-          "type": "주식",
-          "category": "기술"
-        },
-        {
-          "name": "RISE 미국은행",
-          "ticker": "0013P0.KS",
-          "shares": 412,
-          "avg_price": 12130,
-          "current_price": 12165,
-          "current_value": 5011980,
-          "unrealized_pnl": 14420,
-          "unrealized_pnl_pct": 0.29,
-          "type": "ETF",
-          "category": "금융(미국)"
+          "category": "시장지수(미국)"
         },
         {
           "name": "KIWOOM 미국원유에너지기업",
@@ -321,6 +237,30 @@
           "category": "원자력/에너지(미국)"
         },
         {
+          "name": "KODEX 철강",
+          "ticker": "117680.KS",
+          "shares": 320,
+          "avg_price": 15360,
+          "current_price": 16910,
+          "current_value": 5411200,
+          "unrealized_pnl": 496000,
+          "unrealized_pnl_pct": 10.09,
+          "type": "ETF",
+          "category": "철강"
+        },
+        {
+          "name": "RISE 미국은행",
+          "ticker": "0013P0.KS",
+          "shares": 412,
+          "avg_price": 12130,
+          "current_price": 12165,
+          "current_value": 5011980,
+          "unrealized_pnl": 14420,
+          "unrealized_pnl_pct": 0.29,
+          "type": "ETF",
+          "category": "금융(미국)"
+        },
+        {
           "name": "KODEX 코스피100",
           "ticker": "237350.KS",
           "shares": 62,
@@ -329,18 +269,6 @@
           "current_value": 4818640,
           "unrealized_pnl": 686340,
           "unrealized_pnl_pct": 16.61,
-          "type": "ETF",
-          "category": "시장지수"
-        },
-        {
-          "name": "KODEX 코스닥150",
-          "ticker": "KODEX코스닥150",
-          "shares": 100,
-          "avg_price": 19820,
-          "current_price": 20295,
-          "current_value": 2029500,
-          "unrealized_pnl": 47500,
-          "unrealized_pnl_pct": 2.4,
           "type": "ETF",
           "category": "시장지수"
         },
@@ -357,6 +285,30 @@
           "category": "원자재"
         },
         {
+          "name": "TIGER 미국방산TOP10",
+          "ticker": "494840.KS",
+          "shares": 332,
+          "avg_price": 14923.95,
+          "current_price": 13675,
+          "current_value": 4540100,
+          "unrealized_pnl": -414651,
+          "unrealized_pnl_pct": -8.37,
+          "type": "ETF",
+          "category": "방산/우주(미국)"
+        },
+        {
+          "name": "TIGER 2차전지TOP10",
+          "ticker": "364980.KS",
+          "shares": 300,
+          "avg_price": 10448,
+          "current_price": 13425,
+          "current_value": 4027500,
+          "unrealized_pnl": 893100,
+          "unrealized_pnl_pct": 28.49,
+          "type": "ETF",
+          "category": "기타(국내)"
+        },
+        {
           "name": "TIGER 글로벌리튬&2차전지SOLACTIVE(합성)",
           "ticker": "394670.KS",
           "shares": 256,
@@ -369,28 +321,52 @@
           "category": "원자재"
         },
         {
-          "name": "KODEX 미국AI테크TOP10",
-          "ticker": "485540.KS",
-          "shares": 160,
-          "avg_price": 12229.6875,
-          "current_price": 15665,
-          "current_value": 2506400,
-          "unrealized_pnl": 549650,
-          "unrealized_pnl_pct": 28.09,
+          "name": "KODEX 코스닥150",
+          "ticker": "KODEX코스닥150",
+          "shares": 100,
+          "avg_price": 19820,
+          "current_price": 20295,
+          "current_value": 2029500,
+          "unrealized_pnl": 47500,
+          "unrealized_pnl_pct": 2.4,
           "type": "ETF",
-          "category": "AI/기술(미국)"
+          "category": "시장지수"
         },
         {
-          "name": "RISE 팔란티어고정테크100",
-          "ticker": "0047R0.KS",
-          "shares": 466,
-          "avg_price": 12595,
-          "current_price": 14155,
-          "current_value": 6596230,
-          "unrealized_pnl": 726960,
-          "unrealized_pnl_pct": 12.39,
+          "name": "TIME 코스닥액티브",
+          "ticker": "TIME코스닥액티브",
+          "shares": 174,
+          "avg_price": 11100,
+          "current_price": 11065,
+          "current_value": 553250,
+          "unrealized_pnl": -53250,
+          "unrealized_pnl_pct": -8.78,
           "type": "ETF",
-          "category": "시장지수(미국)"
+          "category": "시장지수"
+        },
+        {
+          "name": "KODEX 반도체",
+          "ticker": "KODEX반도체",
+          "shares": 10,
+          "avg_price": 71202.215,
+          "current_price": 119595,
+          "current_value": 17819655,
+          "unrealized_pnl": 7210525,
+          "unrealized_pnl_pct": 67.97,
+          "type": "ETF",
+          "category": "반도체"
+        },
+        {
+          "name": "토모큐브",
+          "ticker": "토모큐브",
+          "shares": 40,
+          "avg_price": 54850,
+          "current_price": 55300,
+          "current_value": 2212000,
+          "unrealized_pnl": 18000,
+          "unrealized_pnl_pct": 0.82,
+          "type": "주식",
+          "category": "기술"
         },
         {
           "name": "KODEX TDF2060액티브",
@@ -405,6 +381,18 @@
           "category": "시장지수(미국)"
         },
         {
+          "name": "RISE 팔란티어고정테크100",
+          "ticker": "0047R0.KS",
+          "shares": 466,
+          "avg_price": 12595,
+          "current_price": 14155,
+          "current_value": 6596230,
+          "unrealized_pnl": 726960,
+          "unrealized_pnl_pct": 12.39,
+          "type": "ETF",
+          "category": "시장지수(미국)"
+        },
+        {
           "name": "SOL 조선TOP3플러스",
           "ticker": "SOL조선TOP3플러스",
           "shares": 139,
@@ -415,6 +403,18 @@
           "unrealized_pnl_pct": 89.37,
           "type": "ETF",
           "category": "조선"
+        },
+        {
+          "name": "KODEX 미국AI테크TOP10",
+          "ticker": "485540.KS",
+          "shares": 160,
+          "avg_price": 12229.6875,
+          "current_price": 15665,
+          "current_value": 2506400,
+          "unrealized_pnl": 549650,
+          "unrealized_pnl_pct": 28.09,
+          "type": "ETF",
+          "category": "AI/기술(미국)"
         },
         {
           "name": "현대제철",
@@ -439,30 +439,6 @@
           "unrealized_pnl_pct": -4.84,
           "type": "주식",
           "category": "로봇/자동차"
-        },
-        {
-          "name": "KODEX 코스피",
-          "ticker": "226490.KS",
-          "shares": 150,
-          "avg_price": 61961.67,
-          "current_price": 66890,
-          "current_value": 10033500,
-          "unrealized_pnl": 739250,
-          "unrealized_pnl_pct": 7.95,
-          "type": "ETF",
-          "category": "시장지수"
-        },
-        {
-          "name": "KODEX 에너지화학",
-          "ticker": "KODEX에너지화학",
-          "shares": 200,
-          "avg_price": 16830,
-          "current_price": 18285,
-          "current_value": 3657000,
-          "unrealized_pnl": 291000,
-          "unrealized_pnl_pct": 8.65,
-          "type": "ETF",
-          "category": "화학"
         },
         {
           "name": "삼성전자",
