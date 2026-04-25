@@ -75,23 +75,30 @@ TICKER_MAP = {
 
     # 한국 개별주
     "삼성전자": "005930.KS",
+    "삼성전기": "009150.KS",
     "현대제철": "004020.KS",
     "현대차우": "005385.KS",
     "현대차2우B": "005387.KS",
     "두산에너빌리티": "034020.KS",
     "토모큐브": "475960.KQ",              # 최근 상장 코드(475960)로 수정
-    "대한조선": "439260.KS",            
+    "대한조선": "439260.KS",
+    "LS": "006260.KS",
+    "엘앤에프": "066970.KQ",
+    "일진전기": "103590.KS",
+    "리노공업": "058470.KQ",
+    "산일전기": "062040.KS",
+    "알테오젠": "196170.KQ",
 }
-
-# 매도 완료 — 가격 업데이트에서 영구 제외
-BLACKLIST = {"엔케이젠바이오텍코리아", "엔케이젠바이오", "182400.KQ"}
 
 # USD 심볼 목록 (가격 × 환율 변환 대상)
 USD_TICKERS = {
-    "AMZN","ARM","AVGO","GOOGL","IONQ","KORU","META","NVDA","NVDL",
+    "AMZN","ARM","AVGO","DRAM","GOOGL","IONQ","KORU","META","NVDA","NVDL",
     "OXY","PLTR","RGTI","RKLB","SOXL","SPCE","TSLA","USO","VRT","GRT",
     "TE","TEL",
 }
+
+# 가격 조회 제외 — USD 현금 포지션 등
+BLACKLIST = {"엔케이젠바이오텍코리아", "엔케이젠바이오", "182400.KQ", "USD"}
 
 def get_usd_krw():
     try:
@@ -172,13 +179,17 @@ def update_portfolio(filepath, dry_run=False, usd_krw=1450.0):
             s['unrealized_pnl']      = acc_pnl
             s['unrealized_pnl_pct']  = round(acc_pnl / acc_cost * 100, 2) if acc_cost > 0 else 0
 
-        # 전체 summary 재계산 (total_value는 건드리지 않음 — 익절 포함 사용자 수정값)
+        # 전체 summary 재계산
         all_holdings = [h for acc in data['accounts'] for h in acc.get('holdings', [])]
-        total_cost = sum(h.get('shares', 0) * h.get('avg_price', 0) for h in all_holdings)
-        total_val  = sum(h.get('current_value', 0) for h in all_holdings)
-        total_pnl  = total_val - total_cost
-        data['summary']['unrealized_pnl']     = round(total_pnl)
-        data['summary']['unrealized_pnl_pct'] = round(total_pnl / total_cost * 100, 2) if total_cost > 0 else 0
+        total_cost  = sum(h.get('shares', 0) * h.get('avg_price', 0) for h in all_holdings)
+        holdings_val = sum(h.get('current_value', 0) for h in all_holdings)
+        total_cash  = sum(acc.get('summary', {}).get('cash', 0) for acc in data['accounts'])
+        total_val   = holdings_val + total_cash  # 현금 포함 총 평가액
+        total_pnl   = holdings_val - total_cost  # 손익은 보유 종목 기준
+        data['summary']['total_value']         = round(total_val)
+        data['summary']['total_cash']          = round(total_cash)
+        data['summary']['unrealized_pnl']      = round(total_pnl)
+        data['summary']['unrealized_pnl_pct']  = round(total_pnl / total_cost * 100, 2) if total_cost > 0 else 0
 
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
