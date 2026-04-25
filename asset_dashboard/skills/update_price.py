@@ -239,6 +239,9 @@ def main():
     from datetime import date
     save_sector_snapshot(files, str(date.today()), dry_run=dry_run)
 
+    # data/portfolio_user.json 동기화
+    sync_dashboard_user(dry_run=dry_run)
+
 
 SECTOR_MAP_PY = {
     '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
@@ -295,6 +298,47 @@ def save_sector_snapshot(files, today, dry_run=False):
     for s, v in top3:
         pct = v / snapshot['total'] * 100 if snapshot['total'] else 0
         print(f"     {s}: {v/1e8:.2f}억 ({pct:.1f}%)")
+
+
+def sync_dashboard_user(dry_run=False):
+    """portfolio.json → data/portfolio_user.json 동기화 (대시보드용 flat 구조)"""
+    src = '/Users/macmini/myClaude/asset_dashboard/portfolio.json'
+    dst = '/Users/macmini/myClaude/asset_dashboard/data/portfolio_user.json'
+
+    try:
+        with open(src) as f:
+            root = json.load(f)
+    except Exception as e:
+        print(f"  ⚠ portfolio_user 동기화 실패: {e}")
+        return
+
+    all_holdings = [h for acc in root['accounts'] for h in acc.get('holdings', [])]
+    total_cost   = sum(h['shares'] * h['avg_price'] for h in all_holdings)
+    holdings_val = sum(h['current_value'] for h in all_holdings)
+    total_cash   = sum(acc.get('summary', {}).get('cash', 0) for acc in root['accounts'])
+    total_val    = holdings_val + total_cash
+    total_pnl    = holdings_val - total_cost
+    total_pct    = round(total_pnl / total_cost * 100, 2) if total_cost else 0
+
+    data_user = {
+        "owner": "user",
+        "last_updated": root.get("last_updated"),
+        "account": {"name": "전체 계좌 통합", "type": "통합"},
+        "summary": {
+            "total_value": round(total_val),
+            "total_cost": round(total_cost),
+            "total_cash": round(total_cash),
+            "unrealized_pnl": round(total_pnl),
+            "unrealized_pnl_pct": total_pct,
+        },
+        "holdings": all_holdings,
+    }
+
+    if not dry_run:
+        with open(dst, 'w', encoding='utf-8') as f:
+            json.dump(data_user, f, indent=2, ensure_ascii=False)
+
+    print(f"  🔄 dashboard 동기화 {'(미적용)' if dry_run else '완료'}: {len(all_holdings)}종목, {total_val/1e8:.2f}억원")
 
 
 if __name__ == '__main__':
