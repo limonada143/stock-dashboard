@@ -945,10 +945,10 @@
           "ticker": "METU",
           "shares": 2,
           "avg_price": 36355,
-          "current_price": 25,
-          "current_value": 50,
-          "unrealized_pnl": -72660,
-          "unrealized_pnl_pct": -99.93,
+          "current_price": 37031,
+          "current_value": 74062,
+          "unrealized_pnl": 1352,
+          "unrealized_pnl_pct": 1.86,
           "type": "주식",
           "category": "기술(해외)"
         }
@@ -1156,10 +1156,10 @@
           "ticker": "GLW",
           "shares": 1,
           "avg_price": 236830,
-          "current_price": 164,
-          "current_value": 164,
-          "unrealized_pnl": -236666,
-          "unrealized_pnl_pct": -99.93,
+          "current_price": 241867,
+          "current_value": 241867,
+          "unrealized_pnl": 5037,
+          "unrealized_pnl_pct": 2.13,
           "type": "주식",
           "category": "기술(해외)"
         }
