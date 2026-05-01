@@ -17,10 +17,7 @@ TICKER_MAP = {
     # ACE
     # ACE (한국투자)
     "ACE원자력TOP10": "433500.KS",       # 'ACE 원자력테마딥서치'로 대체 매핑
-    "ACEAI반도체TOP10": "441540.KS",     # 'ACE 글로벌반도체TOP10'으로 대체 매핑
-    "ACEAI반도체TOP3+": "469150.KS",
     "ACEAI반도체TOP3플러스": "469150.KS",
-    "ACEAI반도체TOP플러스": "469150.KS",
     "ACE코스닥150": "354500.KS",         # 정상 코드 반영 (기존 오기입 수정)
     "ACE테슬라밸류체인액티브": "457480.KS", # 정상 코드 반영 (기존 오기입 수정)
 
@@ -31,7 +28,7 @@ TICKER_MAP = {
     "KODEX미국S&P500": "379800.KS",       # 'KODEX 미국S&P500TR'
     "KODEX미국반도체": "390390.KS",       # 'KODEX 미국반도체MV' 코드 반영
     "KODEX반도체": "091160.KS",
-    "KODEX반도체레버리지": "494310.KS",   # KODEX에는 반도체 레버리지가 없어 일반 반도체로 임시 연결
+    "KODEX반도체레버리지": "494310.KS",   
     "KODEX에너지화학": "117460.KS",
     "KODEX증권": "102970.KS",
     "KODEX코스닥150": "229200.KS",
@@ -44,7 +41,6 @@ TICKER_MAP = {
     # TIGER (미래에셋)
     "TIGER반도체TOP10": "396500.KS",     # 정상 코드 반영 (기존 오기입 수정)
     "TIGER반도체TOP10레버리지": "488080.KS", # 정상 코드 반영
-    "TIGER미국테크TOP10레버리지": "423920.KS",# 'TIGER 미국나스닥100레버리지'로 임시 연결
     "TIGER미국테크TOP10INDXX": "381170.KS",
     "TIGER미국나스닥100": "133690.KS",
     "TIGER미국S&P500": "360750.KS",
@@ -58,13 +54,12 @@ TICKER_MAP = {
 
     # SOL (신한)
     "SOL미국원자력SMR": "0051G0.KS",
-    "SOL미국원자력": "0051G0.KS",           # ticker 필드 변형 대응
     "SOL미국S&P500": "433330.KS",       # 정상 코드 반영
     "SOL조선TOP3플러스": "466920.KS",     # 정상 코드 반영 (기존 오기입 수정)
     "SOL조선기자재": "0141S0.KS",        
 
     # RISE (KB - 구 KBSTAR)
-    "RISE글로벌원자력": "442320.KS",      # 정상 반영 (사용자 기입본이 맞음)
+    "RISE글로벌원자력": "442320.KS",      
     "RISE삼성전자SK하이닉스채권혼합50": "0162Z0.KS",
     "RISE삼성전자SK하이닉스": "0162Z0.KS",  # ticker 필드 변형 대응
 
@@ -102,9 +97,9 @@ TICKER_MAP = {
 
 # USD 심볼 목록 (가격 × 환율 변환 대상)
 USD_TICKERS = {
-    "AAPL","AMZN","ARM","AVGO","DRAM","GOOGL","IONQ","KORU","META","NVDA","NVDL",
-    "OXY","PLTR","RGTI","RKLB","SOXL","SPCE","TSLA","USD","USO","VRT","GRT",
-    "TE","TEL",
+    "AAPL","AMZN","ARM","AVGO","DRAM","GLW","GOOGL","GRT","IONQ","KORU","META",
+    "METU","NVDA","NVDL","OXY","PLTR","RGTI","RKLB","SOXL","SPCE","TSLA",
+    "USD","USO","VRT","TE","TEL",
 }
 
 # 가격 조회 제외
@@ -263,6 +258,7 @@ SECTOR_MAP_PY = {
     '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
     '바이오':        ['바이오'],
     '금융':          ['금융','금융(미국)'],
+    '2차전지':       ['2차전지','2차전지(국내)','배터리/소재','원자재'],
     '기타':          ['양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','화학','기타','기타(미국)','기타(국내)'],
 }
 
