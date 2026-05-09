@@ -31,6 +31,29 @@ def fmt_krw(val: float) -> str:
     return f"{val:,.0f}원"
 
 
+def remap_category(name: str) -> str:
+    """섹터명 우선순위 통합: 반도체 > AI > 지수/방산/기술"""
+    if "반도체" in name:
+        return "반도체"
+    if "AI" in name:
+        return "AI"
+    if name in ("시장지수", "해외지수"):
+        return "지수"
+    if "방산" in name or "우주" in name:
+        return "방산/우주"
+    if "기술" in name or name == "IT/기술":
+        return "기술"
+    return name
+
+
+def remap_cats_dict(cats_dict: dict) -> dict:
+    result: dict = {}
+    for k, v in cats_dict.items():
+        key = remap_category(k)
+        result[key] = result.get(key, 0) + v
+    return result
+
+
 def load_all_holdings_df() -> pd.DataFrame:
     """두 포트폴리오의 전체 보유 종목을 DataFrame으로 반환 (Total탭 드릴다운용)"""
     rows = []
@@ -44,17 +67,21 @@ def load_all_holdings_df() -> pd.DataFrame:
         for acc in data.get("accounts", []):
             for h in acc.get("holdings", []):
                 rows.append({**h, "owner": owner})
-    return pd.DataFrame(rows) if rows else pd.DataFrame()
+    df = pd.DataFrame(rows) if rows else pd.DataFrame()
+    if not df.empty and "category" in df.columns:
+        df["category"] = df["category"].apply(remap_category)
+    return df
 
 
 def render_category_pie_with_drill(cats_dict: dict, df_all: pd.DataFrame, threshold: float = 0.05):
-    """파이 차트 + 기타(5% 미만) 드릴다운 expander"""
+    """파이 차트 전체 표시 + 각 카테고리 드릴다운 expander"""
     total_val = sum(cats_dict.values())
     if total_val == 0:
         return
 
-    main = {k: v for k, v in cats_dict.items() if v / total_val >= threshold}
-    etc  = {k: v for k, v in cats_dict.items() if v / total_val < threshold}
+    sorted_cats = dict(sorted(cats_dict.items(), key=lambda x: -x[1]))
+    main = {k: v for k, v in sorted_cats.items() if v / total_val >= threshold}
+    etc  = {k: v for k, v in sorted_cats.items() if v / total_val < threshold}
 
     pie_data = {**main}
     if etc:
@@ -69,28 +96,38 @@ def render_category_pie_with_drill(cats_dict: dict, df_all: pd.DataFrame, thresh
     fig.update_traces(textposition="inside", textinfo="percent+label")
     st.plotly_chart(fig, use_container_width=True)
 
-    if etc and not df_all.empty:
-        etc_total = sum(etc.values())
-        with st.expander(f"📂 기타  {fmt_krw(etc_total)}  ({etc_total/total_val*100:.1f}%)"):
-            for cat, val in sorted(etc.items(), key=lambda x: -x[1]):
-                pct = val / total_val * 100
-                sub = df_all[df_all["category"] == cat]
-                with st.expander(f"{cat}  ·  {fmt_krw(val)}  ({pct:.1f}%)"):
-                    if not sub.empty:
-                        cols = [c for c in ["name", "owner", "shares", "current_price",
-                                            "current_value", "unrealized_pnl_pct"] if c in sub.columns]
-                        disp = sub[cols].rename(columns={
-                            "name": "종목명", "owner": "소유", "shares": "수량",
-                            "current_price": "현재가", "current_value": "평가금액",
-                            "unrealized_pnl_pct": "수익률(%)",
-                        })
-                        fmt = {c: "{:,.0f}" for c in ["수량","현재가","평가금액"] if c in disp.columns}
-                        if "수익률(%)" in disp.columns:
-                            fmt["수익률(%)"] = "{:+.1f}%"
-                        st.dataframe(
-                            disp.style.format(fmt),
-                            use_container_width=True, hide_index=True,
-                        )
+    def _render_holdings_table(sub: pd.DataFrame):
+        if sub.empty:
+            return
+        cols = [c for c in ["name", "owner", "shares", "current_price",
+                            "current_value", "unrealized_pnl_pct"] if c in sub.columns]
+        disp = sub[cols].rename(columns={
+            "name": "종목명", "owner": "소유", "shares": "수량",
+            "current_price": "현재가", "current_value": "평가금액",
+            "unrealized_pnl_pct": "수익률(%)",
+        })
+        fmt = {c: "{:,.0f}" for c in ["수량","현재가","평가금액"] if c in disp.columns}
+        if "수익률(%)" in disp.columns:
+            fmt["수익률(%)"] = "{:+.1f}%"
+        st.dataframe(disp.style.format(fmt), use_container_width=True, hide_index=True)
+
+    if not df_all.empty:
+        # 5% 이상 섹터 expander
+        for cat, val in main.items():
+            pct = val / total_val * 100
+            sub = df_all[df_all["category"] == cat]
+            with st.expander(f"📂 {cat}  ·  {fmt_krw(val)}  ({pct:.1f}%)"):
+                _render_holdings_table(sub)
+
+        # 기타 (5% 미만) expander
+        if etc:
+            etc_total = sum(etc.values())
+            with st.expander(f"📂 기타  {fmt_krw(etc_total)}  ({etc_total/total_val*100:.1f}%)"):
+                for cat, val in etc.items():
+                    pct = val / total_val * 100
+                    sub = df_all[df_all["category"] == cat]
+                    with st.expander(f"{cat}  ·  {fmt_krw(val)}  ({pct:.1f}%)"):
+                        _render_holdings_table(sub)
 
 
 def pnl_color(val: float) -> str:
@@ -186,13 +223,14 @@ with tab1:
     st.divider()
     col_left, col_right = st.columns(2)
 
-    # 섹터별 비중 파이 차트
-    cats = total.get("category_breakdown_krw", {})
+    # 섹터별 비중 파이 차트 (카테고리 통합 후 1% 미만 → 기타)
+    cats_raw = total.get("category_breakdown_krw", {})
+    cats = remap_cats_dict(cats_raw)
     if cats:
         with col_left:
             st.subheader("섹터별 비중")
             _all_df = load_all_holdings_df()
-            render_category_pie_with_drill(cats, _all_df)
+            render_category_pie_with_drill(cats, _all_df, threshold=0.01)
 
     # ── history.json 기반 추이 차트 (월별 등간격) ──────────
     df_hist = load_history_df()
@@ -304,6 +342,9 @@ def render_portfolio_tab(portfolio: dict, owner_label: str, cash_krw: int = 0):
     if df.empty:
         st.info("보유 종목이 없습니다.")
         return
+
+    if "category" in df.columns:
+        df["category"] = df["category"].apply(remap_category)
 
     col_left, col_right = st.columns(2)
 

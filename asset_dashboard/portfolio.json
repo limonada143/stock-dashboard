@@ -155,7 +155,7 @@
           "unrealized_pnl": 2308800,
           "unrealized_pnl_pct": 73.76,
           "type": "ETF",
-          "category": "그룹주"
+          "category": "시장지수"
         },
         {
           "name": "KODEX 증권",
@@ -290,7 +290,7 @@
           "unrealized_pnl": -318972,
           "unrealized_pnl_pct": -4.93,
           "type": "주식",
-          "category": "신기술"
+          "category": "기술"
         },
         {
           "name": "현대차우",
@@ -560,7 +560,7 @@
           "unrealized_pnl": 1631250,
           "unrealized_pnl_pct": 78.92,
           "type": "ETF",
-          "category": "해외기술"
+          "category": "AI/기술(미국)"
         },
         {
           "name": "RISE삼성전자SK하이닉스채권혼합50",
@@ -635,7 +635,7 @@
           "unrealized_pnl": 992154,
           "unrealized_pnl_pct": 33.15,
           "type": "해외주식",
-          "category": "기술(해외)"
+          "category": "AI/기술(해외)"
         },
         {
           "name": "ARM",
@@ -1247,7 +1247,7 @@
           "unrealized_pnl": 841005,
           "unrealized_pnl_pct": 248.16,
           "type": "ETF",
-          "category": "IT/기술"
+          "category": "AI/반도체"
         },
         {
           "name": "HANARO CAPEX설비투자",
