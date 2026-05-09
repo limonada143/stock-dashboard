@@ -50,7 +50,7 @@ def get_category_breakdown(holdings: list, currency: str, fx_rate: float) -> dic
     """카테고리별 자산 비중을 계산합니다."""
     breakdown = {}
     for h in holdings:
-        cat = h.get("category", "기타")
+        cat = h.get("category") or "미분류"
         val_krw = to_krw(h.get("current_value", 0), currency, fx_rate)
         breakdown[cat] = breakdown.get(cat, 0) + val_krw
     return breakdown

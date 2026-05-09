@@ -44,7 +44,7 @@
           "unrealized_pnl": 18000,
           "unrealized_pnl_pct": 1.16,
           "type": "주식",
-          "category": "철강"
+          "category": "반도체"
         }
       ]
     },
@@ -71,7 +71,7 @@
           "unrealized_pnl": 4089584,
           "unrealized_pnl_pct": 96.18,
           "type": "ETF",
-          "category": "전력/원자력/에너지"
+          "category": "원자력"
         },
         {
           "name": "TIGER 반도체TOP10",
@@ -107,7 +107,7 @@
           "unrealized_pnl": 4762955,
           "unrealized_pnl_pct": 79.68,
           "type": "ETF",
-          "category": "전력/원자력/에너지"
+          "category": "원자력"
         },
         {
           "name": "KODEX 200",
@@ -131,7 +131,7 @@
           "unrealized_pnl": 9268506,
           "unrealized_pnl_pct": 141.33,
           "type": "ETF",
-          "category": "전력/원자력/에너지"
+          "category": "AI/기술"
         },
         {
           "name": "TIGER K방산&우주",
@@ -203,7 +203,7 @@
           "unrealized_pnl": 7394243,
           "unrealized_pnl_pct": 26.92,
           "type": "ETF",
-          "category": "자동차/로봇"
+          "category": "그룹주"
         },
         {
           "name": "SOL 조선TOP3플러스",
@@ -290,7 +290,7 @@
           "unrealized_pnl": -318972,
           "unrealized_pnl_pct": -4.93,
           "type": "주식",
-          "category": "신기술"
+          "category": "바이오"
         },
         {
           "name": "현대차우",
@@ -338,7 +338,7 @@
           "unrealized_pnl": 1542002,
           "unrealized_pnl_pct": 18.12,
           "type": "주식",
-          "category": "AI/기술(해외)"
+          "category": "AI/기술"
         },
         {
           "name": "LS",
@@ -350,7 +350,7 @@
           "unrealized_pnl": 1248024,
           "unrealized_pnl_pct": 40.31,
           "type": "주식",
-          "category": "전력/원자력/에너지"
+          "category": "전력/에너지"
         },
         {
           "name": "제룡전기",
@@ -362,7 +362,7 @@
           "unrealized_pnl": 360800,
           "unrealized_pnl_pct": 25.86,
           "type": "주식",
-          "category": "전력/원자력/에너지"
+          "category": "전력/에너지"
         },
         {
           "name": "HD현대중공업",
@@ -473,7 +473,7 @@
           "unrealized_pnl": 2084800,
           "unrealized_pnl_pct": 80.65,
           "type": "ETF",
-          "category": "전력/원자력/에너지"
+          "category": "원자력"
         },
         {
           "name": "1Q 200액티브",
@@ -497,7 +497,7 @@
           "unrealized_pnl": 1273680,
           "unrealized_pnl_pct": 47.5,
           "type": "ETF",
-          "category": "AI/기술(미국)"
+          "category": "AI/기술"
         },
         {
           "name": "RISE 네트워크인프라",
@@ -536,7 +536,7 @@
           "unrealized_pnl": 3002818,
           "unrealized_pnl_pct": 182.19,
           "type": "ETF",
-          "category": "전력/원자력/에너지"
+          "category": "원자력"
         },
         {
           "name": "TIGER 미국테크TOP10 INDXX",
@@ -608,7 +608,7 @@
           "unrealized_pnl": 364125,
           "unrealized_pnl_pct": 6.03,
           "type": "ETF",
-          "category": "자동차/로봇"
+          "category": "그룹주"
         }
       ]
     },
@@ -647,7 +647,7 @@
           "unrealized_pnl": 3438536,
           "unrealized_pnl_pct": 65.02,
           "type": "해외주식",
-          "category": "AI/반도체(미국)"
+          "category": "AI/반도체(해외)"
         },
         {
           "name": "AVGO",
@@ -659,7 +659,7 @@
           "unrealized_pnl": 7634867,
           "unrealized_pnl_pct": 123.33,
           "type": "해외주식",
-          "category": "반도체(해외)"
+          "category": "AI/반도체(해외)"
         },
         {
           "name": "알파벳 A",
@@ -683,7 +683,7 @@
           "unrealized_pnl": 3815175,
           "unrealized_pnl_pct": 67.88,
           "type": "해외주식",
-          "category": "AI/반도체(해외)"
+          "category": "반도체(미국)"
         },
         {
           "name": "PLTR",
@@ -842,7 +842,7 @@
           "unrealized_pnl": 1499025,
           "unrealized_pnl_pct": 27.66,
           "type": "주식",
-          "category": "AI/반도체(해외)"
+          "category": "반도체(미국)"
         },
         {
           "name": "DRAM",
@@ -878,7 +878,7 @@
           "unrealized_pnl": 23500,
           "unrealized_pnl_pct": 1.17,
           "type": "주식",
-          "category": "2차전지"
+          "category": "배터리/소재"
         },
         {
           "name": "AVGO",
@@ -950,7 +950,7 @@
           "unrealized_pnl": 223,
           "unrealized_pnl_pct": 0.04,
           "type": "주식",
-          "category": "AI/반도체(해외)"
+          "category": "반도체(해외)"
         },
         {
           "name": "MP머티리얼스",
@@ -989,7 +989,7 @@
           "unrealized_pnl": 1465860,
           "unrealized_pnl_pct": 60.52,
           "type": "주식",
-          "category": "전력/원자력/에너지"
+          "category": "원자력/에너지"
         },
         {
           "name": "KODEX 증권",
@@ -1124,7 +1124,7 @@
           "unrealized_pnl": 252171,
           "unrealized_pnl_pct": 21.15,
           "type": "해외주식",
-          "category": "AI/반도체(해외)"
+          "category": "반도체(해외)"
         },
         {
           "name": "AVGO",
@@ -1259,7 +1259,7 @@
           "unrealized_pnl": 1296909,
           "unrealized_pnl_pct": 226.1,
           "type": "ETF",
-          "category": "전력/원자력/에너지"
+          "category": "설비투자"
         },
         {
           "name": "SOL 미국AI반도체칩메이커",
@@ -1283,7 +1283,7 @@
           "unrealized_pnl": 2722892,
           "unrealized_pnl_pct": 175.19,
           "type": "ETF",
-          "category": "전력/원자력/에너지"
+          "category": "원자력"
         },
         {
           "name": "HANARO 반도체핵심공정주도주",
@@ -1334,7 +1334,7 @@
           "unrealized_pnl": 1227500,
           "unrealized_pnl_pct": 29.21,
           "type": "주식",
-          "category": "전력/원자력/에너지"
+          "category": "전력/에너지"
         },
         {
           "name": "삼성전기",
@@ -1346,7 +1346,7 @@
           "unrealized_pnl": 1068000,
           "unrealized_pnl_pct": 24.18,
           "type": "주식",
-          "category": "AI/기술"
+          "category": "전력/에너지"
         },
         {
           "name": "리노공업",
@@ -1382,7 +1382,7 @@
           "unrealized_pnl": 1193201,
           "unrealized_pnl_pct": 56.37,
           "type": "주식",
-          "category": "전력/원자력/에너지"
+          "category": "전력/에너지"
         },
         {
           "name": "엘앤에프",
@@ -1406,7 +1406,7 @@
           "unrealized_pnl": 577500,
           "unrealized_pnl_pct": 36.46,
           "type": "주식",
-          "category": "전력/원자력/에너지"
+          "category": "전력/에너지"
         },
         {
           "name": "ACE AI반도체TOP3플러스",
@@ -1442,7 +1442,7 @@
           "unrealized_pnl": -20200,
           "unrealized_pnl_pct": -8.16,
           "type": "주식",
-          "category": "전력/원자력/에너지"
+          "category": "전력/에너지"
         },
         {
           "name": "TIGER K방산&우주",
@@ -1478,7 +1478,7 @@
           "unrealized_pnl": 1048140,
           "unrealized_pnl_pct": 57.66,
           "type": "ETF",
-          "category": "전력/원자력/에너지"
+          "category": "전력/에너지"
         },
         {
           "name": "한화비전",

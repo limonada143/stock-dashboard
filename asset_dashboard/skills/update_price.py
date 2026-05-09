@@ -82,12 +82,15 @@ TICKER_MAP = {
     "엘앤에프": "066970.KS",
     "일진전기": "103590.KQ",
     "리노공업": "058470.KQ",
+    "RF머트리얼스": "327260.KQ",
     "산일전기": "062040.KS",
     "알테오젠": "196170.KQ",
     "제룡전기": "033100.KS",
     "DB하이텍": "000990.KS",
     "LS머트리얼스": "417200.KQ",
     "한화비전": "489790.KS",
+    "포스코홀딩스": "005490.KS",
+    "HD현대중공업": "329180.KS",
 
     # KODEX / TIGER 변형
     "kodex 미국AI광통신네트워크": "0173Y0.KS",
@@ -98,8 +101,8 @@ TICKER_MAP = {
 # USD 심볼 목록 (가격 × 환율 변환 대상)
 USD_TICKERS = {
     "AAPL","AMZN","ARM","AVGO","DRAM","GLW","GOOGL","GRT","IONQ","KORU","META",
-    "METU","NVDA","NVDL","OXY","PLTR","RGTI","RKLB","SOXL","SPCE","TSLA",
-    "USD","USO","VRT","TE","TEL",
+    "METU","MP","NVDA","NVDL","OXY","PLTR","RGTI","RKLB","SOXL","SPCE","TSLA",
+    "TSLL","TSM","USD","USO","VRT","TE","TEL",
 }
 
 # 가격 조회 제외
@@ -247,19 +250,24 @@ def main():
     # data/portfolio_user.json 동기화
     sync_dashboard_user(dry_run=dry_run)
 
+    # portfolio_total.json 집계 (aggregator)
+    if not dry_run:
+        import subprocess, os
+        aggregator = os.path.join(os.path.dirname(__file__), 'aggregator.py')
+        subprocess.run([sys.executable, aggregator], check=False)
+
 
 SECTOR_MAP_PY = {
-    '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
-    'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
-    '원자력/에너지': ['원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학','에너지(해외)','설비투자'],
+    '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체/레버리지(해외)','반도체/채권','반도체ETF/레버리지(해외)','AI/반도체(해외)','AI/반도체(미국)'],
+    'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','기술','기술(해외)','IT/기술','신기술','해외기술','해외기술/레버리지'],
+    '전력/원자력/에너지': ['전력/원자력/에너지','원자력','원자력(미국)','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학','에너지(해외)','전력/에너지','설비투자'],
     '방산/우주':     ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
     '조선':          ['조선'],
     '시장지수':      ['시장지수','시장지수(미국)','시장지수(일본)','레버리지/지수','해외지수'],
-    '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
+    '그룹주/자동차': ['그룹주','자동차','자동차/로봇','로봇/자동차'],
     '바이오':        ['바이오'],
     '금융':          ['금융','금융(미국)'],
-    '2차전지':       ['2차전지','2차전지(국내)','배터리/소재','원자재'],
-    '기타':          ['양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','화학','기타','기타(미국)','기타(국내)'],
+    '2차전지':       ['2차전지','2차전지(국내)','배터리/소재','원자재','원자재(해외)'],
 }
 
 def save_sector_snapshot(files, today, dry_run=False):
@@ -273,8 +281,8 @@ def save_sector_snapshot(files, today, dry_run=False):
             continue
         for acc in data.get('accounts', []):
             for h in acc.get('holdings', []):
-                cat = h.get('category', '기타')
-                sector = next((s for s, cats in SECTOR_MAP_PY.items() if cat in cats), '기타')
+                cat = h.get('category') or '미분류'
+                sector = next((s for s, cats in SECTOR_MAP_PY.items() if cat in cats), cat)
                 totals[sector] = totals.get(sector, 0) + (h.get('current_value') or 0)
 
     snapshot = {

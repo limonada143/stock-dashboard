@@ -31,6 +31,68 @@ def fmt_krw(val: float) -> str:
     return f"{val:,.0f}원"
 
 
+def load_all_holdings_df() -> pd.DataFrame:
+    """두 포트폴리오의 전체 보유 종목을 DataFrame으로 반환 (Total탭 드릴다운용)"""
+    rows = []
+    for fpath, owner in [
+        (ROOT / "portfolio.json", "아내"),
+        (ROOT / "portfolio_husband.json", "남편"),
+    ]:
+        if not fpath.exists():
+            continue
+        data = load_json(fpath)
+        for acc in data.get("accounts", []):
+            for h in acc.get("holdings", []):
+                rows.append({**h, "owner": owner})
+    return pd.DataFrame(rows) if rows else pd.DataFrame()
+
+
+def render_category_pie_with_drill(cats_dict: dict, df_all: pd.DataFrame, threshold: float = 0.05):
+    """파이 차트 + 기타(5% 미만) 드릴다운 expander"""
+    total_val = sum(cats_dict.values())
+    if total_val == 0:
+        return
+
+    main = {k: v for k, v in cats_dict.items() if v / total_val >= threshold}
+    etc  = {k: v for k, v in cats_dict.items() if v / total_val < threshold}
+
+    pie_data = {**main}
+    if etc:
+        pie_data["기타"] = sum(etc.values())
+
+    fig = px.pie(
+        names=list(pie_data.keys()),
+        values=list(pie_data.values()),
+        hole=0.35,
+        color_discrete_sequence=px.colors.qualitative.Set3,
+    )
+    fig.update_traces(textposition="inside", textinfo="percent+label")
+    st.plotly_chart(fig, use_container_width=True)
+
+    if etc and not df_all.empty:
+        etc_total = sum(etc.values())
+        with st.expander(f"📂 기타  {fmt_krw(etc_total)}  ({etc_total/total_val*100:.1f}%)"):
+            for cat, val in sorted(etc.items(), key=lambda x: -x[1]):
+                pct = val / total_val * 100
+                sub = df_all[df_all["category"] == cat]
+                with st.expander(f"{cat}  ·  {fmt_krw(val)}  ({pct:.1f}%)"):
+                    if not sub.empty:
+                        cols = [c for c in ["name", "owner", "shares", "current_price",
+                                            "current_value", "unrealized_pnl_pct"] if c in sub.columns]
+                        disp = sub[cols].rename(columns={
+                            "name": "종목명", "owner": "소유", "shares": "수량",
+                            "current_price": "현재가", "current_value": "평가금액",
+                            "unrealized_pnl_pct": "수익률(%)",
+                        })
+                        fmt = {c: "{:,.0f}" for c in ["수량","현재가","평가금액"] if c in disp.columns}
+                        if "수익률(%)" in disp.columns:
+                            fmt["수익률(%)"] = "{:+.1f}%"
+                        st.dataframe(
+                            disp.style.format(fmt),
+                            use_container_width=True, hide_index=True,
+                        )
+
+
 def pnl_color(val: float) -> str:
     return "red" if val > 0 else "blue"
 
@@ -129,14 +191,8 @@ with tab1:
     if cats:
         with col_left:
             st.subheader("섹터별 비중")
-            fig_pie = px.pie(
-                names=list(cats.keys()),
-                values=list(cats.values()),
-                hole=0.35,
-                color_discrete_sequence=px.colors.qualitative.Set3,
-            )
-            fig_pie.update_traces(textposition="inside", textinfo="percent+label")
-            st.plotly_chart(fig_pie, use_container_width=True)
+            _all_df = load_all_holdings_df()
+            render_category_pie_with_drill(cats, _all_df)
 
     # ── history.json 기반 추이 차트 (월별 등간격) ──────────
     df_hist = load_history_df()
@@ -274,16 +330,8 @@ def render_portfolio_tab(portfolio: dict, owner_label: str, cash_krw: int = 0):
     # 카테고리 파이
     with col_right:
         st.subheader("카테고리 비중")
-        cat_group = df.groupby("category")["current_value"].sum().reset_index()
-        fig_pie = px.pie(
-            cat_group,
-            names="category",
-            values="current_value",
-            hole=0.35,
-            color_discrete_sequence=px.colors.qualitative.Pastel,
-        )
-        fig_pie.update_traces(textposition="inside", textinfo="percent+label")
-        st.plotly_chart(fig_pie, use_container_width=True)
+        cats_dict = df.groupby("category")["current_value"].sum().to_dict()
+        render_category_pie_with_drill(cats_dict, df)
 
     # 종목 테이블
     st.subheader("보유 종목 상세")
