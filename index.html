@@ -371,36 +371,53 @@
         // ══════════════════════════════════════════════════════════
         // 공통 섹터 색상 (전역)
         const SECTOR_COLORS_G = {
-            '반도체':'#60A5FA','AI/기술':'#A78BFA','원자력/에너지':'#FBBF24',
-            '방산/우주':'#F87171','조선':'#34D399','시장지수':'#38BDF8',
-            '그룹주/자동차':'#FB923C','바이오':'#F472B6','금융':'#4ADE80',
-            '원자재':'#D97706','기타':'#6B7280'
+            '반도체':             '#60A5FA',
+            'AI':                 '#A78BFA',
+            '전력/원자력/에너지': '#FBBF24',
+            '지수':               '#38BDF8',
+            '자동차/로봇':        '#FB923C',
+            '레버리지/지수':      '#67E8F9',
+            '조선':               '#34D399',
+            '방산/우주':          '#F87171',
+            '기술':               '#C4B5FD',
+            '철강':               '#94A3B8',
+            '금융':               '#4ADE80',
+            '2차전지':            '#F472B6',
+            '기타':               '#6B7280'
         };
         const SECTOR_MAP_G = {
-            '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)','AI/반도체(미국)','반도체/레버리지(해외)'],
-            'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
-            '원자력/에너지': ['원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학','에너지(해외)','설비투자'],
-            '방산/우주':     ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
-            '조선':          ['조선'],
-            '시장지수':      ['시장지수','시장지수(미국)','시장지수(일본)','레버리지/지수','해외지수','국내지수'],
-            '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
-            '바이오':        ['바이오'],
-            '금융':          ['금융','금융(미국)'],
-            '원자재':        ['원자재','원자재(해외)','원자재(국내)'],
-            '기타':          ['양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','화학','기타','기타(미국)','기타(국내)']
+            '반도체':             ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)','AI/반도체(미국)','반도체/레버리지(해외)','반도체/채권'],
+            'AI':                 ['AI/기술','AI/기술(해외)','AI/기술(미국)'],
+            '전력/원자력/에너지': ['전력/원자력/에너지','원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학','에너지(해외)','설비투자'],
+            '지수':               ['지수','해외지수','국내지수'],
+            '자동차/로봇':        ['자동차/로봇','자동차','로봇/자동차'],
+            '레버리지/지수':      ['레버리지/지수'],
+            '조선':               ['조선'],
+            '방산/우주':          ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
+            '기술':               ['기술','기술(해외)','해외기술','해외기술/레버리지','IT/기술','신기술'],
+            '철강':               ['철강'],
+            '금융':               ['금융','금융(미국)'],
+            '2차전지':            ['2차전지'],
+            '기타':               ['양자컴퓨팅(해외)','혼합/채권','원자재(해외)','원자재','원자재(국내)','전기차/기술(해외)','화학','기타','기타(미국)','기타(국내)']
         };
         function catToSectorG(cat) {
+            if (!cat) return '기타';
+            if (cat.startsWith('시장지수') || cat.startsWith('해외지수') || cat.startsWith('국내지수')) return '지수';
+            if (cat.startsWith('반도체')) return '반도체';
+            if (cat.startsWith('AI')) return 'AI';
+            if (cat.startsWith('전력/원자력') || cat.startsWith('원자력')) return '전력/원자력/에너지';
+            if (cat.startsWith('방산') || cat.startsWith('우주/방산')) return '방산/우주';
             return Object.keys(SECTOR_MAP_G).find(s => SECTOR_MAP_G[s].includes(cat)) || '기타';
         }
         // 종목명 우선 분류 (자산운용사 무관, etf_classification_rules.md 기준)
         // S&P500/KOSPI/KOSDAQ/나스닥은 모두 시장지수의 하위 분류
         function holdingToSector(name, cat) {
             const n = name || '';
-            if (/S&P\s*500|SP500/i.test(n))                                              return '시장지수';
-            if (/코스닥|KOSDAQ/i.test(n))                                                return '시장지수';
-            if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n))        return '시장지수';
-            if (/코스피|KOSPI/i.test(n))                                                 return '시장지수';
-            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)/.test(n)) return '시장지수';
+            if (/S&P\s*500|SP500/i.test(n))                                              return '지수';
+            if (/코스닥|KOSDAQ/i.test(n))                                                return '지수';
+            if (/나스닥|NASDAQ|QQQ|미국\s*테크\s*TOP\s*10|미국테크TOP/i.test(n))        return '지수';
+            if (/코스피|KOSPI/i.test(n))                                                 return '지수';
+            if (/^(KODEX|TIGER|ACE|KINDEX|HANARO|SOL|RISE|PLUS|1Q)\s*(200|100|레버리지|인버스)/.test(n)) return '지수';
             return catToSectorG(cat);
         }
         // 시장지수 내 세부 분류 (드릴다운 전용)
@@ -415,11 +432,11 @@
             if ((cat || '') === '국내지수')                                               return 'KOSPI';
             if (/배당다우존스/i.test(n))                                                  return 'SCHD';
             if (/TDF/i.test(n))                                                          return 'VTI';
-            return '기타 시장지수';
+            return '기타 지수';
         }
         const SUB_INDEX_COLORS = {
             'S&P500':'#F59E0B', 'KOSPI':'#14B8A6', 'KOSDAQ':'#8B5CF6',
-            '나스닥':'#06B6D4', 'SCHD':'#34D399', 'VTI':'#A78BFA', '기타 시장지수':'#38BDF8'
+            '나스닥':'#06B6D4', 'SCHD':'#34D399', 'VTI':'#A78BFA', '기타 지수':'#38BDF8'
         };
 
         function buildTotal(history, portfolio, husbandPortfolio, sectorHistory) {
@@ -572,7 +589,7 @@
                 tCurrentSector = sectorName;
 
                 let labels, values, colors, onClickFn = null;
-                if (sectorName === '시장지수') {
+                if (sectorName === '지수') {
                     // 시장지수 → 서브인덱스 도넛 (클릭 시 3레벨로)
                     const subTotals = {};
                     holdings.forEach(h => {
@@ -615,11 +632,11 @@
 
             function tDrillIntoHoldings(subIndexName) {
                 const holdings = allHoldings.filter(h =>
-                    holdingToSector(h.name, h.category || '기타') === '시장지수' &&
+                    holdingToSector(h.name, h.category || '기타') === '지수' &&
                     holdingToSubIndex(h.name, h.category || '') === subIndexName
                 );
                 if (!holdings.length) return;
-                tCurrentSector = '시장지수__' + subIndexName;
+                tCurrentSector = '지수__' + subIndexName;
 
                 const merged = {};
                 holdings.forEach(h => {
@@ -639,13 +656,13 @@
                 });
 
                 const lbl = document.getElementById('t-donut-sector-label');
-                lbl.textContent = `시장지수 › ${subIndexName}`;
+                lbl.textContent = `지수 › ${subIndexName}`;
                 lbl.classList.remove('hidden');
             }
 
             function totalDrillBack() {
-                if (tCurrentSector && tCurrentSector.startsWith('시장지수__')) {
-                    tDrillInto('시장지수');
+                if (tCurrentSector && tCurrentSector.startsWith('지수__')) {
+                    tDrillInto('지수');
                 } else {
                     tCurrentSector = null;
                     renderTotalDonut();
@@ -728,25 +745,8 @@
             });
             const allHoldings = Object.values(holdingMap);
 
-            const SECTOR_MAP = {
-                '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지','반도체ETF/레버리지(해외)','AI/반도체(해외)'],
-                'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','기술(해외)','IT/기술','해외기술','해외기술/레버리지'],
-                '원자력/에너지': ['원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학','에너지(해외)','설비투자'],
-                '방산/우주':     ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
-                '조선':          ['조선'],
-                '시장지수':      ['시장지수','시장지수(미국)','시장지수(일본)','레버리지/지수','해외지수'],
-                '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
-                '바이오':        ['바이오'],
-                '금융':          ['금융','금융(미국)'],
-                '기타':          ['양자컴퓨팅(해외)','전기차/기술(해외)','혼합/채권','철강','화학','기타','기타(미국)','기타(국내)']
-            };
-            const SECTOR_COLORS = {
-                '반도체':        '#60A5FA', 'AI/기술':       '#A78BFA',
-                '원자력/에너지': '#FBBF24', '방산/우주':     '#F87171',
-                '조선':          '#34D399', '시장지수':      '#38BDF8',
-                '그룹주/자동차': '#FB923C', '바이오':        '#F472B6',
-                '금융':          '#4ADE80', '기타':          '#6B7280'
-            };
+            const SECTOR_MAP = SECTOR_MAP_G;
+            const SECTOR_COLORS = SECTOR_COLORS_G;
 
             function buildSectorData() {
                 const totals = {};
@@ -840,7 +840,7 @@
                 uCurrentSector = sectorName;
 
                 let labels, values, colors, onClickFn = null;
-                if (sectorName === '시장지수') {
+                if (sectorName === '지수') {
                     const subTotals = {};
                     etfs.forEach(h => {
                         const sub = holdingToSubIndex(h.name, h.category || '');
@@ -876,11 +876,11 @@
 
             function drillIntoUserHoldings(subIndexName) {
                 const etfs = allHoldings.filter(h =>
-                    holdingToSector(h.name, h.category || '기타') === '시장지수' &&
+                    holdingToSector(h.name, h.category || '기타') === '지수' &&
                     holdingToSubIndex(h.name, h.category || '') === subIndexName
                 );
                 if (!etfs.length) return;
-                uCurrentSector = '시장지수__' + subIndexName;
+                uCurrentSector = '지수__' + subIndexName;
 
                 const labels = etfs.map(h => h.name);
                 const values = etfs.map(h => h.current_value);
@@ -894,13 +894,13 @@
                 });
 
                 const lbl = document.getElementById('donut-sector-label');
-                lbl.textContent = `시장지수 › ${subIndexName}`;
+                lbl.textContent = `지수 › ${subIndexName}`;
                 lbl.classList.remove('hidden');
             }
 
             function drillBack() {
-                if (uCurrentSector && uCurrentSector.startsWith('시장지수__')) {
-                    drillInto('시장지수', SUB_INDEX_COLORS['기타 시장지수']);
+                if (uCurrentSector && uCurrentSector.startsWith('지수__')) {
+                    drillInto('지수', SUB_INDEX_COLORS['기타 지수']);
                 } else {
                     uCurrentSector = null;
                     renderDonut(currentDonutMode);
@@ -972,25 +972,8 @@
                 : [];
 
             // ── 섹터/색상 맵 (남편 카테고리 포함) ─────────────────
-            const H_SECTOR_MAP = {
-                '반도체':        ['반도체','반도체(해외)','반도체(미국)','반도체/레버리지'],
-                'AI/기술':       ['AI/기술','AI/기술(해외)','AI/기술(미국)','IT/기술','기술(해외)'],
-                '원자력/에너지': ['원자력','원자력/에너지','원자력/에너지(국내)','원자력/에너지(미국)','에너지/화학'],
-                '방산/우주':     ['방산/우주','방산/우주(미국)','방위/전략','우주/방산(해외)'],
-                '조선':          ['조선'],
-                '시장지수':      ['시장지수','시장지수(미국)','시장지수(일본)','레버리지/지수','해외지수'],
-                '그룹주/자동차': ['그룹주','자동차','로봇/자동차'],
-                '바이오':        ['바이오'],
-                '금융':          ['금융','금융(미국)'],
-                '기타':          ['기타','기타(미국)','기타(국내)','철강','화학','혼합/채권']
-            };
-            const H_SECTOR_COLORS = {
-                '반도체':        '#60A5FA', 'AI/기술':       '#A78BFA',
-                '원자력/에너지': '#FBBF24', '방산/우주':     '#F87171',
-                '조선':          '#34D399', '시장지수':      '#38BDF8',
-                '그룹주/자동차': '#FB923C', '바이오':        '#F472B6',
-                '금융':          '#4ADE80', '기타':          '#6B7280'
-            };
+            const H_SECTOR_MAP = SECTOR_MAP_G;
+            const H_SECTOR_COLORS = SECTOR_COLORS_G;
 
             function hCatToSector(cat) {
                 return Object.keys(H_SECTOR_MAP).find(s => H_SECTOR_MAP[s].includes(cat)) || '기타';
@@ -1080,7 +1063,7 @@
                 hCurrentSector = sectorName;
 
                 let labels, values, colors, onClickFn = null;
-                if (sectorName === '시장지수') {
+                if (sectorName === '지수') {
                     const subTotals = {};
                     etfs.forEach(h => {
                         const sub = holdingToSubIndex(h.name, h.category || '');
@@ -1113,11 +1096,11 @@
 
             function hDrillIntoHoldings(subIndexName) {
                 const etfs = allHusbandHoldings.filter(h =>
-                    holdingToSector(h.name, h.category || '기타') === '시장지수' &&
+                    holdingToSector(h.name, h.category || '기타') === '지수' &&
                     holdingToSubIndex(h.name, h.category || '') === subIndexName
                 );
                 if (!etfs.length) return;
-                hCurrentSector = '시장지수__' + subIndexName;
+                hCurrentSector = '지수__' + subIndexName;
 
                 const labels = etfs.map(h => h.name);
                 const values = etfs.map(h => h.current_value);
@@ -1130,13 +1113,13 @@
                     options: makeHDonutOpts(labels, values, colors, null)
                 });
                 const lbl = document.getElementById('h-donut-sector-label');
-                lbl.textContent = `시장지수 › ${subIndexName}`; lbl.classList.remove('hidden');
+                lbl.textContent = `지수 › ${subIndexName}`; lbl.classList.remove('hidden');
             }
 
             window.switchHusbandDonut = mode => renderHDonut(mode);
             window.husbandDrillBack   = () => {
-                if (hCurrentSector && hCurrentSector.startsWith('시장지수__')) {
-                    hDrillInto('시장지수');
+                if (hCurrentSector && hCurrentSector.startsWith('지수__')) {
+                    hDrillInto('지수');
                 } else {
                     hCurrentSector = null;
                     renderHDonut(hCurrentMode);
