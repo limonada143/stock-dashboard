@@ -855,9 +855,10 @@
                         drillIntoUserHoldings(labels[els[0].index]);
                     };
                 } else {
-                    labels = etfs.map(h => h.name);
-                    values = etfs.map(h => h.current_value);
-                    colors = uPalette.slice(0, etfs.length);
+                    const sorted = [...etfs].sort((a,b) => (b.current_value||0) - (a.current_value||0));
+                    labels = sorted.map(h => h.name);
+                    values = sorted.map(h => h.current_value);
+                    colors = uPalette.slice(0, sorted.length);
                 }
 
                 if (donutChart) donutChart.destroy();
@@ -882,9 +883,10 @@
                 if (!etfs.length) return;
                 uCurrentSector = '지수__' + subIndexName;
 
-                const labels = etfs.map(h => h.name);
-                const values = etfs.map(h => h.current_value);
-                const colors = uPalette.slice(0, etfs.length);
+                const sorted = [...etfs].sort((a,b) => (b.current_value||0) - (a.current_value||0));
+                const labels = sorted.map(h => h.name);
+                const values = sorted.map(h => h.current_value);
+                const colors = uPalette.slice(0, sorted.length);
 
                 if (donutChart) donutChart.destroy();
                 donutChart = new Chart(document.getElementById('userDonutChart'), {
@@ -1078,9 +1080,10 @@
                         hDrillIntoHoldings(labels[els[0].index]);
                     };
                 } else {
-                    labels = etfs.map(h => h.name);
-                    values = etfs.map(h => h.current_value);
-                    colors = hPalette.slice(0, etfs.length);
+                    const sorted = [...etfs].sort((a,b) => (b.current_value||0) - (a.current_value||0));
+                    labels = sorted.map(h => h.name);
+                    values = sorted.map(h => h.current_value);
+                    colors = hPalette.slice(0, sorted.length);
                 }
                 if (hDonutChart) hDonutChart.destroy();
                 hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
@@ -1102,9 +1105,10 @@
                 if (!etfs.length) return;
                 hCurrentSector = '지수__' + subIndexName;
 
-                const labels = etfs.map(h => h.name);
-                const values = etfs.map(h => h.current_value);
-                const colors = hPalette.slice(0, etfs.length);
+                const sorted = [...etfs].sort((a,b) => (b.current_value||0) - (a.current_value||0));
+                const labels = sorted.map(h => h.name);
+                const values = sorted.map(h => h.current_value);
+                const colors = hPalette.slice(0, sorted.length);
 
                 if (hDonutChart) hDonutChart.destroy();
                 hDonutChart = new Chart(document.getElementById('husbandDonutChart'), {
