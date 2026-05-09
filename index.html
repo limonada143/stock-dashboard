@@ -400,6 +400,22 @@
             '2차전지':            ['2차전지'],
             '기타':               ['양자컴퓨팅(해외)','혼합/채권','원자재(해외)','원자재','원자재(국내)','전기차/기술(해외)','화학','기타','기타(미국)','기타(국내)']
         };
+        // 구버전 섹터명 포함 색상 조회 (sector_history.json 호환)
+        const _FALLBACK_COLORS = ['#F59E0B','#EC4899','#10B981','#14B8A6','#EF4444','#06B6D4','#D946EF'];
+        function getSectorColor(name) {
+            if (SECTOR_COLORS_G[name]) return SECTOR_COLORS_G[name];
+            if (name.includes('반도체'))                        return SECTOR_COLORS_G['반도체'];
+            if (name.startsWith('AI') || name.includes('AI/')) return SECTOR_COLORS_G['AI'];
+            if (name.includes('원자력') || name.includes('에너지') || name.includes('전력')) return SECTOR_COLORS_G['전력/원자력/에너지'];
+            if (name.includes('시장지수') || name.includes('해외지수')) return SECTOR_COLORS_G['지수'];
+            if (name.includes('자동차') || name.includes('그룹주') || name.includes('로봇')) return SECTOR_COLORS_G['자동차/로봇'];
+            if (name.includes('방산') || name.includes('우주'))  return SECTOR_COLORS_G['방산/우주'];
+            if (name.includes('기술'))                           return SECTOR_COLORS_G['기술'];
+            // 그 외 알 수 없는 섹터는 순서대로 고정 팔레트
+            const idx = Object.keys(SECTOR_COLORS_G).length + [...new Set(Object.keys({}).concat([name]))].indexOf(name);
+            return _FALLBACK_COLORS[Math.abs(name.split('').reduce((a,c)=>a+c.charCodeAt(0),0)) % _FALLBACK_COLORS.length];
+        }
+
         function catToSectorG(cat) {
             if (!cat) return '기타';
             if (cat.startsWith('시장지수') || cat.startsWith('해외지수') || cat.startsWith('국내지수')) return '지수';
@@ -686,7 +702,7 @@
                 const sDatasets = top5.map(s => lineDataset(
                     s,
                     sectorHistory.map(e => e.total ? +((e.sectors[s]||0)/e.total*100).toFixed(1) : null),
-                    SECTOR_COLORS_G[s] || '#6B7280'
+                    getSectorColor(s)
                 ));
                 new Chart(document.getElementById('totalSectorTrendChart'), {
                     type: 'line',
