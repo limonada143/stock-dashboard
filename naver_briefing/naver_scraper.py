@@ -179,19 +179,76 @@ def fetch_youtube_latest(channel_id: str, channel_name: str, since_days: int = 1
         return []
 
 
-def summarize_youtube_with_gemini(video_url: str, title: str) -> str:
-    """Gemini로 유튜브 영상 요약."""
+def _summarize_with_ollama(prompt: str) -> str:
+    import urllib.request
+    payload = json.dumps({
+        "model": "qwen3.5:9b",
+        "prompt": prompt,
+        "stream": False,
+        "think": False,
+    }).encode()
+    req = urllib.request.Request(
+        "http://localhost:11434/api/generate",
+        data=payload,
+        headers={"Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        data = json.loads(resp.read())
+    return data.get("response", "").strip()
+
+
+def _summarize_with_gemini(prompt: str) -> str:
+    from google import genai
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=[prompt],
+    )
+    return response.text.strip()
+
+
+def _fetch_youtube_transcript(video_id: str) -> str:
+    """유튜브 자막 텍스트 추출 (한국어 우선, 최대 3000자)."""
     try:
-        from google import genai
-        client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=[
-                f"다음 유튜브 영상을 보고 핵심 투자/시황 인사이트를 150자 이내로 한국어로 요약해줘."
-                f" 영상 제목: '{title}'\n영상 URL: {video_url}"
-            ]
+        from youtube_transcript_api import YouTubeTranscriptApi
+        fetcher = YouTubeTranscriptApi()
+        transcript = fetcher.fetch(video_id, languages=["ko", "en"])
+        text = " ".join([x.text for x in transcript])
+        return text[:3000]
+    except Exception:
+        return ""
+
+
+def summarize_youtube_with_gemini(video_url: str, title: str) -> str:
+    """유튜브 영상 요약. YOUTUBE_SUMMARIZER=gemini 이면 Gemini, 기본은 로컬 qwen3.5:9b."""
+    # 영상 ID 추출
+    import re
+    match = re.search(r"(?:v=|youtu\.be/)([A-Za-z0-9_-]{11})", video_url)
+    video_id = match.group(1) if match else ""
+
+    transcript = _fetch_youtube_transcript(video_id) if video_id else ""
+
+    if transcript:
+        prompt = (
+            f"다음은 유튜브 영상의 실제 자막 내용이야. "
+            f"핵심 투자/시황 인사이트를 180~200자로 한국어로 요약해줘. "
+            f"주요 종목·섹터·매크로 포인트를 구체적으로 포함하고, 요약문만 출력해.\n\n"
+            f"영상 제목: '{title}'\n자막:\n{transcript}"
         )
-        return response.text.strip()
+    else:
+        # 자막 없을 때 제목으로 fallback
+        prompt = (
+            f"다음 유튜브 영상 제목을 보고 핵심 투자/시황 인사이트를 한국어로 요약해줘. "
+            f"180~200자 사이로 작성하고, 주요 종목·섹터·매크로 포인트를 구체적으로 포함해줘. "
+            f"요약문만 출력하고 다른 말은 덧붙이지 마. "
+            f"영상 제목: '{title}'"
+        )
+
+    backend = os.getenv("YOUTUBE_SUMMARIZER", "qwen").lower()
+    try:
+        if backend == "gemini":
+            return _summarize_with_gemini(prompt)
+        return _summarize_with_ollama(prompt)
     except Exception as e:
         return f"(요약 실패: {e})"
 
