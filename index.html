@@ -419,7 +419,7 @@
         function catToSectorG(cat) {
             if (!cat) return '기타';
             if (cat.startsWith('시장지수') || cat.startsWith('해외지수') || cat.startsWith('국내지수')) return '지수';
-            if (cat.startsWith('반도체')) return '반도체';
+            if (cat.includes('반도체')) return '반도체';  // AI/반도체 포함 모두 반도체 우선
             if (cat.startsWith('AI')) return 'AI';
             if (cat.startsWith('전력/원자력') || cat.startsWith('원자력')) return '전력/원자력/에너지';
             if (cat.startsWith('방산') || cat.startsWith('우주/방산')) return '방산/우주';
