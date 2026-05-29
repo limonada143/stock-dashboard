@@ -80,7 +80,13 @@ def update_portfolio(prices: dict, date_str: str):
     updated_count = 0
     total_value = 0
 
-    for holding in portfolio["holdings"]:
+    # accounts 구조와 단일 holdings 구조 모두 지원
+    if "accounts" in portfolio:
+        all_holdings = [h for acc in portfolio["accounts"] for h in acc.get("holdings", [])]
+    else:
+        all_holdings = portfolio["holdings"]
+
+    for holding in all_holdings:
         name = holding["name"]
         new_price = prices.get(name)
 
@@ -104,8 +110,19 @@ def update_portfolio(prices: dict, date_str: str):
         else:
             total_value += holding.get("current_value", 0)
 
+    # account별 summary 재계산 (accounts 구조인 경우)
+    if "accounts" in portfolio:
+        for acc in portfolio["accounts"]:
+            acc_holdings = acc.get("holdings", [])
+            acc_val = sum(h.get("current_value", 0) for h in acc_holdings)
+            acc_cost = sum(h["avg_price"] * h["shares"] for h in acc_holdings)
+            if acc.get("summary"):
+                acc["summary"]["total_value"] = acc_val
+                acc["summary"]["unrealized_pnl"] = int(acc_val - acc_cost)
+                acc["summary"]["unrealized_pnl_pct"] = round((acc_val - acc_cost) / acc_cost * 100, 2) if acc_cost else 0
+
     # 전체 summary 업데이트
-    total_cost = sum(h["avg_price"] * h["shares"] for h in portfolio["holdings"])
+    total_cost = sum(h["avg_price"] * h["shares"] for h in all_holdings)
     total_pnl = total_value - total_cost
     portfolio["summary"]["total_value"] = total_value
     portfolio["summary"]["total_cost"] = int(total_cost)
@@ -114,7 +131,9 @@ def update_portfolio(prices: dict, date_str: str):
 
     # 날짜 업데이트
     formatted_date = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
-    portfolio["account"]["last_updated"] = formatted_date
+    if "account" in portfolio:
+        portfolio["account"]["last_updated"] = formatted_date
+    portfolio["last_updated"] = formatted_date
 
     with open(PORTFOLIO_PATH, "w", encoding="utf-8") as f:
         json.dump(portfolio, f, ensure_ascii=False, indent=2)
@@ -135,9 +154,11 @@ def print_final_summary(portfolio: dict):
     print("=" * 55)
 
     print("\n[수익률 TOP 5 ▲]")
-    sorted_holdings = sorted(
-        portfolio["holdings"], key=lambda x: x["unrealized_pnl_pct"], reverse=True
-    )
+    if "accounts" in portfolio:
+        all_h = [h for acc in portfolio["accounts"] for h in acc.get("holdings", [])]
+    else:
+        all_h = portfolio["holdings"]
+    sorted_holdings = sorted(all_h, key=lambda x: x["unrealized_pnl_pct"], reverse=True)
     for h in sorted_holdings[:5]:
         print(f"  {h['name']}: {h['unrealized_pnl_pct']:+.2f}%")
 

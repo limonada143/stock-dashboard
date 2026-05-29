@@ -35,7 +35,7 @@
           "unrealized_pnl": 30230288,
           "unrealized_pnl_pct": 126.67,
           "type": "주식",
-          "category": "반도체(미국)",
+          "category": "AI/반도체(미국)",
           "currency": "USD"
         },
         {
@@ -61,7 +61,7 @@
           "unrealized_pnl": 1728457,
           "unrealized_pnl_pct": 16.86,
           "type": "ETF",
-          "category": "반도체/레버리지",
+          "category": "AI/반도체/레버리지",
           "currency": "USD"
         },
         {
@@ -87,7 +87,7 @@
           "unrealized_pnl": 18346,
           "unrealized_pnl_pct": 1.25,
           "type": "주식",
-          "category": "반도체",
+          "category": "전력/원자력/에너지",
           "currency": "USD"
         },
         {
