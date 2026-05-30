@@ -79,7 +79,7 @@ def aggregate():
 
     # 각 포트폴리오 KRW 환산 총액
     user_currency = user.get("account", {}).get("currency", "KRW")
-    husband_currency = husband.get("account", {}).get("currency", "USD")
+    husband_currency = husband.get("account", {}).get("currency", "KRW")
 
     user_summary = user.get("summary", {})
     husband_summary = husband.get("summary", {})

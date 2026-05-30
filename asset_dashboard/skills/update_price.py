@@ -91,11 +91,25 @@ TICKER_MAP = {
     "한화비전": "489790.KS",
     "포스코홀딩스": "005490.KS",
     "HD현대중공업": "329180.KS",
+    "현대모비스": "012330.KS",
+    "현대차": "005380.KS",
+    "현대오토에버": "307950.KS",
+    "두산": "000150.KS",
+    "비나텍": "126340.KQ",
+    "삼성전자우": "005935.KS",
+    "SKC": "011790.KS",
+    "SK하이닉스": "000660.KS",
 
     # KODEX / TIGER 변형
+    "KODEX AI반도체TOP2플러스": "395160.KS",
+    "395160.KR": "395160.KS",
+    "PLUS 글로벌HBM반도체": "442580.KS",
+    "RISE 네트워크인프라": "367760.KS",
+    "HAHARO K휴머노이드테마TOP10": "0155N0.KS",
     "kodex 미국AI광통신네트워크": "0173Y0.KS",
     "KODEX미국AI광통신네트워크": "0173Y0.KS",
     "TIGER미국필라델피아반도체레버리지": "423920.KS",
+    "TSMC": "TSM",
 }
 
 # USD 심볼 목록 (가격 × 환율 변환 대상)
@@ -247,8 +261,9 @@ def main():
     from datetime import date
     save_sector_snapshot(files, str(date.today()), dry_run=dry_run)
 
-    # data/portfolio_user.json 동기화
+    # data/portfolio_user.json / portfolio_husband.json 동기화
     sync_dashboard_user(dry_run=dry_run)
+    sync_dashboard_husband(dry_run=dry_run)
 
     # portfolio_total.json 집계 (aggregator)
     if not dry_run:
@@ -353,6 +368,48 @@ def sync_dashboard_user(dry_run=False):
             json.dump(data_user, f, indent=2, ensure_ascii=False)
 
     print(f"  🔄 dashboard 동기화 {'(미적용)' if dry_run else '완료'}: {len(all_holdings)}종목, {total_val/1e8:.2f}억원")
+
+
+def sync_dashboard_husband(dry_run=False):
+    """portfolio_husband.json → data/portfolio_husband.json 동기화 (대시보드용 flat 구조)"""
+    src = '/Users/macmini/myClaude/asset_dashboard/portfolio_husband.json'
+    dst = '/Users/macmini/myClaude/asset_dashboard/data/portfolio_husband.json'
+
+    try:
+        with open(src) as f:
+            root = json.load(f)
+    except Exception as e:
+        print(f"  ⚠ portfolio_husband 동기화 실패: {e}")
+        return
+
+    all_holdings = [h for acc in root['accounts'] for h in acc.get('holdings', [])]
+    holdings_val = sum(h['current_value'] for h in all_holdings)
+    total_cash   = root.get('summary', {}).get('total_cash_krw', 0)
+    total_val    = holdings_val + total_cash
+    total_cost   = root.get('summary', {}).get('total_cost', 0)
+    total_pnl    = total_val - total_cost
+    total_pct    = round(total_pnl / total_cost * 100, 2) if total_cost else 0
+
+    data_husband = {
+        "owner": "husband",
+        "last_updated": root.get("last_updated"),
+        "account": {"name": "전체 계좌 통합", "type": "통합", "currency": "KRW"},
+        "summary": {
+            "total_value": round(total_val),
+            "total_cost": round(total_cost),
+            "total_cash_krw": round(total_cash),
+            "total_cash": round(total_cash),
+            "unrealized_pnl": round(total_pnl),
+            "unrealized_pnl_pct": total_pct,
+        },
+        "holdings": all_holdings,
+    }
+
+    if not dry_run:
+        with open(dst, 'w', encoding='utf-8') as f:
+            json.dump(data_husband, f, indent=2, ensure_ascii=False)
+
+    print(f"  🔄 husband dashboard 동기화 {'(미적용)' if dry_run else '완료'}: {len(all_holdings)}종목, {total_val/1e8:.2f}억원")
 
 
 if __name__ == '__main__':
