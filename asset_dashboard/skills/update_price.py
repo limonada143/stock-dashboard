@@ -114,7 +114,7 @@ TICKER_MAP = {
 
 # USD 심볼 목록 (가격 × 환율 변환 대상)
 USD_TICKERS = {
-    "AAPL","AMZN","ARM","AVGO","DRAM","GLW","GOOGL","GRT","IONQ","KORU","META",
+    "AAPL","AMD","AMZN","ARM","AVGO","DRAM","GLW","GOOGL","GRT","IONQ","KORU","META",
     "METU","MP","NVDA","NVDL","OXY","PLTR","RGTI","RKLB","SOXL","SPCE","TSLA",
     "TSLL","TSM","USD","USO","VRT","TE","TEL",
 }

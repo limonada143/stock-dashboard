@@ -6,11 +6,11 @@
     "type": "통합"
   },
   "summary": {
-    "total_value": 900627303,
-    "total_cost": 592156103,
-    "total_cash": 1756495,
-    "unrealized_pnl": 306714705,
-    "unrealized_pnl_pct": 51.8
+    "total_value": 901490581,
+    "total_cost": 373507903,
+    "total_cash": 1470433,
+    "unrealized_pnl": 527982678,
+    "unrealized_pnl_pct": 141.36
   },
   "holdings": [
     {
@@ -714,10 +714,10 @@
       "ticker": "AMD",
       "shares": 1,
       "avg_price": 696386,
-      "current_price": 516,
-      "current_value": 516,
-      "unrealized_pnl": -695870,
-      "unrealized_pnl_pct": -99.93,
+      "current_price": 777830,
+      "current_value": 777830,
+      "unrealized_pnl": 81444,
+      "unrealized_pnl_pct": 11.7,
       "type": "주식",
       "category": "반도체(해외)"
     },

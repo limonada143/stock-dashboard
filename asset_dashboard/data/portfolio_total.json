@@ -2,14 +2,14 @@
   "last_updated": "2026-05-30",
   "fx_rate_usd_krw": 1506.661886,
   "summary": {
-    "family_total_krw": 1337746295,
-    "family_cost_krw": 834882970,
-    "family_pnl_krw": 502863325,
-    "family_pnl_pct": 60.23,
-    "user_total_krw": 900627303,
+    "family_total_krw": 1338609573,
+    "family_cost_krw": 616234770,
+    "family_pnl_krw": 722374803,
+    "family_pnl_pct": 117.22,
+    "user_total_krw": 901490581,
     "husband_total_krw": 437118992,
-    "mom_krw": 526324801,
-    "mom_pct": 64.86
+    "mom_krw": 527102115,
+    "mom_pct": 64.96
   },
   "category_breakdown_krw": {
     "반도체": 250739495,
@@ -24,7 +24,7 @@
     "반도체/레버리지": 53682885,
     "반도체/레버리지(해외)": 52334669,
     "조선": 46809450,
-    "반도체(해외)": 45769400,
+    "반도체(해외)": 46546714,
     "철강": 33961250,
     "AI/기술": 27429750,
     "원자력": 27174440,
@@ -72,8 +72,8 @@
     },
     {
       "date": "2026-05-30",
-      "total_value_krw": 1337746295,
-      "user_value_krw": 900627303,
+      "total_value_krw": 1338609573,
+      "user_value_krw": 901490581,
       "husband_value_krw": 437118992,
       "fx_rate_usd_krw": 1506.661886
     }

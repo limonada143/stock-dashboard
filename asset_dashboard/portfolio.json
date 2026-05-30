@@ -2,11 +2,11 @@
   "owner": "user",
   "last_updated": "2026-05-30",
   "summary": {
-    "total_value": 900627303,
-    "total_cost": 592271487,
-    "total_cash": 1756495,
-    "unrealized_pnl": 306714705,
-    "unrealized_pnl_pct": 51.8
+    "total_value": 901490581,
+    "total_cost": 373507903,
+    "total_cash": 1470433,
+    "unrealized_pnl": 527982678,
+    "unrealized_pnl_pct": 141.36
   },
   "accounts": [
     {
@@ -15,10 +15,10 @@
       "type": "일반계좌",
       "currency": "KRW",
       "summary": {
-        "total_value": 48184000,
+        "total_value": 48412000,
         "total_cost": 24274248,
-        "unrealized_pnl": 23909752,
-        "unrealized_pnl_pct": 98.5,
+        "unrealized_pnl": 24137752,
+        "unrealized_pnl_pct": 99.44,
         "cash": 1251833
       },
       "holdings": [
@@ -225,10 +225,10 @@
       "type": "종합위탁",
       "currency": "KRW",
       "summary": {
-        "total_value": 128352290,
+        "total_value": 128544010,
         "total_cost": 103532687,
-        "unrealized_pnl": 24819603,
-        "unrealized_pnl_pct": 23.97,
+        "unrealized_pnl": 25011323,
+        "unrealized_pnl_pct": 24.16,
         "cash": 60740
       },
       "holdings": [
@@ -340,7 +340,7 @@
         "total_cost": 55773454,
         "unrealized_pnl": 28628396,
         "unrealized_pnl_pct": 51.33,
-        "cash": 12128
+        "cash": 5917
       },
       "holdings": [
         {
@@ -582,11 +582,11 @@
       "type": "일반계좌",
       "currency": "KRW",
       "summary": {
-        "total_value": 112929221,
+        "total_value": 112874522,
         "total_cost": 61977367,
-        "unrealized_pnl": 50951854,
-        "unrealized_pnl_pct": 82.21,
-        "cash": 50307
+        "unrealized_pnl": 50897155,
+        "unrealized_pnl_pct": 82.12,
+        "cash": 0
       },
       "holdings": [
         {
@@ -717,11 +717,11 @@
       "type": "해외주식",
       "currency": "KRW",
       "summary": {
-        "total_value": 152901841,
+        "total_value": 153679155,
         "total_cost": 110841764,
-        "unrealized_pnl": 42060076.143095,
-        "unrealized_pnl_pct": 37.95,
-        "cash": 304135
+        "unrealized_pnl": 42837391,
+        "unrealized_pnl_pct": 38.65,
+        "cash": 63575
       },
       "holdings": [
         {
@@ -813,10 +813,10 @@
           "ticker": "AMD",
           "shares": 1,
           "avg_price": 696386,
-          "current_price": 516,
-          "current_value": 516,
-          "unrealized_pnl": -695870,
-          "unrealized_pnl_pct": -99.93,
+          "current_price": 777830,
+          "current_value": 777830,
+          "unrealized_pnl": 81444,
+          "unrealized_pnl_pct": 11.7,
           "type": "주식",
           "category": "반도체(해외)"
         },
@@ -936,11 +936,11 @@
       "type": "ISA",
       "currency": "KRW",
       "summary": {
-        "total_value": 44809010,
+        "total_value": 44789625,
         "total_cost": 19764050,
-        "unrealized_pnl": 25044960.000000052,
-        "unrealized_pnl_pct": 126.72,
-        "cash": 19150
+        "unrealized_pnl": 25025575,
+        "unrealized_pnl_pct": 126.62,
+        "cash": 20545
       },
       "holdings": [
         {
@@ -1134,11 +1134,11 @@
       "type": "연금저축",
       "currency": "KRW",
       "summary": {
-        "total_value": 21845470,
+        "total_value": 21871860,
         "total_cost": 10384464,
-        "unrealized_pnl": 11461006,
-        "unrealized_pnl_pct": 110.37,
-        "cash": 0
+        "unrealized_pnl": 11487396,
+        "unrealized_pnl_pct": 110.62,
+        "cash": 9621
       },
       "holdings": [
         {
