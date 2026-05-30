@@ -355,11 +355,12 @@
         }
 
         // ── 데이터 로드 ───────────────────────────────────────────
+        const _v = Date.now();
         Promise.all([
-            fetch('portfolio.json').then(r => r.json()),
-            fetch('history.json').then(r => r.json()),
-            fetch('portfolio_husband.json').then(r => r.json()).catch(() => null),
-            fetch('sector_history.json').then(r => r.json()).catch(() => [])
+            fetch(`portfolio.json?v=${_v}`).then(r => r.json()),
+            fetch(`history.json?v=${_v}`).then(r => r.json()),
+            fetch(`portfolio_husband.json?v=${_v}`).then(r => r.json()).catch(() => null),
+            fetch(`sector_history.json?v=${_v}`).then(r => r.json()).catch(() => [])
         ]).then(([portfolio, history, husbandPortfolio, sectorHistory]) => {
             buildTotal(history, portfolio, husbandPortfolio, sectorHistory);
             buildUser(portfolio, history);
